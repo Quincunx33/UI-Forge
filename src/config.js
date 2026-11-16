@@ -11,6 +11,7 @@ const DEFAULTS = {
   ],
   mode: "detect",
   allowRemote: false,
+  discovery: { enabled: false, maxRoutes: 20 },
   outputDir: ".ui-forge",
   browser: { engine: "chromium", headless: true, navigationTimeoutMs: 30000 },
   repair: { maxAttemptsPerFinding: 2, requireApprovalForSensitiveFiles: true, allowDependencyChanges: false },
@@ -62,6 +63,16 @@ export function validateConfig(input) {
     }
   }
   if (input.allowRemote !== undefined && typeof input.allowRemote !== "boolean") errors.push("allowRemote must be a boolean.");
+  if (input.discovery !== undefined) {
+    if (!input.discovery || typeof input.discovery !== "object" || Array.isArray(input.discovery)) {
+      errors.push("discovery must be an object.");
+    } else {
+      if (input.discovery.enabled !== undefined && typeof input.discovery.enabled !== "boolean") errors.push("discovery.enabled must be a boolean.");
+      if (input.discovery.maxRoutes !== undefined && (!Number.isInteger(input.discovery.maxRoutes) || input.discovery.maxRoutes < 1 || input.discovery.maxRoutes > 50)) {
+        errors.push("discovery.maxRoutes must be an integer between 1 and 50.");
+      }
+    }
+  }
   if (input.outputDir !== undefined && (typeof input.outputDir !== "string" || !input.outputDir.trim())) {
     errors.push("outputDir must be a non-empty path.");
   }
@@ -90,6 +101,7 @@ export async function loadConfig(configPath) {
     ...parsed,
     browser: { ...DEFAULTS.browser, ...(parsed.browser ?? {}) },
     repair: { ...DEFAULTS.repair, ...(parsed.repair ?? {}) },
+    discovery: { ...DEFAULTS.discovery, ...(parsed.discovery ?? {}) },
     configDir: path.dirname(absolutePath)
   };
 }
