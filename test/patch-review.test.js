@@ -27,6 +27,8 @@ test("accepts a small, scoped text patch for review", () => {
 test("rejects traversal, binary, and oversized patches", () => {
   const traversal = "diff --git a/../secret b/../secret\n--- a/../secret\n+++ b/../secret\n+oops";
   assert.equal(reviewRepairPatch(handoff, traversal).accepted, false);
+  const quotedTraversal = `diff --git "a/../outside" "b/../outside"\n--- "a/../outside"\n+++ "b/../outside"\n+bad`;
+  assert.equal(reviewRepairPatch(handoff, quotedTraversal).accepted, false);
   const binary = "diff --git a/image.png b/image.png\nGIT binary patch\nliteral 4";
   assert.equal(reviewRepairPatch(handoff, binary).binary, true);
   assert.equal(reviewRepairPatch(handoff, binary).accepted, false);
@@ -34,6 +36,7 @@ test("rejects traversal, binary, and oversized patches", () => {
   const broad = "diff --git a/src/a.js b/src/a.js\n--- a/src/a.js\n+++ b/src/a.js\n" + lines;
   assert.equal(reviewRepairPatch(handoff, broad).oversized, true);
   assert.equal(reviewRepairPatch(handoff, broad).accepted, false);
+  assert.equal(reviewRepairPatch(handoff, broad, { approvalGranted: true }).accepted, true);
 });
 
 test("requires explicit approval for sensitive paths", () => {
