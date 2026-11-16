@@ -31,14 +31,14 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Enforce loopback-default target policy, remote opt-in, and same-origin route navigation.
 - [ ] Add route discovery with safe limits.
 - [ ] Add functional interaction tests using safe mocks and opt-in controls.
-- [ ] Add DOM clipping/overlap and missing-content heuristics.
+- [x] Add first-pass DOM clipping heuristics (not general overlap detection).
 
 ## Phase 3 — Automated quality audits
 - [x] Add initial checks for missing image alt attributes, unlabeled controls, empty links, and duplicate IDs.
 - [x] Add initial infinite CSS animation smoke detection.
-- [ ] Add dedicated accessibility engine and keyboard/focus checks.
-- [ ] Add comprehensive motion audit: scroll hijacking, layout animation, reduced-motion gaps.
-- [ ] Add performance metrics and layout-shift checks.
+- [x] Add a first-Tab focus-indicator smoke check.\n- [ ] Add dedicated accessibility engine and comprehensive keyboard/focus checks.
+- [x] Add a first-pass reduced-motion preference check.\n- [ ] Add comprehensive motion audit: scroll hijacking and layout-animation analysis.
+- [x] Add a short-run layout-shift smoke metric.\n- [ ] Add field-style performance metrics and full Core Web Vitals profiling.
 - [ ] Add visual baseline comparison and reviewable diffs.
 - [ ] Add screenshot interpretation adapter with confidence and evidence.
 - [ ] Add broad responsive content stress checks.
