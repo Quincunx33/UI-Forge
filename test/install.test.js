@@ -11,7 +11,7 @@ test("maps agent names to their documented project skill directories", () => {
   assert.deepEqual(resolveSkillTargets("claude", "project", root), [path.join(root, ".claude/skills")]);
   assert.deepEqual(resolveSkillTargets("cursor", "project", root), [path.join(root, ".cursor/skills")]);
   assert.deepEqual(resolveSkillTargets("all", "project", root), [
-    path.join(root, ".agents/skills"), path.join(root, ".claude/skills")
+    path.join(root, ".agents/skills"), path.join(root, ".claude/skills"), path.join(root, ".cursor/skills")
   ]);
 });
 
