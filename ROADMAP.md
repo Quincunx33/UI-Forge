@@ -56,8 +56,9 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Add initial path-scope guard for traversal, sensitive paths, and bounded file counts.
 - [x] Add initial sensitive-path detection and approval gating (no diff review or sandbox enforcement).
 - [x] Add initial unified-diff review for path scope, binary patches, sensitive files, and changed-line thresholds (not a sandbox).
-- [ ] Add full semantic blast-radius analysis and patch application adapter.
-- [ ] Add repair execution adapter with user approval.
+- [x] Add a local Git patch application adapter requiring explicit approval, an exact handoff allowlist, a clean worktree, and `git apply --check`.
+- [ ] Add full semantic blast-radius analysis and OS-level sandbox enforcement.
+- [x] Add a CLI patch execution adapter requiring both `--approve` and `--apply`.
 - [ ] Add automated regression verification and before/after evidence.
 - [ ] Ensure repair stops on ambiguous causes or repeated failure.
 
