@@ -7,9 +7,26 @@
 - Playwright and a browser binary for browser-based detection.
 - A target application started separately by the operator.
 
-## Install the complete plugin\n\n### Cursor\n\nThe repository contains a root Agent Plugin manifest and a Cursor marketplace manifest. In Cursor, open Customize, choose From GitHub Repository, and import this repository. Alternatively, place the plugin directory under ~/.cursor/plugins/local/ui-forge and reload the window.\n\n### Claude Code\n\nThe repository includes .claude-plugin/plugin.json and a marketplace entry. Add the repository as a marketplace, then install the plugin:\n\n```sh\nclaude plugin marketplace add Quincunx33/UI-Forge\nclaude plugin install ui-forge@quincunx33-ui-forge\n```\n\nFor local development, run Claude Code with --plugin-dir pointing to the cloned repository. Validate locally with claude plugin validate.\n\n### Codex and standalone skill installation\n\n## Install agent skills
+## Install the complete plugin
 
-Clone UI-Forge, then run its installer. Use --target to specify the project where skills should be installed:
+### Cursor
+
+The repository contains a root Agent Plugin manifest and a Cursor marketplace manifest. In Cursor, open Customize, choose From GitHub Repository, and import this repository. For local development, copy the repository into ~/.cursor/plugins/local/ui-forge and reload the window.
+
+### Claude Code
+
+The repository includes .claude-plugin/plugin.json and a marketplace entry. Add the repository as a marketplace, then install the plugin:
+
+```sh
+claude plugin marketplace add Quincunx33/UI-Forge
+claude plugin install ui-forge@quincunx33-ui-forge
+```
+
+For local development, run Claude Code with --plugin-dir pointing to the cloned repository. Validate locally with claude plugin validate.
+
+### Codex and standalone skill installation
+
+The root plugin.json follows the Agent Plugins 1.0.0 manifest format and discovers the skills from skills/. To copy skills directly into a project or user skill directory, use the installer:
 
 ```sh
 node ./bin/ui-forge.js install --agent codex --target /path/to/project
@@ -18,7 +35,7 @@ node ./bin/ui-forge.js install --agent cursor --target /path/to/project
 node ./bin/ui-forge.js install --agent all --target /path/to/project
 ```
 
-Project scope is the default. Use --scope user for a personal installation in your home directory. Use --force to replace existing UI-Forge skill folders. The installer checks for conflicts before writing.
+Project scope is the default. Use --scope user for a personal installation in your home directory. Use --force to replace existing UI-Forge skill folders. The installer checks for conflicts before writing and requires the target directory to exist.
 
 Install targets:
 - Codex: .agents/skills
@@ -81,8 +98,9 @@ The JSON report follows schemas/report.schema.json and is validated before it is
 
 See [Threat model](THREAT-MODEL.md) and [Quality gates](QUALITY-GATES.md).
 
-## Agent compatibility references
+## Compatibility references
 
+- [Agent Plugins specification](https://agent-plugins.org/specification)
 - [Codex skills](https://developers.openai.com/codex/skills/)
-- [Claude Code skills](https://docs.anthropic.com/en/docs/claude-code/skills)
-- [Cursor skills](https://cursor.com/docs/skills)
+- [Claude Code plugins](https://code.claude.com/docs/en/plugins)
+- [Cursor plugins](https://cursor.com/docs/plugins)
