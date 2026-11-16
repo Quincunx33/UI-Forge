@@ -393,6 +393,57 @@ export async function runBrowserAudit(config, report, runDir) {
             { name: `long-task-lab:${route}:${viewport.name}`, status: !metrics.longTaskSupported ? "untested" : metrics.longTaskCount ? "failed" : "passed", reason: metrics.longTaskSupported ? `${metrics.longTaskCount} long task(s), ${metrics.longTaskDuration.toFixed(1)}ms total.` : "Long Task API unavailable." },
             { name: `resource-transfer-smoke:${route}:${viewport.name}`, status: "passed", reason: `${metrics.resourceCount} resource(s); ${metrics.transferBytes} transferred bytes visible to Resource Timing (cross-origin sizes may be restricted).` }
           );
+          for (const interaction of (config.interactions ?? []).filter(item => item.route === route)) {
+            const checkName = `interaction:${interaction.name}:${route}:${viewport.name}`;
+            try {
+              const control = page.getByTestId(interaction.testId);
+              const count = await control.count();
+              if (count !== 1) {
+                report.coverage.checks.push({ name: checkName, status: "failed", reason: `Expected exactly one test control; found ${count}.` });
+                addFinding(report, {
+                  category: "functional", severity: "medium", confidence: "high",
+                  title: `Functional test control not uniquely found: ${interaction.name}`,
+                  impact: `Expected one element with data-testid="${interaction.testId}", found ${count}.`,
+                  route, viewport: viewport.name, evidence: [checkName]
+                });
+                continue;
+              }
+              const safeButton = await control.evaluate(element =>
+                element.tagName === "BUTTON" &&
+                element.getAttribute("type") === "button" &&
+                element.getAttribute("data-ui-forge-safe") === "true"
+              );
+              if (!safeButton) {
+                report.coverage.checks.push({
+                  name: checkName, status: "blocked",
+                  reason: "Only a unique <button type=\"button\"> marked data-ui-forge-safe=\"true\" may be activated."
+                });
+                continue;
+              }
+              await control.click({ timeout: config.browser.navigationTimeoutMs });
+              if (interaction.expectedText !== undefined) {
+                await page.getByText(interaction.expectedText, { exact: false }).first()
+                  .waitFor({ state: "visible", timeout: Math.min(3000, config.browser.navigationTimeoutMs) });
+              }
+              const afterUrl = new URL(page.url());
+              if (afterUrl.origin !== base.origin) throw new Error("Interaction navigated outside the configured origin.");
+              report.coverage.checks.push({
+                name: checkName, status: "passed",
+                reason: interaction.expectedText === undefined
+                  ? "Explicitly marked safe test button activated without cross-origin navigation."
+                  : `Safe test button activated and expected visible text was found: ${interaction.expectedText}`
+              });
+            } catch (error) {
+              report.coverage.checks.push({ name: checkName, status: "failed", reason: error.message });
+              addFinding(report, {
+                category: "functional", severity: "medium", confidence: "high",
+                title: `Functional interaction test failed: ${interaction.name}`,
+                impact: error.message, route, viewport: viewport.name,
+                evidence: [checkName, `test-id:${interaction.testId}`],
+                suggestedRepair: "Reproduce the explicitly configured interaction in the application and inspect its state transition."
+              });
+            }
+          }
         } catch (error) {
           addFinding(report, {
             category: "functional", severity: "high", title: "Route audit could not complete",
