@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "ui-forge",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Portable AI agent plugin for evidence-based UI audits, visual design review, responsive and accessibility smoke checks, and controlled frontend repair.",
   "author": {
     "name": "Quincunx33"
