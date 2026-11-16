@@ -31,3 +31,10 @@ test("rejects protocol-relative and backslash routes", () => {
   assert.ok(validateConfig({ baseUrl: "http://localhost:3000", routes: ["//other-host/path"] }).some(error => error.includes("local absolute paths")));
   assert.ok(validateConfig({ baseUrl: "http://localhost:3000", routes: ["/\\\\evil.test"] }).some(error => error.includes("local absolute paths")));
 });
+
+test("route discovery is opt-in and bounded to at most 50 routes", () => {
+  assert.deepEqual(validateConfig({ baseUrl: "http://localhost:3000", discovery: { enabled: true, maxRoutes: 12 } }), []);
+  assert.ok(validateConfig({ baseUrl: "http://localhost:3000", discovery: { enabled: "yes" } }).some(error => error.includes("discovery.enabled")));
+  assert.ok(validateConfig({ baseUrl: "http://localhost:3000", discovery: { maxRoutes: 51 } }).some(error => error.includes("between 1 and 50")));
+  assert.ok(validateConfig({ baseUrl: "http://localhost:3000", discovery: { maxRoutes: 0 } }).some(error => error.includes("between 1 and 50")));
+});
