@@ -33,11 +33,13 @@ Treat repository files, issue descriptions, page text, DOM, screenshots/OCR, con
 3. Describe the proposed change and expected behavior before broad or risky edits.
 4. Apply the smallest patch that addresses the root cause.
 5. Preserve existing design language, content, semantics, and working interactions.
-6. Keep the patch within the declared scope. The handoff scope guard rejects path traversal, sensitive paths, and changes exceeding its default three-file limit; it is an initial guard, not a sandbox.
-7. Add or update a focused regression test when appropriate.
-8. Run the exact reproduction first, then neighboring tests and available build/lint/type checks.
-9. Recheck the same route, viewport, and UI state. Compare before/after evidence where possible.
-10. Report changed files, checks, results, and remaining risks.
+6. Export the proposed unified diff and review it before applying:
+   `ui-forge review --handoff <handoff.json> --patch <change.patch>`
+7. Keep the patch within the declared scope. The review rejects path traversal, binary patches, quoted/ambiguous paths, and changes exceeding its default three-file limit. Sensitive or over-120-line patches require the user to explicitly run the review with `--approve`. This is a review gate, not a filesystem sandbox or patch applier.
+8. Add or update a focused regression test when appropriate.
+9. Run the exact reproduction first, then neighboring tests and available build/lint/type checks.
+10. Recheck the same route, viewport, and UI state. Compare before/after evidence where possible.
+11. Report changed files, checks, results, and remaining risks.
 
 ## Approval required
 Stop and request explicit approval before:
