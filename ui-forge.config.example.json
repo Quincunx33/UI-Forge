@@ -1,14 +1,37 @@
 {
   "baseUrl": "http://127.0.0.1:3000",
-  "routes": ["/"],
+  "routes": [
+    "/"
+  ],
   "viewports": [
-    { "name": "mobile", "width": 390, "height": 844 },
-    { "name": "tablet", "width": 768, "height": 1024 },
-    { "name": "desktop", "width": 1440, "height": 900 }
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900
+    }
   ],
   "mode": "detect",
   "outputDir": ".ui-forge",
-  "browser": { "engine": "chromium", "headless": true, "navigationTimeoutMs": 30000 },
-  "repair": { "maxAttemptsPerFinding": 2, "requireApprovalForSensitiveFiles": true, "allowDependencyChanges": false },
-  "ignore": []
+  "browser": {
+    "engine": "chromium",
+    "headless": true,
+    "navigationTimeoutMs": 30000
+  },
+  "repair": {
+    "maxAttemptsPerFinding": 2,
+    "requireApprovalForSensitiveFiles": true,
+    "allowDependencyChanges": false
+  },
+  "ignore": [],
+  "allowRemote": false
 }
