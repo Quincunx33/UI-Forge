@@ -152,6 +152,38 @@
         "maxRoutes": 20
       },
       "description": "Opt-in same-origin anchor crawl. No controls are clicked or forms submitted; capped at 50 additional same-origin routes; explicitly configured routes are always retained."
+    },
+    "interactions": {
+      "type": "array",
+      "default": [],
+      "description": "Opt-in clicks on explicitly marked safe test buttons only.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "testId",
+          "route"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "testId": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]{1,64}$"
+          },
+          "route": {
+            "type": "string",
+            "pattern": "^/(?!/)"
+          },
+          "expectedText": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      }
     }
   }
 }
