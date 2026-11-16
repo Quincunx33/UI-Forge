@@ -83,6 +83,7 @@ export async function runBrowserAudit(config, report, runDir) {
   } else {
     report.coverage.checks.push({ name: "route-discovery", status: "untested", reason: "Route discovery is disabled; only configured routes will be audited." });
   }
+  report.coverage.routesTested = routesToAudit;
 
   try {
     for (const route of routesToAudit) {
