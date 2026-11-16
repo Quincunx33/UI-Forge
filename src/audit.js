@@ -27,7 +27,9 @@ export async function runBrowserAudit(config, report, runDir) {
 
   try {
     for (const route of config.routes) {
-      const targetUrl = new URL(route, base);\n      if (targetUrl.origin !== base.origin) throw new Error("Refusing cross-origin route: " + route);\n      const target = targetUrl.toString();
+      const targetUrl = new URL(route, base);
+      if (targetUrl.origin !== base.origin) throw new Error("Refusing cross-origin route: " + route);
+      const target = targetUrl.toString();
       for (const viewport of config.viewports) {
         const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height } });
         const page = await context.newPage();
