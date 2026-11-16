@@ -196,7 +196,7 @@ export async function runBrowserAudit(config, report, runDir) {
                 });
                 const diffRatio = diffPixels / (current.width * current.height);
                 if (diffPixels > config.visualRegression.maxDiffPixels) {
-                  const diffPath = path.join(runDir, "visual-diffs", `${routeLabel}-${viewport.name}.png`);
+                  const diffPath = path.join(runDir, "visual-diffs", `${artifactStem}.png`);
                   await mkdir(path.dirname(diffPath), { recursive: true });
                   await writeFile(diffPath, PNG.sync.write(diff));
                   const reason = `${diffPixels} differing pixels (${(diffRatio * 100).toFixed(3)}%); allowed ${config.visualRegression.maxDiffPixels}.`;
