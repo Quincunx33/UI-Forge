@@ -8,6 +8,7 @@ import { validateReportSchema } from "../src/schema.js";
 import { installSkills } from "../src/install.js";
 import { buildRepairHandoff } from "../src/repair-handoff.js";
 import { reviewRepairPatch } from "../src/patch-review.js";
+import { applyReviewedPatch } from "../src/patch-apply.js";
 
 function help() {
   process.stdout.write(
@@ -61,6 +62,26 @@ async function main(args) {
     return;
   }
 
+  if (command === "apply") {
+    const handoffIndex = args.indexOf("--handoff");
+    const patchIndex = args.indexOf("--patch");
+    const rootIndex = args.indexOf("--root");
+    if (handoffIndex < 0 || !args[handoffIndex + 1] || patchIndex < 0 || !args[patchIndex + 1]) {
+      throw new Error("apply requires --handoff <file> and --patch <diff.patch>.");
+    }
+    if (rootIndex >= 0 && !args[rootIndex + 1]) throw new Error("--root requires the Git repository root.");
+    const handoff = JSON.parse(await readFile(path.resolve(args[handoffIndex + 1]), "utf8"));
+    const patch = await readFile(path.resolve(args[patchIndex + 1]), "utf8");
+    const result = await applyReviewedPatch({
+      handoff, patch,
+      root: rootIndex >= 0 ? path.resolve(args[rootIndex + 1]) : process.cwd(),
+      approved: args.includes("--approve"),
+      applyConfirmed: args.includes("--apply")
+    });
+    process.stdout.write(JSON.stringify(result, null, 2) + "\\n");
+    return;
+  }
+
   if (command === "handoff") {
     const reportIndex = args.indexOf("--report");
     const findingIndex = args.indexOf("--finding");
@@ -82,7 +103,7 @@ async function main(args) {
     return;
   }
 
-  if (command !== "detect") throw new Error("Unknown command: " + command + ". Available commands: install, detect, handoff, review.");
+  if (command !== "detect") throw new Error("Unknown command: " + command + ". Available commands: install, detect, handoff, review, apply.");
   const configIndex = args.indexOf("--config");
   if (configIndex < 0 || !args[configIndex + 1]) throw new Error("detect requires --config <file>.");
   const configPath = path.resolve(args[configIndex + 1]);
