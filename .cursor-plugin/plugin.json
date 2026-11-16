@@ -1,0 +1,22 @@
+{
+  "name": "ui-forge",
+  "displayName": "UI-Forge",
+  "version": "0.2.1",
+  "description": "Evidence-based UI quality audits, visual design review, and controlled frontend repair skills.",
+  "author": {
+    "name": "Quincunx33"
+  },
+  "repository": "https://github.com/Quincunx33/UI-Forge",
+  "license": "UNLICENSED",
+  "keywords": [
+    "ui-testing",
+    "frontend",
+    "responsive-design",
+    "accessibility",
+    "playwright",
+    "design-review"
+  ],
+  "skills": [
+    "skills/*/SKILL.md"
+  ]
+}
