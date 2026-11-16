@@ -75,9 +75,20 @@ export async function runBrowserAudit(config, report, runDir) {
               return !(el.getAttribute("aria-label") || el.getAttribute("aria-labelledby") || el.labels?.length ||
                 el.getAttribute("title") || (el.innerText || "").trim());
             }).length;
+            const imagesWithoutAlt = [...document.images].filter(image => !image.hasAttribute("alt")).length;
+            const emptyLinks = [...document.querySelectorAll("a[href]")].filter(link =>
+              !(link.getAttribute("aria-label") || link.getAttribute("aria-labelledby") || (link.innerText || "").trim() || link.querySelector("img[alt]"))
+            ).length;
+            const ids = [...document.querySelectorAll("[id]")].map(element => element.id);
+            const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
+            const infiniteAnimations = [...document.querySelectorAll("body *")].filter(element => {
+              const style = getComputedStyle(element);
+              return style.animationName !== "none" && style.animationIterationCount.split(",").some(value => value.trim() === "infinite");
+            }).length;
             return {
               documentWidth: Math.max(root.scrollWidth, body?.scrollWidth ?? 0),
-              viewportWidth: window.innerWidth, overflowing, unlabeledControls
+              viewportWidth: window.innerWidth, overflowing, unlabeledControls,
+              imagesWithoutAlt, emptyLinks, duplicateIds, infiniteAnimations
             };
           });
 
@@ -101,6 +112,31 @@ export async function runBrowserAudit(config, report, runDir) {
             impact: `${metrics.unlabeledControls} controls have no detectable accessible name.`,
             route, viewport: viewport.name, evidence: [screenshotEvidence],
             suggestedRepair: "Check accessible names using associated labels, aria-label, or aria-labelledby."
+          });
+          if (metrics.imagesWithoutAlt > 0) addFinding(report, {
+            category: "accessibility", severity: "medium", confidence: "high",
+            title: "Images missing alt attributes",
+            impact: `${metrics.imagesWithoutAlt} image(s) do not declare an alt attribute.`,
+            route, viewport: viewport.name, evidence: [screenshotEvidence],
+            suggestedRepair: "Add meaningful alternative text, or alt=\"\" for purely decorative images."
+          });
+          if (metrics.emptyLinks > 0) addFinding(report, {
+            category: "accessibility", severity: "high", confidence: "medium",
+            title: "Links may have no accessible name",
+            impact: `${metrics.emptyLinks} link(s) have no detectable text or accessible label.`,
+            route, viewport: viewport.name, evidence: [screenshotEvidence]
+          });
+          if (metrics.duplicateIds.length > 0) addFinding(report, {
+            category: "accessibility", severity: "medium", confidence: "high",
+            title: "Duplicate HTML id attributes",
+            impact: `Duplicate IDs: ${metrics.duplicateIds.join(", ")}`,
+            route, viewport: viewport.name, evidence: [screenshotEvidence]
+          });
+          if (metrics.infiniteAnimations > 0) addFinding(report, {
+            category: "motion", severity: "low", confidence: "medium",
+            title: "Infinite CSS animations detected",
+            impact: `${metrics.infiniteAnimations} element(s) have an infinite CSS animation; verify that each is meaningful and respects reduced-motion preferences.`,
+            route, viewport: viewport.name, evidence: [screenshotEvidence]
           });
           report.coverage.checks.push(
             { name: `navigation:${route}:${viewport.name}`, status: response?.ok() ? "passed" : "failed" },
