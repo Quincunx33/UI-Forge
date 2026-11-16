@@ -36,9 +36,12 @@ This roadmap is the source of truth for project scope. A checked item means the 
 ## Phase 3 — Automated quality audits
 - [x] Add initial checks for missing image alt attributes, unlabeled controls, empty links, and duplicate IDs.
 - [x] Add initial infinite CSS animation smoke detection.
-- [x] Add a first-Tab focus-indicator smoke check.\n- [ ] Add dedicated accessibility engine and comprehensive keyboard/focus checks.
-- [x] Add a first-pass reduced-motion preference check.\n- [ ] Add comprehensive motion audit: scroll hijacking and layout-animation analysis.
-- [x] Add a short-run layout-shift smoke metric.\n- [ ] Add field-style performance metrics and full Core Web Vitals profiling.
+- [x] Add a first-Tab focus-indicator smoke check.
+- [ ] Add dedicated accessibility engine and comprehensive keyboard/focus checks.
+- [x] Add a first-pass reduced-motion preference check.
+- [ ] Add comprehensive motion audit: scroll hijacking and layout-animation analysis.
+- [x] Add a short-run layout-shift smoke metric.
+- [ ] Add field-style performance metrics and full Core Web Vitals profiling.
 - [ ] Add visual baseline comparison and reviewable diffs.
 - [ ] Add screenshot interpretation adapter with confidence and evidence.
 - [ ] Add broad responsive content stress checks.
