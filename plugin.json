@@ -1,44 +1,20 @@
 {
-  "schema_version": "1.0",
-  "id": "ui-forge",
-  "name": "UI-Forge",
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "ui-forge",
   "version": "0.2.1",
-  "description": "A portable coding-agent plugin for evidence-based UI quality audits, visual design review, and controlled frontend repair.",
+  "description": "Portable AI agent plugin for evidence-based UI audits, visual design review, responsive and accessibility smoke checks, and controlled frontend repair.",
+  "author": {
+    "name": "Quincunx33"
+  },
+  "repository": "https://github.com/Quincunx33/UI-Forge",
   "license": "UNLICENSED",
-  "capabilities": {
-    "detection": "agent-skill-and-cli",
-    "design_review": true,
-    "repair": true,
-    "browser_automation": "optional-playwright-runtime",
-    "motion_audit": "initial-css-animation-smoke-check",
-    "accessibility_audit": "initial-dom-smoke-check",
-    "target_policy": "loopback-default-remote-opt-in",
-    "skill_installer": [
-      "codex",
-      ".claude",
-      "cursor"
-    ]
-  },
-  "skills": [
-    "skills/ui-detect/SKILL.md",
-    "skills/ui-repair/SKILL.md",
-    "skills/ui-design-review/SKILL.md"
-  ],
-  "schemas": {
-    "config": "schemas/config.schema.json",
-    "report": "schemas/report.schema.json"
-  },
-  "safety": {
-    "default_mode": "detect",
-    "detection_must_not_modify_files": true,
-    "repair_requires_explicit_invocation": true,
-    "max_repair_attempts_default": 2,
-    "sensitive_flows_require_approval": true
-  },
-  "cli": {
-    "entrypoint": "bin/ui-forge.js",
-    "commands": [
-      "detect"
-    ]
-  }
+  "keywords": [
+    "ui-testing",
+    "frontend",
+    "responsive-design",
+    "accessibility",
+    "playwright",
+    "design-review",
+    "bug-fixing"
+  ]
 }
