@@ -1,5 +1,7 @@
 import path from "node:path";
-import { mkdir } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { PNG } from "pngjs";
+import pixelmatch from "pixelmatch";
 import axe from "axe-core";
 
 function addFinding(report, item) {
@@ -166,6 +168,65 @@ export async function runBrowserAudit(config, report, runDir) {
           });
           await page.screenshot({ path: screenshotPath, fullPage: true, animations: "disabled" });
           const screenshotEvidence = path.relative(runDir, screenshotPath);
+          if (config.visualRegression?.enabled === true) {
+            const baselineDir = path.resolve(config.configDir ?? process.cwd(), config.visualRegression.baselineDir);
+            const baselinePath = path.join(baselineDir, `${routeLabel}-${viewport.name}.png`);
+            const checkName = `visual-regression:${route}:${viewport.name}`;
+            try {
+              const baseline = PNG.sync.read(await readFile(baselinePath));
+              const current = PNG.sync.read(await readFile(screenshotPath));
+              if (baseline.width !== current.width || baseline.height !== current.height) {
+                const reason = `Baseline is ${baseline.width}x${baseline.height}; current screenshot is ${current.width}x${current.height}.`;
+                report.coverage.checks.push({ name: checkName, status: "failed", reason });
+                addFinding(report, {
+                  category: "visual", severity: "medium", confidence: "high",
+                  title: "Visual regression screenshot dimensions changed",
+                  impact: reason, route, viewport: viewport.name,
+                  evidence: [screenshotEvidence, path.relative(runDir, baselinePath)]
+                });
+              } else {
+                const diff = new PNG({ width: current.width, height: current.height });
+                const diffPixels = pixelmatch(baseline.data, current.data, diff.data, current.width, current.height, {
+                  threshold: config.visualRegression.threshold,
+                  includeAA: false
+                });
+                const diffRatio = diffPixels / (current.width * current.height);
+                if (diffPixels > config.visualRegression.maxDiffPixels) {
+                  const diffPath = path.join(runDir, "visual-diffs", `${routeLabel}-${viewport.name}.png`);
+                  await mkdir(path.dirname(diffPath), { recursive: true });
+                  await writeFile(diffPath, PNG.sync.write(diff));
+                  const reason = `${diffPixels} differing pixels (${(diffRatio * 100).toFixed(3)}%); allowed ${config.visualRegression.maxDiffPixels}.`;
+                  report.coverage.checks.push({ name: checkName, status: "failed", reason });
+                  addFinding(report, {
+                    category: "visual", severity: "medium", confidence: "high",
+                    title: "Screenshot differs from approved visual baseline",
+                    impact: reason, route, viewport: viewport.name,
+                    evidence: [screenshotEvidence, path.relative(runDir, baselinePath), path.relative(runDir, diffPath)],
+                    suggestedRepair: "Review the generated visual diff at the same route and viewport; update the baseline only after explicitly approving the intended design change."
+                  });
+                } else {
+                  report.coverage.checks.push({
+                    name: checkName, status: "passed",
+                    reason: `${diffPixels} differing pixels (${(diffRatio * 100).toFixed(3)}%); allowed ${config.visualRegression.maxDiffPixels}.`
+                  });
+                }
+              }
+            } catch (error) {
+              if (error.code === "ENOENT") {
+                report.coverage.checks.push({
+                  name: checkName, status: "untested",
+                  reason: `No approved baseline found at ${baselinePath}; create and review a baseline before enabling comparison.`
+                });
+              } else {
+                report.coverage.checks.push({ name: checkName, status: "blocked", reason: `Baseline comparison failed: ${error.message}` });
+              }
+            }
+          } else {
+            report.coverage.checks.push({
+              name: `visual-regression:${route}:${viewport.name}`,
+              status: "untested", reason: "Visual regression is disabled; no baseline comparison was performed."
+            });
+          }
           try {
             await page.addScriptTag({ content: axe.source });
             const axeResults = await page.evaluate(async () => window.axe.run(document, {
