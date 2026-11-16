@@ -11,7 +11,7 @@ export function resolveSkillTargets(agent, scope = "project", cwd = process.cwd(
     codex: [".agents/skills"],
     claude: [".claude/skills"],
     cursor: [".cursor/skills"],
-    all: [".agents/skills", ".claude/skills"]
+    all: [".agents/skills", ".claude/skills", ".cursor/skills"]
   };
   if (!locations[agent]) throw new Error("agent must be codex, claude, cursor, or all.");
   if (!["project", "user"].includes(scope)) throw new Error("scope must be project or user.");
