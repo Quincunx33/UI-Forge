@@ -65,7 +65,7 @@ export function validateRepairScope(handoff, candidateFiles) {
     throw new TypeError("candidateFiles must be an array of non-empty paths.");
   }
   const unique = [...new Set(candidateFiles.map(file => file.replaceAll("\\", "/")))];
-  const unsafe = unique.filter(file => file.startsWith("/") || /^[a-z]:\\//i.test(file) || file.includes("\\0") || file.split("/").includes(".."));
+  const unsafe = unique.filter(file => file.startsWith("/") || (file.length > 2 && file[1] === ":" && file[2] === "/" && file[0].toLowerCase() >= "a" && file[0].toLowerCase() <= "z") || file.includes(String.fromCharCode(0)) || file.split("/").includes(".."));
   const sensitive = unique.filter(isSensitivePath);
   const tooMany = unique.length > handoff.scope.maxFiles;
   return {
