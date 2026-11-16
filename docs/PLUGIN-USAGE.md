@@ -29,7 +29,7 @@ From the UI-Forge repository:
 
 The detector writes a timestamped report and screenshots under outputDir. It does not start or stop the application, submit forms, click controls, modify source files, or repair findings.
 
-The current detector checks route response, browser console errors, uncaught page exceptions, failed requests, horizontal overflow, elements extending past the viewport, and a basic accessible-name smoke check. These are initial automated checks, not a complete accessibility or functional test suite.
+The current detector checks route response, browser console errors, uncaught page exceptions, failed requests, horizontal overflow, elements extending past the viewport, missing image alt attributes, potentially unlabeled controls, empty links, duplicate IDs, and infinite CSS animations. These are initial automated checks, not a complete accessibility or functional test suite.
 
 ## Configuration
 
