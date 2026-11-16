@@ -45,7 +45,11 @@ test("browser audit captures responsive and accessibility findings", async () =>
     assert.ok(report.findings.some(item => item.title === "Accessibility rule: button-name"));
     assert.ok(report.coverage.checks.some(item => item.name.startsWith("reduced-motion:")));
     assert.ok(report.coverage.checks.some(item => item.name.startsWith("keyboard-focus-indicator:")));
-    assert.ok(report.coverage.checks.length >= 4);
+    assert.ok(report.coverage.checks.some(item => item.name.startsWith("ttfb-lab:")));
+    assert.ok(report.coverage.checks.some(item => item.name.startsWith("lcp-lab:")));
+    assert.ok(report.coverage.checks.some(item => item.name.startsWith("long-task-lab:")));
+    assert.ok(report.coverage.checks.some(item => item.name.startsWith("resource-transfer-smoke:")));
+    assert.ok(report.coverage.checks.length >= 8);
   } finally {
     await new Promise(resolve => server.close(resolve));
     await rm(tempDir, { recursive: true, force: true });
