@@ -7,6 +7,7 @@ import { createReport, createRunId, writeReport } from "../src/report.js";
 import { validateReportSchema } from "../src/schema.js";
 import { installSkills } from "../src/install.js";
 import { buildRepairHandoff } from "../src/repair-handoff.js";
+import { reviewRepairPatch } from "../src/patch-review.js";
 
 function help() {
   process.stdout.write(
@@ -44,6 +45,20 @@ async function main(args) {
     return;
   }
 
+  if (command === "review") {
+    const handoffIndex = args.indexOf("--handoff");
+    const patchIndex = args.indexOf("--patch");
+    if (handoffIndex < 0 || !args[handoffIndex + 1] || patchIndex < 0 || !args[patchIndex + 1]) {
+      throw new Error("review requires --handoff <file> and --patch <diff.patch>.");
+    }
+    const handoff = JSON.parse(await readFile(path.resolve(args[handoffIndex + 1]), "utf8"));
+    const patch = await readFile(path.resolve(args[patchIndex + 1]), "utf8");
+    const review = reviewRepairPatch(handoff, patch, { approvalGranted: args.includes("--approve") });
+    process.stdout.write(JSON.stringify(review, null, 2) + "\\n");
+    if (!review.accepted) process.exitCode = 2;
+    return;
+  }
+
   if (command === "handoff") {
     const reportIndex = args.indexOf("--report");
     const findingIndex = args.indexOf("--finding");
@@ -65,7 +80,7 @@ async function main(args) {
     return;
   }
 
-  if (command !== "detect") throw new Error("Unknown command: " + command + ". Available commands: install, detect, handoff.");
+  if (command !== "detect") throw new Error("Unknown command: " + command + ". Available commands: install, detect, handoff, review.");
   const configIndex = args.indexOf("--config");
   if (configIndex < 0 || !args[configIndex + 1]) throw new Error("detect requires --config <file>.");
   const configPath = path.resolve(args[configIndex + 1]);
