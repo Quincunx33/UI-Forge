@@ -1,7 +1,7 @@
 {
   "name": "ui-forge",
-  "version": "0.3.0",
-  "description": "Evidence-based UI quality audits, visual design review, and controlled frontend repair skills.",
+  "version": "0.4.0",
+  "description": "Evidence-based UI quality audits, axe-core accessibility scans, visual design review, and controlled frontend repair skills.",
   "author": {
     "name": "Quincunx33"
   },
