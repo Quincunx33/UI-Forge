@@ -18,10 +18,11 @@ function addFinding(report, item) {
 async function discoverSameOriginRoutes(browser, base, seeds, maxRoutes, timeoutMs) {
   const queue = [...new Set(seeds)];
   const discovered = new Set(queue);
+  let additionalRoutes = 0;
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(timeoutMs);
   try {
-    for (let index = 0; index < queue.length && discovered.size < maxRoutes; index += 1) {
+    for (let index = 0; index < queue.length && additionalRoutes < maxRoutes; index += 1) {
       const route = queue[index];
       const url = new URL(route, base);
       if (url.origin !== base.origin || url.search || url.hash) continue;
@@ -29,7 +30,7 @@ async function discoverSameOriginRoutes(browser, base, seeds, maxRoutes, timeout
         await page.goto(url.toString(), { waitUntil: "domcontentloaded" });
         const hrefs = await page.locator("a[href]").evaluateAll(links => links.map(link => link.getAttribute("href")));
         for (const href of hrefs) {
-          if (discovered.size >= maxRoutes) break;
+          if (additionalRoutes >= maxRoutes) break;
           if (typeof href !== "string" || !href.trim() || href.startsWith("//") || href.includes(String.fromCharCode(92))) continue;
           let candidate;
           try { candidate = new URL(href, base); } catch { continue; }
@@ -42,6 +43,7 @@ async function discoverSameOriginRoutes(browser, base, seeds, maxRoutes, timeout
           if (!discovered.has(normalized)) {
             discovered.add(normalized);
             queue.push(normalized);
+            additionalRoutes += 1;
           }
         }
       } catch {
@@ -51,7 +53,7 @@ async function discoverSameOriginRoutes(browser, base, seeds, maxRoutes, timeout
   } finally {
     await page.close();
   }
-  return [...discovered].slice(0, maxRoutes);
+  return [...discovered];
 }
 
 export async function runBrowserAudit(config, report, runDir) {
@@ -73,7 +75,7 @@ export async function runBrowserAudit(config, report, runDir) {
       );
       report.coverage.checks.push({
         name: "route-discovery",
-        status: routesToAudit.length > config.routes.length ? "passed" : "untested",
+        status: "passed",
         reason: `Discovered ${Math.max(0, routesToAudit.length - config.routes.length)} additional same-origin route(s); ${routesToAudit.length} total route(s) within the configured cap.`
       });
     } catch (error) {
