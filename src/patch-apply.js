@@ -49,7 +49,7 @@ export async function applyReviewedPatch({ handoff, patch, root, approved, apply
     await execFileAsync("git", ["apply", "--check", "--whitespace=error", patchPath], { cwd: gitRoot, maxBuffer: 1024 * 1024 });
     await execFileAsync("git", ["apply", "--whitespace=error", patchPath], { cwd: gitRoot, maxBuffer: 1024 * 1024 });
     const { stdout: changed } = await execFileAsync("git", ["status", "--porcelain", "--untracked-files=all"], { cwd: gitRoot });
-    const changedPaths = changed.split("\\n").filter(Boolean).map(line => line.slice(3).replace(/^"(.*)"$/, "$1"));
+    const changedPaths = changed.split("\n").filter(Boolean).map(line => line.slice(3).replace(/^"(.*)"$/, "$1"));
     const unexpectedChanges = changedPaths.filter(file => !allowed.has(file));
     if (unexpectedChanges.length) {
       throw new Error("Applied patch produced paths outside the approved allowlist: " + unexpectedChanges.join(", ") + ". Inspect the working tree immediately.");
