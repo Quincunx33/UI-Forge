@@ -4,15 +4,16 @@ import { loadConfig } from "../src/config.js";
 import { runBrowserAudit } from "../src/audit.js";
 import { createReport, createRunId, writeReport } from "../src/report.js";
 import { validateReportSchema } from "../src/schema.js";
+import { installSkills } from "../src/install.js";
 
 function help() {
-  process.stdout.write("UI-Forge — UI quality audit\n\nUsage:\n  ui-forge detect --config <file>\n\nOptions:\n  --config <file>   Path to UI-Forge JSON configuration\n  --help            Show this help\n\nDetection is read-only. Start your local app separately before running an audit.\n");
+  process.stdout.write("UI-Forge — UI quality engineering plugin\n\nUsage:\n  ui-forge install --agent <codex|claude|cursor|all> [--scope project|user] [--force]\n  ui-forge detect --config <file>\n\nOptions:\n  --config <file>   Path to UI-Forge JSON configuration\n  --agent <name>    Target coding agent for skill installation\n  --scope <scope>   project (default) or user\n  --force           Replace existing UI-Forge skill folders\n  --help            Show this help\n\nDetection is read-only. Start your local app separately before running an audit.\n");
 }
 
 async function main(args) {
   const command = args[0];
   if (!command || command === "--help" || command === "help") return help();
-  if (command !== "detect") throw new Error(`Unknown command: ${command}. Available command: detect.`);
+  if (command === "install") {\n    const agentIndex = args.indexOf("--agent");\n    if (agentIndex < 0 || !args[agentIndex + 1]) throw new Error("install requires --agent codex|claude|cursor|all.");\n    const scopeIndex = args.indexOf("--scope");\n    const scope = scopeIndex >= 0 ? args[scopeIndex + 1] : "project";\n    const result = await installSkills({ agent: args[agentIndex + 1], scope, force: args.includes("--force") });\n    process.stdout.write("Installed UI-Forge skills: " + result.skills.join(", ") + "\\nTargets: " + result.targets.join(", ") + "\\n");\n    return;\n  }\n  if (command !== "detect") throw new Error(`Unknown command: ${command}. Available commands: install, detect.`);
   const configIndex = args.indexOf("--config");
   if (configIndex < 0 || !args[configIndex + 1]) throw new Error("detect requires --config <file>.");
   const configPath = path.resolve(args[configIndex + 1]);
