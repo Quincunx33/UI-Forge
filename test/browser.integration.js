@@ -11,11 +11,11 @@ test("browser audit captures responsive and accessibility findings", async () =>
   const html = `<!doctype html><html><head><style>
     body { margin: 0; } .wide { width: 700px; height: 20px; }
     @keyframes pulse { from { opacity: .5; } to { opacity: 1; } }
-    .moving { animation: pulse 1s infinite; }
+    .moving { animation: pulse 1s infinite; } .clipped { height: 8px; overflow: hidden; }
   </style></head><body>
     <div class="wide">overflow fixture</div>
     <button></button><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
-    <a href="/empty"></a><div class="moving"></div>
+    <a href="/empty"></a><div class="moving"></div><div class="clipped">content that is clipped by the fixture</div>
   </body></html>`;
   const server = createServer((_request, response) => {
     response.writeHead(200, { "content-type": "text/html" });
@@ -39,6 +39,10 @@ test("browser audit captures responsive and accessibility findings", async () =>
     assert.ok(categories.includes("responsive"));
     assert.ok(categories.includes("accessibility"));
     assert.ok(categories.includes("motion"));
+    assert.ok(categories.includes("responsive"));
+    assert.ok(report.findings.some(item => item.title === "Potentially clipped content detected"));
+    assert.ok(report.coverage.checks.some(item => item.name.startsWith("reduced-motion:")));
+    assert.ok(report.coverage.checks.some(item => item.name.startsWith("keyboard-focus-indicator:")));
     assert.ok(report.coverage.checks.length >= 4);
   } finally {
     await new Promise(resolve => server.close(resolve));
