@@ -181,7 +181,8 @@
           },
           "expectedText": {
             "type": "string",
-            "maxLength": 500
+            "maxLength": 500,
+            "minLength": 1
           }
         }
       }
