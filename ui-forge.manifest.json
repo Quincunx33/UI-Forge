@@ -39,7 +39,8 @@
     "entrypoint": "bin/ui-forge.js",
     "commands": [
       "detect",
-      "handoff"
+      "handoff",
+      "review"
     ]
   }
 }
