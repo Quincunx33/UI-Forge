@@ -42,6 +42,7 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Add a first-pass reduced-motion preference check.
 - [ ] Add comprehensive motion audit: scroll hijacking and layout-animation analysis.
 - [x] Add a short-run layout-shift smoke metric.
+- [x] Add first-pass lab performance signals for TTFB, observed LCP, long tasks, and resource transfer timing (not field data or full Core Web Vitals).
 - [ ] Add field-style performance metrics and full Core Web Vitals profiling.
 - [ ] Add visual baseline comparison and reviewable diffs.
 - [ ] Add screenshot interpretation adapter with confidence and evidence.
