@@ -11,8 +11,11 @@ export async function applyReviewedPatch({ handoff, patch, root, approved, apply
   if (approved !== true || applyConfirmed !== true) {
     throw new Error("Applying a patch requires both explicit approval and --apply confirmation.");
   }
-  if (!handoff?.scope || !Array.isArray(handoff.scope.allowedFiles) || handoff.scope.allowedFiles.length === 0) {
+  if (!handoff?.scope || !Array.isArray(handoff.scope.allowedFiles) || handoff.scope.allowedFiles.length === 0 || handoff.scope.allowedFiles.some(file => typeof file !== "string" || !file.trim())) {
     throw new Error("Handoff scope.allowedFiles must contain the exact files inspected and approved for this repair.");
+  }
+  if (handoff.scope.forbiddenFiles !== undefined && (!Array.isArray(handoff.scope.forbiddenFiles) || handoff.scope.forbiddenFiles.some(file => typeof file !== "string"))) {
+    throw new Error("Handoff scope.forbiddenFiles must be an array of paths.");
   }
   const review = reviewRepairPatch(handoff, patch, { approvalGranted: true });
   if (!review.accepted) throw new Error("Patch review rejected: " + review.reasons.join(" "));
