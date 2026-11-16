@@ -65,12 +65,12 @@ export function validateRepairScope(handoff, candidateFiles) {
     throw new TypeError("candidateFiles must be an array of non-empty paths.");
   }
   const unique = [...new Set(candidateFiles.map(file => file.replaceAll("\\", "/")))];
-  const unsafe = unique.filter(file => file.startsWith("/") || file.split("/").includes(".."));
+  const unsafe = unique.filter(file => file.startsWith("/") || /^[a-z]:\\//i.test(file) || file.includes("\\0") || file.split("/").includes(".."));
   const sensitive = unique.filter(isSensitivePath);
   const tooMany = unique.length > handoff.scope.maxFiles;
   return {
-    allowed: unsafe.length === 0 && sensitive.length === 0 && !tooMany && (!handoff.approval.required || handoff.approval.granted),
+    allowed: unsafe.length === 0 && !tooMany && (!(handoff.approval.required || sensitive.length > 0) || handoff.approval.granted),
     files: unique, unsafePaths: unsafe, sensitivePaths: sensitive,
-    exceedsLimit: tooMany, approvalRequired: handoff.approval.required && !handoff.approval.granted
+    exceedsLimit: tooMany, approvalRequired: (handoff.approval.required || sensitive.length > 0) && !handoff.approval.granted
   };
 }
