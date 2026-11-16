@@ -2,8 +2,8 @@
   "schema_version": "1.0",
   "id": "ui-forge",
   "name": "UI-Forge",
-  "version": "0.3.0",
-  "description": "A portable coding-agent plugin for evidence-based UI quality audits, visual design review, and controlled frontend repair.",
+  "version": "0.4.0",
+  "description": "A portable coding-agent plugin for evidence-based UI quality audits, axe-core accessibility scans, visual design review, and controlled frontend repair.",
   "license": "UNLICENSED",
   "capabilities": {
     "detection": "agent-skill-and-cli",
@@ -11,7 +11,7 @@
     "repair": true,
     "browser_automation": "optional-playwright-runtime",
     "motion_audit": "initial-css-animation-smoke-check",
-    "accessibility_audit": "initial-dom-smoke-check",
+    "accessibility_audit": "axe-core-wcag2a-wcag2aa-wcag21a-wcag21aa-best-practice-plus-smoke-checks",
     "target_policy": "loopback-default-remote-opt-in",
     "skill_installer": [
       "codex",
@@ -38,7 +38,8 @@
   "cli": {
     "entrypoint": "bin/ui-forge.js",
     "commands": [
-      "detect"
+      "detect",
+      "handoff"
     ]
   }
 }
