@@ -44,6 +44,7 @@ test("rejects traversal, absolute paths, sensitive files and oversized scopes", 
   assert.equal(validateRepairScope(handoff, ["../outside.js"]).allowed, false);
   assert.equal(validateRepairScope(handoff, ["src/./file.js"]).allowed, false);
   assert.equal(validateRepairScope(handoff, ["src//file.js"]).allowed, false);
+  assert.equal(validateRepairScope(handoff, [".git/config"]).allowed, false);
   assert.equal(validateRepairScope(handoff, ["/etc/passwd"]).allowed, false);
   const sensitive = validateRepairScope(handoff, [".github/workflows/ci.yml"]);
   assert.equal(sensitive.allowed, false);
