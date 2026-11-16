@@ -489,7 +489,14 @@ export async function runBrowserAudit(config, report, runDir) {
             { name: `long-task-lab:${route}:${viewport.name}`, status: !metrics.longTaskSupported ? "untested" : metrics.longTaskCount ? "failed" : "passed", reason: metrics.longTaskSupported ? `${metrics.longTaskCount} long task(s), ${metrics.longTaskDuration.toFixed(1)}ms total.` : "Long Task API unavailable." },
             { name: `resource-transfer-smoke:${route}:${viewport.name}`, status: "passed", reason: `${metrics.resourceCount} resource(s); ${metrics.transferBytes} transferred bytes visible to Resource Timing (cross-origin sizes may be restricted).` }
           );
-          for (const interaction of (config.interactions ?? []).filter(item => item.route === route)) {
+          const routeInteractions = (config.interactions ?? []).filter(item => item.route === route);
+          if (routeInteractions.length === 0) {
+            report.coverage.checks.push({
+              name: `functional-interactions:${route}:${viewport.name}`,
+              status: "untested", reason: "No safe interaction tests were configured for this route."
+            });
+          }
+          for (const interaction of routeInteractions) {
             const checkName = `interaction:${interaction.name}:${route}:${viewport.name}`;
             try {
               const control = page.getByTestId(interaction.testId);
