@@ -1,0 +1,14 @@
+{
+  "name": "quincunx33-ui-forge",
+  "description": "Quincunx33 coding-agent plugins",
+  "owner": {
+    "name": "Quincunx33"
+  },
+  "plugins": [
+    {
+      "name": "ui-forge",
+      "source": ".",
+      "description": "Evidence-based UI quality audits, visual design review, and controlled frontend repair skills."
+    }
+  ]
+}
