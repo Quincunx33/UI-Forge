@@ -1,6 +1,6 @@
 # UI-Forge Roadmap
 
-This roadmap is the source of truth for project scope. Items are plans until implemented and verified.
+This roadmap is the source of truth for project scope. A checked item means the code or documentation exists; it does not imply a passing CI run unless explicitly stated.
 
 ## Phase 0 — Project foundation
 - [x] Create repository and define project purpose.
@@ -9,7 +9,7 @@ This roadmap is the source of truth for project scope. Items are plans until imp
 - [x] Define portable plugin manifest and capability contract.
 - [x] Define configuration schema and structured report schema.
 - [x] Define initial repair approval and safety boundaries.
-- [ ] Add formal threat model and permission model.
+- [x] Add threat model, target policy, and initial permission boundaries.
 
 ## Phase 1 — Agent skill foundation
 - [x] Add read-only UI detection skill.
@@ -18,6 +18,7 @@ This roadmap is the source of truth for project scope. Items are plans until imp
 - [x] Document plugin usage and current limitations.
 - [x] Validate standard skill directory formats for Codex, Claude Code, and Cursor.
 - [x] Add project/user skill installer for Codex, Claude Code, and Cursor.
+- [ ] Add other agent adapters when their skill formats are validated.
 
 ## Phase 2 — Detection runtime
 - [x] Add Node.js CLI entry point and config validation.
@@ -25,15 +26,18 @@ This roadmap is the source of truth for project scope. Items are plans until imp
 - [x] Capture console errors, failed requests, and page exceptions.
 - [x] Capture screenshots for configured routes and viewports.
 - [x] Detect horizontal overflow and elements extending beyond viewport.
-- [x] Add basic accessible-name smoke check.
-- [x] Produce structured JSON reports with evidence paths and check statuses.
-- [x] Enforce same-origin configured route navigation.\n- [ ] Add route discovery with safe limits.
+- [x] Add basic accessible-name smoke checks.
+- [x] Produce structured JSON reports with evidence paths and schema validation.
+- [x] Enforce loopback-default target policy, remote opt-in, and same-origin route navigation.
+- [ ] Add route discovery with safe limits.
 - [ ] Add functional interaction tests using safe mocks and opt-in controls.
 - [ ] Add DOM clipping/overlap and missing-content heuristics.
 
 ## Phase 3 — Automated quality audits
-- [x] Add initial checks for missing image alt attributes, unlabeled controls, empty links, and duplicate IDs.\n- [ ] Add dedicated accessibility engine and keyboard/focus checks.
-- [x] Add initial infinite CSS animation smoke detection.\n- [ ] Add motion audit: scroll hijacking, layout animation, reduced-motion gaps.
+- [x] Add initial checks for missing image alt attributes, unlabeled controls, empty links, and duplicate IDs.
+- [x] Add initial infinite CSS animation smoke detection.
+- [ ] Add dedicated accessibility engine and keyboard/focus checks.
+- [ ] Add comprehensive motion audit: scroll hijacking, layout animation, reduced-motion gaps.
 - [ ] Add performance metrics and layout-shift checks.
 - [ ] Add visual baseline comparison and reviewable diffs.
 - [ ] Add screenshot interpretation adapter with confidence and evidence.
@@ -56,9 +60,10 @@ This roadmap is the source of truth for project scope. Items are plans until imp
 - [ ] Generate final quality report with verified, unresolved, and untested items.
 
 ## Phase 6 — Distribution and quality
-- [x] Add validated skill installation targets for Codex, Claude Code, and Cursor.\n- [ ] Add adapters for other requested agents.
-- [x] Add initial Node.js unit tests and CI workflow.
-- [ ] Add schema validation tests and integration fixture project.
+- [x] Add validated skill installation targets for Codex, Claude Code, and Cursor.
+- [x] Add Node.js unit tests, schema tests, and a Playwright integration fixture.
+- [x] Add GitHub Actions CI workflow configuration.
+- [ ] Verify CI execution on a working GitHub Actions runner.
 - [ ] Add example projects and reproducible demos.
 - [ ] Publish versioned releases and installation/update documentation.
 
