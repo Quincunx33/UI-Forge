@@ -37,5 +37,12 @@
   "discovery": {
     "enabled": false,
     "maxRoutes": 20
+  },
+  "interactions": [],
+  "visualRegression": {
+    "enabled": false,
+    "baselineDir": ".ui-forge-baselines",
+    "threshold": 0.1,
+    "maxDiffPixels": 0
   }
 }
