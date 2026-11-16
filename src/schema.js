@@ -24,3 +24,9 @@ export async function validateReportSchema(report) {
   const valid = validate(report);
   return { valid: Boolean(valid), errors: validate.errors ?? [] };
 }
+
+export async function validatePluginManifestSchema(manifest) {
+  const validate = await loadValidator("agent-plugin.schema.json");
+  const valid = validate(manifest);
+  return { valid: Boolean(valid), errors: validate.errors ?? [] };
+}
