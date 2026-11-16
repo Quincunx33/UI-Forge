@@ -45,7 +45,7 @@ The schema includes forward-looking repair settings; the CLI does not execute re
 
 ## Report format
 
-The JSON report follows schemas/report.schema.json. Checks not run must be marked untested or blocked, never passed. Evidence paths are relative to the individual run directory.
+The JSON report follows schemas/report.schema.json and is validated before it is written. Configuration is validated against schemas/config.schema.json. Checks not run must be marked untested or blocked, never passed. Evidence paths are relative to the individual run directory.
 
 ## Safety and limitations
 
