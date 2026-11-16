@@ -43,6 +43,7 @@ test("safe interaction tests require a named route and constrained test id", () 
   assert.deepEqual(validateConfig({ baseUrl: "http://localhost:3000", interactions: [{ name: "save", testId: "save_button-1", route: "/", expectedText: "Saved" }] }), []);
   assert.ok(validateConfig({ baseUrl: "http://localhost:3000", interactions: [{ name: "save", testId: "bad selector]", route: "/" }] }).some(error => error.includes("testId")));
   assert.ok(validateConfig({ baseUrl: "http://localhost:3000", interactions: [{ name: "save", testId: "save", route: "//evil.test" }] }).some(error => error.includes("local absolute path")));
+  assert.ok(validateConfig({ baseUrl: "http://localhost:3000", interactions: [{ name: "save", testId: "save", route: "/", expectedText: " " }] }).some(error => error.includes("expectedText")));
 });
 
 test("visual regression settings validate thresholds and pixel budgets", () => {
