@@ -37,7 +37,7 @@ async function discoverSameOriginRoutes(browser, base, seeds, maxRoutes, timeout
           if (candidate.origin !== base.origin || candidate.username || candidate.password || candidate.search || candidate.hash) continue;
           if (!/^https?:$/.test(candidate.protocol)) continue;
           const pathname = candidate.pathname;
-          if (!pathname.startsWith("/") || /\\.(?:avif|css|csv|gif|ico|jpe?g|js|json|map|mp[34]|pdf|png|svg|txt|webp|woff2?|xml|zip)$/i.test(pathname)) continue;
+          if (!pathname.startsWith("/") || (pathname.split("/").pop() || "").includes(".") || /%(?:2f|5c)/i.test(pathname)) continue;
           if (/^\/(?:api|_next|assets|static|\.well-known)(?:\/|$)/i.test(pathname)) continue;
           const normalized = pathname;
           if (!discovered.has(normalized)) {
