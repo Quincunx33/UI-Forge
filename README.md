@@ -49,6 +49,17 @@ The initial Playwright detector checks:
 - evidence-based repair handoff export and bounded unified-diff preflight review (never applies patches);
 - schema-validated JSON reports with evidence paths and explicit check outcomes.
 
+## Controlled repair preflight
+
+Create a handoff from a verified finding, then review a proposed unified diff before applying it:
+
+```sh
+node ./bin/ui-forge.js handoff --report .ui-forge/<run>/report.json --finding UIF-0001
+node ./bin/ui-forge.js review --handoff <handoff.json> --patch <change.patch>
+```
+
+Use `--approve` only after the user explicitly approves a sensitive or broad patch. Review is a safety preflight: it does not apply changes, run tests, or replace human diff review.
+
 ## Repository layout
 
 ```text
