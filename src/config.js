@@ -82,7 +82,7 @@ export function validateConfig(input) {
       if (typeof item.name !== "string" || !item.name.trim()) errors.push(`interactions[${index}].name must be a non-empty string.`);
       if (typeof item.testId !== "string" || !/^[a-zA-Z0-9_-]{1,64}$/.test(item.testId)) errors.push(`interactions[${index}].testId must use 1-64 letters, numbers, underscores, or hyphens.`);
       if (typeof item.route !== "string" || !item.route.startsWith("/") || item.route.startsWith("//") || item.route.includes(String.fromCharCode(92))) errors.push(`interactions[${index}].route must be a local absolute path.`);
-      if (item.expectedText !== undefined && (typeof item.expectedText !== "string" || item.expectedText.length > 500)) errors.push(`interactions[${index}].expectedText must be a string of at most 500 characters.`);
+      if (item.expectedText !== undefined && (typeof item.expectedText !== "string" || !item.expectedText.trim() || item.expectedText.length > 500)) errors.push(`interactions[${index}].expectedText must be a string of at most 500 characters.`);
     }
   }
   if (input.visualRegression !== undefined) {
