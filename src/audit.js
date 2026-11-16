@@ -1,5 +1,6 @@
 import path from "node:path";
 import { mkdir } from "node:fs/promises";
+import axe from "axe-core";
 
 function addFinding(report, item) {
   report.findings.push({
@@ -86,6 +87,32 @@ export async function runBrowserAudit(config, report, runDir) {
           });
           await page.screenshot({ path: screenshotPath, fullPage: true, animations: "disabled" });
           const screenshotEvidence = path.relative(runDir, screenshotPath);
+          await page.addScriptTag({ content: axe.source });
+          const axeResults = await page.evaluate(async () => window.axe.run(document, {
+            runOnly: {
+              type: "tag",
+              values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "best-practice"]
+            }
+          }));
+          for (const violation of axeResults.violations) {
+            const severity = ({ critical: "critical", serious: "high", moderate: "medium", minor: "low" })[violation.impact] ?? "medium";
+            const affected = violation.nodes.slice(0, 5).map(node => ({
+              target: node.target, summary: node.failureSummary?.slice(0, 500) ?? null
+            }));
+            addFinding(report, {
+              category: "accessibility", severity, confidence: "high",
+              title: `Accessibility rule: ${violation.id}`,
+              impact: `${violation.help} — ${violation.nodes.length} affected node(s). ${violation.description}`,
+              route, viewport: viewport.name,
+              evidence: [`axe-rule:${violation.id}`, JSON.stringify(affected)],
+              suggestedRepair: violation.help
+            });
+          }
+          report.coverage.checks.push({
+            name: `axe-wcag-accessibility:${route}:${viewport.name}`,
+            status: axeResults.violations.length ? "failed" : "passed",
+            reason: `${axeResults.violations.length} violation rule(s); ${axeResults.passes.length} rules passed; ${axeResults.incomplete.length} require manual review.`
+          });
           await page.keyboard.press("Tab").catch(() => {});
           await page.emulateMedia({ reducedMotion: "reduce" });
           await page.waitForTimeout(150);
