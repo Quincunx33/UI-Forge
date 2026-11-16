@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { validateConfigSchema, validateReportSchema } from "../src/schema.js";
+import { validateConfigSchema, validateReportSchema, validatePluginManifestSchema } from "../src/schema.js";
 
 test("example config satisfies the published configuration schema", async () => {
   const config = JSON.parse(await readFile(new URL("../ui-forge.config.example.json", import.meta.url), "utf8"));
@@ -32,4 +32,10 @@ test("report schema rejects an unknown finding severity", async () => {
   };
   const result = await validateReportSchema(report);
   assert.equal(result.valid, false);
+});
+
+test("root plugin.json conforms to Agent Plugins 1.0.0", async () => {
+  const manifest = JSON.parse(await readFile(new URL("../plugin.json", import.meta.url), "utf8"));
+  const result = await validatePluginManifestSchema(manifest);
+  assert.equal(result.valid, true, JSON.stringify(result.errors));
 });
