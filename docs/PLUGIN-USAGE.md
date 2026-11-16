@@ -85,6 +85,37 @@ See ui-forge.config.example.json and schemas/config.schema.json.
 
 The runtime blocks known cloud metadata hosts, rejects embedded URL credentials, and rejects cross-origin route escapes. These controls reduce accidental exposure but are not a complete network sandbox.
 
+## Optional visual and functional checks
+
+Route discovery is disabled by default:
+
+```json
+"discovery": { "enabled": true, "maxRoutes": 20 }
+```
+
+Functional checks must point to a project-owned test button with a stable `data-testid` and the explicit `data-ui-forge-safe="true"` marker:
+
+```json
+"interactions": [
+  { "name": "open-settings-panel", "testId": "open-settings", "route": "/", "expectedText": "Settings" }
+]
+```
+
+The button must be `type="button"` and must use mock-backed or otherwise side-effect-safe behavior. Unmarked controls are blocked; missing or untested interaction routes are reported as untested.
+
+For screenshot baselines, first run with visual regression disabled (the default), inspect the captured PNGs, and manually copy approved images from the run's `screenshots/` directory into the configured baseline directory, preserving their filenames. Then enable:
+
+```json
+"visualRegression": {
+  "enabled": true,
+  "baselineDir": ".ui-forge-baselines",
+  "threshold": 0.1,
+  "maxDiffPixels": 0
+}
+```
+
+Missing baselines are untested. UI-Forge never creates, updates, or accepts a baseline automatically. Review every diff and intentionally update the baseline only after approving the visual change.
+
 ## Report format
 
 The JSON report follows schemas/report.schema.json and is validated before it is written. Configuration is validated against schemas/config.schema.json. Checks not run must be marked untested or blocked, never passed. Evidence paths are relative to the individual run directory.
