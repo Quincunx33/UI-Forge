@@ -32,7 +32,7 @@ npx playwright install chromium
 # Start your own local development server separately.
 cp ui-forge.config.example.json ui-forge.config.json
 # Edit baseUrl and routes, then:
-npx ui-forge detect --config ./ui-forge.config.json
+node ./bin/ui-forge.js detect --config ./ui-forge.config.json
 ```
 
 See [Plugin usage](docs/PLUGIN-USAGE.md) for setup, configuration, and limitations.
