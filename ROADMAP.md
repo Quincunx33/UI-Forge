@@ -16,8 +16,8 @@ This roadmap is the source of truth for project scope. Items are plans until imp
 - [x] Add read-only visual design review skill.
 - [x] Add explicitly invoked controlled repair skill.
 - [x] Document plugin usage and current limitations.
-- [ ] Validate installation format against target coding agents.
-- [ ] Add agent-specific adapters and install/update tooling.
+- [x] Validate standard skill directory formats for Codex, Claude Code, and Cursor.
+- [x] Add project/user skill installer for Codex, Claude Code, and Cursor.
 
 ## Phase 2 — Detection runtime
 - [x] Add Node.js CLI entry point and config validation.
@@ -56,7 +56,7 @@ This roadmap is the source of truth for project scope. Items are plans until imp
 - [ ] Generate final quality report with verified, unresolved, and untested items.
 
 ## Phase 6 — Distribution and quality
-- [ ] Add validated adapters for Codex, Claude Code, Cursor, and other requested agents.
+- [x] Add validated skill installation targets for Codex, Claude Code, and Cursor.\n- [ ] Add adapters for other requested agents.
 - [x] Add initial Node.js unit tests and CI workflow.
 - [ ] Add schema validation tests and integration fixture project.
 - [ ] Add example projects and reproducible demos.
