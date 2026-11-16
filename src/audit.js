@@ -5,6 +5,19 @@ import { PNG } from "pngjs";
 import pixelmatch from "pixelmatch";
 import axe from "axe-core";
 
+function decodeAuditPng(bytes) {
+  if (!Buffer.isBuffer(bytes) || bytes.length < 24 || bytes.length > 50 * 1024 * 1024 ||
+    !bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) {
+    throw new Error("PNG file is invalid or exceeds the 50 MiB visual-baseline limit.");
+  }
+  const width = bytes.readUInt32BE(16);
+  const height = bytes.readUInt32BE(20);
+  if (!width || !height || width * height > 10_000_000) {
+    throw new Error("PNG dimensions are invalid or exceed the 10-megapixel visual-comparison limit.");
+  }
+  return PNG.sync.read(bytes);
+}
+
 function addFinding(report, item) {
   report.findings.push({
     id: `UIF-${String(report.findings.length + 1).padStart(4, "0")}`,
@@ -195,8 +208,8 @@ export async function runBrowserAudit(config, report, runDir) {
             const baselinePath = path.join(baselineDir, `${artifactStem}.png`);
             const checkName = `visual-regression:${route}:${viewport.name}`;
             try {
-              const baseline = PNG.sync.read(await readFile(baselinePath));
-              const current = PNG.sync.read(await readFile(screenshotPath));
+              const baseline = decodeAuditPng(await readFile(baselinePath));
+              const current = decodeAuditPng(await readFile(screenshotPath));
               if (baseline.width !== current.width || baseline.height !== current.height) {
                 const reason = `Baseline is ${baseline.width}x${baseline.height}; current screenshot is ${current.width}x${current.height}.`;
                 report.coverage.checks.push({ name: checkName, status: "failed", reason });
