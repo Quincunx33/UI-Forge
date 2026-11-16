@@ -31,6 +31,10 @@ test("rejects traversal, binary, and oversized patches", () => {
   assert.equal(reviewRepairPatch(handoff, backslash).accepted, false);
   const quotedTraversal = `diff --git "a/../outside" "b/../outside"\n--- "a/../outside"\n+++ "b/../outside"\n+bad`;
   assert.equal(reviewRepairPatch(handoff, quotedTraversal).accepted, false);
+  const rename = "diff --git a/src/a.css b/src/b.css\nsimilarity index 100%\nrename from src/a.css\nrename to src/b.css";
+  assert.equal(reviewRepairPatch(handoff, rename).accepted, false);
+  const mode = "diff --git a/src/a.css b/src/a.css\nold mode 100644\nnew mode 100755";
+  assert.equal(reviewRepairPatch(handoff, mode).accepted, false);
   const binary = "diff --git a/image.png b/image.png\nGIT binary patch\nliteral 4";
   assert.equal(reviewRepairPatch(handoff, binary).binary, true);
   assert.equal(reviewRepairPatch(handoff, binary).accepted, false);
