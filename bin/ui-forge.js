@@ -35,7 +35,8 @@ async function main(args) {
     const scopeIndex = args.indexOf("--scope");
     const scope = scopeIndex >= 0 ? args[scopeIndex + 1] : "project";
     const targetIndex = args.indexOf("--target");
-    const target = targetIndex >= 0 ? path.resolve(args[targetIndex + 1] ?? "") : process.cwd();
+    if (targetIndex >= 0 && !args[targetIndex + 1]) throw new Error("--target requires a directory path.");
+    const target = targetIndex >= 0 ? path.resolve(args[targetIndex + 1]) : process.cwd();
     const result = await installSkills({
       agent: args[agentIndex + 1],
       scope,
