@@ -33,7 +33,7 @@ UI-Forge inspects web applications through a browser controlled by the local use
 - Known cloud metadata endpoints are blocked even when remote access is enabled.
 - baseUrl must not contain embedded username/password credentials.
 - routes must begin with one slash and must not be protocol-relative or contain backslashes.
-- The browser adapter must resolve each route against baseUrl and verify the resulting origin matches baseUrl before navigation.
+- The browser adapter must resolve each route against baseUrl, verify the configured origin, and abort cross-origin top-level navigations and redirects.
 - Remote testing must only be performed against systems the operator owns or is authorized to test.
 
 These checks reduce accidental exposure; they are not a complete network sandbox. DNS rebinding, malicious browser content, and application-side side effects remain possible. Use an isolated environment for untrusted targets.
