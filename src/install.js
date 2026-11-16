@@ -21,6 +21,11 @@ export function resolveSkillTargets(agent, scope = "project", cwd = process.cwd(
 
 export async function installSkills({ agent, scope = "project", force = false, cwd = process.cwd(), home = os.homedir() }) {
   const targets = resolveSkillTargets(agent, scope, cwd, home);
+  const baseDirectory = scope === "user" ? home : cwd;
+  let targetInfo;
+  try { targetInfo = await stat(baseDirectory); }
+  catch { throw new Error("Installation target does not exist: " + baseDirectory); }
+  if (!targetInfo.isDirectory()) throw new Error("Installation target must be a directory: " + baseDirectory);
   const conflicts = [];
   for (const target of targets) {
     for (const name of skillNames) {
