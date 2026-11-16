@@ -1,7 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, rm, mkdir, copyFile, readFile, writeFile } from "node:fs/promises";
+import { PNG } from "pngjs";
 import os from "node:os";
 import path from "node:path";
 import { runBrowserAudit } from "../src/audit.js";
@@ -61,6 +62,37 @@ test("browser audit captures responsive and accessibility findings", async () =>
     assert.ok(report.coverage.checks.some(item => item.name.startsWith("long-task-lab:")));
     assert.ok(report.coverage.checks.some(item => item.name.startsWith("resource-transfer-smoke:")));
     assert.ok(report.coverage.checks.length >= 8);
+
+    const baselineDir = path.join(tempDir, "baselines");
+    await mkdir(baselineDir, { recursive: true });
+    await copyFile(path.join(tempDir, "screenshots", "_-mobile.png"), path.join(baselineDir, "_-mobile.png"));
+    const visualConfig = {
+      baseUrl: `http://127.0.0.1:${address.port}`, routes: ["/"],
+      viewports: [{ name: "mobile", width: 390, height: 844 }],
+      browser: { engine: "chromium", headless: true, navigationTimeoutMs: 10000 },
+      visualRegression: { enabled: true, baselineDir: "baselines", threshold: 0.1, maxDiffPixels: 0 },
+      configDir: tempDir
+    };
+    const visualPass = createReport({
+      runId: "visual-pass", startedAt: new Date().toISOString(),
+      environment: { project: "fixture", baseUrl: `http://127.0.0.1:${address.port}`, browser: "chromium" },
+      routes: ["/"], viewports: ["mobile"]
+    });
+    await runBrowserAudit(visualConfig, visualPass, path.join(tempDir, "visual-pass"));
+    assert.ok(visualPass.coverage.checks.some(item => item.name.startsWith("visual-regression:") && item.status === "passed"));
+
+    const baselinePath = path.join(baselineDir, "_-mobile.png");
+    const alteredBaseline = PNG.sync.read(await readFile(baselinePath));
+    alteredBaseline.data[0] = alteredBaseline.data[0] === 0 ? 255 : 0;
+    await writeFile(baselinePath, PNG.sync.write(alteredBaseline));
+    const visualFail = createReport({
+      runId: "visual-fail", startedAt: new Date().toISOString(),
+      environment: { project: "fixture", baseUrl: `http://127.0.0.1:${address.port}`, browser: "chromium" },
+      routes: ["/"], viewports: ["mobile"]
+    });
+    await runBrowserAudit(visualConfig, visualFail, path.join(tempDir, "visual-fail"));
+    assert.ok(visualFail.coverage.checks.some(item => item.name.startsWith("visual-regression:") && item.status === "failed"));
+    assert.ok(visualFail.findings.some(item => item.title === "Screenshot differs from approved visual baseline"));
   } finally {
     await new Promise(resolve => server.close(resolve));
     await rm(tempDir, { recursive: true, force: true });
