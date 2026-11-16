@@ -41,6 +41,8 @@ Run unit tests with `npm test`; run the real-browser fixture separately with `np
 The initial Playwright detector checks:
 - route response and navigation failures;
 - opt-in, bounded same-origin anchor discovery (configured routes remain authoritative; query-string routes and asset links are skipped);
+- opt-in functional smoke tests that activate only unique `button[type=button]` controls marked `data-ui-forge-safe="true"` and referenced by `data-testid`;
+- optional PNG visual regression against manually approved baselines, with pixel diffs saved as run artifacts;
 - browser console errors, uncaught page exceptions, and failed requests;
 - screenshots at configured viewport sizes;
 - horizontal overflow, clipped-content heuristics, and elements extending past the viewport;
