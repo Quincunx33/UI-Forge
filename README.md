@@ -57,7 +57,7 @@ Detection is read-only with respect to project source. The CLI does not submit f
 
 ## Current limitations
 
-The browser runtime is an initial smoke-audit engine, not a complete QA suite. Full accessibility auditing, keyboard interaction coverage, motion/performance analysis, screenshot visual regression, AI screenshot interpretation, and executable autonomous repair are not yet implemented. See [ROADMAP.md](ROADMAP.md).
+The browser runtime is an initial smoke-audit engine, not a complete QA suite. Full WCAG auditing, keyboard interaction coverage, comprehensive motion/reduced-motion analysis, performance profiling, screenshot visual regression, AI screenshot interpretation, and executable autonomous repair are not yet implemented. The current detector includes basic checks for infinite CSS animations and common accessible-name issues. See [ROADMAP.md](ROADMAP.md).
 
 ## License
 
