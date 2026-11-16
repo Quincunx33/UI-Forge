@@ -1,0 +1,47 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { createServer } from "node:http";
+import { mkdtemp, rm } from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { runBrowserAudit } from "../src/audit.js";
+import { createReport } from "../src/report.js";
+
+test("browser audit captures responsive and accessibility findings", async () => {
+  const html = `<!doctype html><html><head><style>
+    body { margin: 0; } .wide { width: 700px; height: 20px; }
+    @keyframes pulse { from { opacity: .5; } to { opacity: 1; } }
+    .moving { animation: pulse 1s infinite; }
+  </style></head><body>
+    <div class="wide">overflow fixture</div>
+    <button></button><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+    <a href="/empty"></a><div class="moving"></div>
+  </body></html>`;
+  const server = createServer((_request, response) => {
+    response.writeHead(200, { "content-type": "text/html" });
+    response.end(html);
+  });
+  await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
+  const address = server.address();
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), "ui-forge-test-"));
+  try {
+    const report = createReport({
+      runId: "browser-test", startedAt: new Date().toISOString(),
+      environment: { project: "fixture", baseUrl: `http://127.0.0.1:${address.port}`, browser: "chromium" },
+      routes: ["/"], viewports: ["mobile"]
+    });
+    await runBrowserAudit({
+      baseUrl: `http://127.0.0.1:${address.port}`, routes: ["/"],
+      viewports: [{ name: "mobile", width: 390, height: 844 }],
+      browser: { engine: "chromium", headless: true, navigationTimeoutMs: 10000 }
+    }, report, tempDir);
+    const categories = report.findings.map(item => item.category);
+    assert.ok(categories.includes("responsive"));
+    assert.ok(categories.includes("accessibility"));
+    assert.ok(categories.includes("motion"));
+    assert.ok(report.coverage.checks.length >= 4);
+  } finally {
+    await new Promise(resolve => server.close(resolve));
+    await rm(tempDir, { recursive: true, force: true });
+  }
+});
