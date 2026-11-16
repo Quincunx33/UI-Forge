@@ -27,7 +27,7 @@ test("accepts a small, scoped text patch for review", () => {
 test("rejects traversal, binary, and oversized patches", () => {
   const traversal = "diff --git a/../secret b/../secret\n--- a/../secret\n+++ b/../secret\n+oops";
   assert.equal(reviewRepairPatch(handoff, traversal).accepted, false);
-  const backslash = "diff --git a/src\\\\app.css b/src\\\\app.css\n--- a/src\\\\app.css\n+++ b/src\\\\app.css\n+bad";
+  const backslash = "diff --git a/src\\app.css b/src\\app.css\n--- a/src\\app.css\n+++ b/src\\app.css\n+bad";
   assert.equal(reviewRepairPatch(handoff, backslash).accepted, false);
   const quotedTraversal = `diff --git "a/../outside" "b/../outside"\n--- "a/../outside"\n+++ "b/../outside"\n+bad`;
   assert.equal(reviewRepairPatch(handoff, quotedTraversal).accepted, false);
