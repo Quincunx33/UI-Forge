@@ -44,7 +44,7 @@ See [Plugin usage](docs/PLUGIN-USAGE.md) for setup, configuration, and limitatio
 ├── plugin.json
 ├── bin/                  # CLI
 ├── src/                  # Runtime and browser audit
-├── skills/               # Portable agent skills
+├── skills/               # Portable agent skills\n├── src/install.js        # Agent skill installer
 ├── schemas/              # Config and report contracts
 ├── test/                 # Node.js tests
 ├── docs/
