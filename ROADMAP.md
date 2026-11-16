@@ -29,7 +29,7 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Add basic accessible-name smoke checks.
 - [x] Produce structured JSON reports with evidence paths and schema validation.
 - [x] Enforce loopback-default target policy, remote opt-in, and same-origin route navigation.
-- [ ] Add route discovery with safe limits.
+- [x] Add opt-in same-origin anchor route discovery with a hard cap and conservative URL filtering.
 - [ ] Add functional interaction tests using safe mocks and opt-in controls.
 - [x] Add first-pass DOM clipping heuristics (not general overlap detection).
 
