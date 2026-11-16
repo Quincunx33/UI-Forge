@@ -18,12 +18,26 @@ function addFinding(report, item) {
   });
 }
 
+async function guardCrossOriginNavigations(page, base) {
+  await page.route("**/*", async route => {
+    const request = route.request();
+    if (!request.isNavigationRequest()) return route.continue();
+    try {
+      if (new URL(request.url()).origin !== base.origin) return route.abort("blockedbyclient");
+    } catch {
+      return route.abort("blockedbyclient");
+    }
+    return route.continue();
+  });
+}
+
 async function discoverSameOriginRoutes(browser, base, seeds, maxRoutes, timeoutMs) {
   const queue = [...new Set(seeds)];
   const discovered = new Set(queue);
   let additionalRoutes = 0;
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(timeoutMs);
+  await guardCrossOriginNavigations(page, base);
   try {
     for (let index = 0; index < queue.length && additionalRoutes < maxRoutes; index += 1) {
       const route = queue[index];
@@ -98,6 +112,7 @@ export async function runBrowserAudit(config, report, runDir) {
       for (const viewport of config.viewports) {
         const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height } });
         const page = await context.newPage();
+        await guardCrossOriginNavigations(page, base);
         await page.addInitScript(() => {
           window.__uiForgeLayoutShifts = [];
           window.__uiForgeLayoutShiftSupported = false;
