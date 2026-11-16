@@ -131,6 +131,27 @@
       "type": "boolean",
       "default": false,
       "description": "Explicitly allow a non-loopback audit target. Use only for systems you own or are authorized to test."
+    },
+    "discovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "maxRoutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50,
+          "default": 20
+        }
+      },
+      "default": {
+        "enabled": false,
+        "maxRoutes": 20
+      },
+      "description": "Opt-in same-origin anchor crawl. No controls are clicked or forms submitted; hard-capped at 50 routes."
     }
   }
 }
