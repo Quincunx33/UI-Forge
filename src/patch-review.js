@@ -13,6 +13,8 @@ export function reviewRepairPatch(handoff, patch, options = {}) {
   const headers = [...patch.matchAll(/^diff --git a\/(.+) b\/(.+)$/gm)];
   const files = [...new Set(headers.flatMap(match => [match[1], match[2]]))];
   const binary = /^(?:GIT binary patch|Binary files .+ and .+ differ)$/m.test(patch);
+  const renameOrCopy = /^(?:rename|copy) (?:from|to) /m.test(patch);
+  const modeChanges = /^(?:old mode|new mode|new file mode|deleted file mode) /m.test(patch);
   const quotedPaths = headers.some(match => match[1].startsWith('"') || match[2].startsWith('"'));
   const backslashPaths = headers.some(match => match[1].includes(String.fromCharCode(92)) || match[2].includes(String.fromCharCode(92)));
   const changedLines = patch.split("\n").filter(line =>
@@ -26,7 +28,7 @@ export function reviewRepairPatch(handoff, patch, options = {}) {
   const scope = validateRepairScope(scopedHandoff, files);
   const oversized = changedLines > maxChangedLines;
   const approvalRequired = scope.approvalRequired || oversized;
-  const accepted = headers.length > 0 && !quotedPaths && !backslashPaths && !binary &&
+  const accepted = headers.length > 0 && !quotedPaths && !backslashPaths && !binary && !renameOrCopy && !modeChanges &&
     scope.unsafePaths.length === 0 && !scope.exceedsLimit &&
     (!approvalRequired || approvalGranted);
   return {
@@ -44,6 +46,8 @@ export function reviewRepairPatch(handoff, patch, options = {}) {
     reasons: [
       ...(headers.length ? [] : ["No unified git diff file headers found."]),
       ...(binary ? ["Binary patches are not supported by this review adapter."] : []),
+      ...(renameOrCopy ? ["File rename and copy patches are not supported."] : []),
+      ...(modeChanges ? ["File mode and symlink mode changes are not supported."] : []),
       ...(quotedPaths ? ["Quoted or escaped diff paths are not supported; inspect the patch manually."] : []),
       ...(backslashPaths ? ["Backslash diff paths are not supported; use normalized repository-relative paths."] : []),
       ...(scope.unsafePaths.length ? ["Patch contains unsafe absolute or traversal paths."] : []),
