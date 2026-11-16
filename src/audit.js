@@ -1,4 +1,5 @@
 import path from "node:path";
+import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { PNG } from "pngjs";
 import pixelmatch from "pixelmatch";
@@ -129,8 +130,11 @@ export async function runBrowserAudit(config, report, runDir) {
           } catch {}
         });
         page.setDefaultNavigationTimeout(config.browser.navigationTimeoutMs);
-        const routeLabel = route.replace(/[^a-z0-9_-]/gi, "_") || "root";
-        const screenshotPath = path.join(screenshotDir, `${routeLabel}-${viewport.name}.png`);
+        const routeLabel = route.replace(/[^a-z0-9_-]/gi, "_").slice(0, 64) || "root";
+        const routeHash = createHash("sha256").update(route).digest("hex").slice(0, 10);
+        const viewportLabel = viewport.name.replace(/[^a-z0-9_-]/gi, "_").slice(0, 64);
+        const artifactStem = `${routeLabel}-${routeHash}-${viewportLabel}`;
+        const screenshotPath = path.join(screenshotDir, `${artifactStem}.png`);
         let pageErrors = 0;
         let consoleErrors = 0;
         let failedRequests = 0;
@@ -170,7 +174,7 @@ export async function runBrowserAudit(config, report, runDir) {
           const screenshotEvidence = path.relative(runDir, screenshotPath);
           if (config.visualRegression?.enabled === true) {
             const baselineDir = path.resolve(config.configDir ?? process.cwd(), config.visualRegression.baselineDir);
-            const baselinePath = path.join(baselineDir, `${routeLabel}-${viewport.name}.png`);
+            const baselinePath = path.join(baselineDir, `${artifactStem}.png`);
             const checkName = `visual-regression:${route}:${viewport.name}`;
             try {
               const baseline = PNG.sync.read(await readFile(baselinePath));
