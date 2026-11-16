@@ -41,6 +41,11 @@ test("rejects traversal, absolute paths, sensitive files and oversized scopes", 
   const handoff = buildRepairHandoff(report, "UIF-0001");
   assert.equal(validateRepairScope(handoff, ["../outside.js"]).allowed, false);
   assert.equal(validateRepairScope(handoff, ["/etc/passwd"]).allowed, false);
-  assert.equal(validateRepairScope(handoff, [".github/workflows/ci.yml"]).allowed, false);
+  const sensitive = validateRepairScope(handoff, [".github/workflows/ci.yml"]);
+  assert.equal(sensitive.allowed, false);
+  assert.equal(sensitive.approvalRequired, true);
+  handoff.approval.granted = true;
+  assert.equal(validateRepairScope(handoff, [".github/workflows/ci.yml"]).allowed, true);
+  assert.equal(validateRepairScope(handoff, ["C:\\\\outside\\\\file.js"]).allowed, false);
   assert.equal(validateRepairScope(handoff, ["a.js", "b.js", "c.js", "d.js"]).allowed, false);
 });
