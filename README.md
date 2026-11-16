@@ -30,7 +30,7 @@ cp /path/to/UI-Forge/ui-forge.config.example.json ui-forge.config.json
 node /path/to/UI-Forge/bin/ui-forge.js detect --config ./ui-forge.config.json
 ```
 
-The root manifest follows the portable Agent Plugins 1.0 format. Cursor and Claude Code marketplace manifests are also included. The installer can copy skills into Codex, Claude Code, and Cursor project/user skill directories. See [Plugin usage](docs/PLUGIN-USAGE.md).
+The root manifest follows the portable Agent Plugins 1.0.0 format. Cursor and Claude Code marketplace manifests are included. The installer can copy skills into Codex, Claude Code, and Cursor project/user skill directories. See [Plugin usage](docs/PLUGIN-USAGE.md).
 
 ## Browser detection runtime
 
@@ -41,21 +41,22 @@ The initial Playwright detector checks:
 - horizontal overflow and elements extending past the viewport;
 - potentially unlabeled controls, missing image alt attributes, empty links, and duplicate IDs;
 - infinite CSS animation smoke signals;
-- schema-validated JSON reports with evidence paths.
+- schema-validated JSON reports with evidence paths and explicit check outcomes.
 
 ## Repository layout
 
 ```text
 .
-├── plugin.json
-├── bin/                  # CLI
-├── src/                  # Runtime, installer, schema validation
-├── skills/               # Canonical portable agent skills
-├── src/install.js        # Multi-agent installer
-├── schemas/              # Config and report contracts
-├── test/                 # Unit and browser integration tests
+├── plugin.json             # Portable Agent Plugins manifest
+├── .cursor-plugin/         # Cursor plugin and marketplace manifests
+├── .claude-plugin/         # Claude Code plugin and marketplace manifests
+├── bin/                    # CLI
+├── src/                    # Runtime, installer, schema validation
+├── skills/                 # Canonical portable agent skills
+├── schemas/                # Config, report, and plugin schemas
+├── test/                   # Unit and browser integration tests
 ├── docs/
-└── .github/workflows/    # CI
+└── .github/workflows/      # CI
 ```
 
 ## Safety
