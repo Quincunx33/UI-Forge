@@ -35,6 +35,7 @@ export async function runBrowserAudit(config, report, runDir) {
         const page = await context.newPage();
         await page.addInitScript(() => {
           window.__uiForgeLayoutShifts = [];
+          window.__uiForgeLayoutShiftSupported = false;
           try {
             const observer = new PerformanceObserver(list => {
               for (const entry of list.getEntries()) {
@@ -42,6 +43,7 @@ export async function runBrowserAudit(config, report, runDir) {
               }
             });
             observer.observe({ type: "layout-shift", buffered: true });
+            window.__uiForgeLayoutShiftSupported = true;
           } catch {}
         });
         page.setDefaultNavigationTimeout(config.browser.navigationTimeoutMs);
@@ -141,7 +143,8 @@ export async function runBrowserAudit(config, report, runDir) {
               viewportWidth: window.innerWidth, overflowing, unlabeledControls,
               imagesWithoutAlt, emptyLinks, duplicateIds, infiniteAnimations,
               clippedContent, hasKeyboardFocusTarget, focusIndicatorVisible,
-              reducedMotionAnimations, cumulativeLayoutShift
+              reducedMotionAnimations, cumulativeLayoutShift,
+              layoutShiftSupported: window.__uiForgeLayoutShiftSupported === true
             };
           });
 
@@ -212,7 +215,7 @@ export async function runBrowserAudit(config, report, runDir) {
             route, viewport: viewport.name, evidence: [screenshotEvidence],
             suggestedRepair: "Disable or simplify non-essential motion inside a prefers-reduced-motion: reduce media query."
           });
-          if (metrics.cumulativeLayoutShift > 0.1) addFinding(report, {
+          if (metrics.layoutShiftSupported && metrics.cumulativeLayoutShift > 0.1) addFinding(report, {
             category: "performance", severity: "medium", confidence: "medium",
             title: "Elevated layout shift observed during page load",
             impact: `Observed layout-shift score: ${metrics.cumulativeLayoutShift.toFixed(3)} (smoke measurement; not a field Core Web Vitals result).`,
@@ -235,7 +238,7 @@ export async function runBrowserAudit(config, report, runDir) {
             { name: `clipped-content-smoke:${route}:${viewport.name}`, status: metrics.clippedContent.length ? "failed" : "passed" },
             { name: `keyboard-focus-indicator:${route}:${viewport.name}`, status: !metrics.hasKeyboardFocusTarget ? "untested" : metrics.focusIndicatorVisible ? "passed" : "failed" },
             { name: `reduced-motion:${route}:${viewport.name}`, status: metrics.reducedMotionAnimations ? "failed" : "passed" },
-            { name: `layout-shift-smoke:${route}:${viewport.name}`, status: metrics.cumulativeLayoutShift > 0.1 ? "failed" : "passed" }
+            { name: `layout-shift-smoke:${route}:${viewport.name}`, status: !metrics.layoutShiftSupported ? "untested" : metrics.cumulativeLayoutShift > 0.1 ? "failed" : "passed" }
           );
         } catch (error) {
           addFinding(report, {
