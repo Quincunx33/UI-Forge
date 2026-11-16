@@ -24,8 +24,8 @@ export function buildRepairHandoff(report, findingId) {
   if (!report || !Array.isArray(report.findings)) throw new TypeError("A valid UI-Forge report is required.");
   const finding = report.findings.find(item => item.id === findingId);
   if (!finding) throw new Error(`Finding not found: ${findingId}`);
-  if (["not_reproduced", "untested"].includes(finding.status)) {
-    throw new Error(`Finding ${findingId} is ${finding.status}; it cannot be handed to repair as confirmed work.`);
+  if (finding.status !== "verified") {
+    throw new Error(`Finding ${findingId} is ${finding.status ?? "missing status"}; only verified findings can be handed to repair.`);
   }
   const text = [finding.title, finding.impact, finding.rootCauseHypothesis, finding.suggestedRepair]
     .filter(Boolean).join(" ").toLowerCase();
@@ -61,17 +61,20 @@ export function buildRepairHandoff(report, findingId) {
 }
 
 export function validateRepairScope(handoff, candidateFiles) {
-  if (!handoff || handoff.kind !== "ui-forge-repair-handoff") throw new TypeError("Invalid repair handoff.");
+  if (!handoff || handoff.kind !== "ui-forge-repair-handoff" || !handoff.scope || !Number.isInteger(handoff.scope.maxFiles) || handoff.scope.maxFiles < 1 || !handoff.approval || typeof handoff.approval.required !== "boolean") throw new TypeError("Invalid repair handoff.");
   if (!Array.isArray(candidateFiles) || candidateFiles.some(file => typeof file !== "string" || !file.trim())) {
     throw new TypeError("candidateFiles must be an array of non-empty paths.");
   }
   const unique = [...new Set(candidateFiles.map(file => file.replaceAll("\\", "/")))];
   const unsafe = unique.filter(file => file.startsWith("/") || (file.length > 2 && file[1] === ":" && file[2] === "/" && file[0].toLowerCase() >= "a" && file[0].toLowerCase() <= "z") || file.includes(String.fromCharCode(0)) || file.split("/").includes(".."));
   const sensitive = unique.filter(isSensitivePath);
-  const tooMany = unique.length > handoff.scope.maxFiles;
+  const maxFiles = Math.min(3, handoff.scope.maxFiles);
+  const tooMany = unique.length > maxFiles;
+  const approvalRequired = handoff.approval.required === true || sensitive.length > 0;
+  const approvalGranted = handoff.approval.granted === true;
   return {
-    allowed: unsafe.length === 0 && !tooMany && (!(handoff.approval.required || sensitive.length > 0) || handoff.approval.granted),
+    allowed: unsafe.length === 0 && !tooMany && (!approvalRequired || approvalGranted),
     files: unique, unsafePaths: unsafe, sensitivePaths: sensitive,
-    exceedsLimit: tooMany, approvalRequired: (handoff.approval.required || sensitive.length > 0) && !handoff.approval.granted
+    exceedsLimit: tooMany, approvalRequired: approvalRequired && !approvalGranted
   };
 }
