@@ -33,6 +33,17 @@ export async function runBrowserAudit(config, report, runDir) {
       for (const viewport of config.viewports) {
         const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height } });
         const page = await context.newPage();
+        await page.addInitScript(() => {
+          window.__uiForgeLayoutShifts = [];
+          try {
+            const observer = new PerformanceObserver(list => {
+              for (const entry of list.getEntries()) {
+                if (!entry.hadRecentInput) window.__uiForgeLayoutShifts.push(entry.value);
+              }
+            });
+            observer.observe({ type: "layout-shift", buffered: true });
+          } catch {}
+        });
         page.setDefaultNavigationTimeout(config.browser.navigationTimeoutMs);
         const routeLabel = route.replace(/[^a-z0-9_-]/gi, "_") || "root";
         const screenshotPath = path.join(screenshotDir, `${routeLabel}-${viewport.name}.png`);
@@ -73,6 +84,9 @@ export async function runBrowserAudit(config, report, runDir) {
           });
           await page.screenshot({ path: screenshotPath, fullPage: true, animations: "disabled" });
           const screenshotEvidence = path.relative(runDir, screenshotPath);
+          await page.keyboard.press("Tab").catch(() => {});
+          await page.emulateMedia({ reducedMotion: "reduce" });
+          await page.waitForTimeout(150);
           const metrics = await page.evaluate(() => {
             const root = document.documentElement;
             const body = document.body;
@@ -99,10 +113,35 @@ export async function runBrowserAudit(config, report, runDir) {
               const style = getComputedStyle(element);
               return style.animationName !== "none" && style.animationIterationCount.split(",").some(value => value.trim() === "infinite");
             }).length;
+            const clippedContent = [...document.querySelectorAll("body *")].filter(element => {
+              const style = getComputedStyle(element);
+              return ["hidden", "clip"].includes(style.overflowY) &&
+                element.scrollHeight > element.clientHeight + 2 &&
+                (element.textContent || "").trim().length > 0 && element.clientHeight > 0;
+            }).slice(0, 10).map(element => ({
+              tag: element.tagName.toLowerCase(), id: element.id || null,
+              className: typeof element.className === "string" ? element.className.slice(0, 120) : null,
+              scrollHeight: element.scrollHeight, clientHeight: element.clientHeight
+            }));
+            const active = document.activeElement;
+            const hasKeyboardFocusTarget = !!active && active !== body && active !== root;
+            const focusStyle = hasKeyboardFocusTarget ? getComputedStyle(active) : null;
+            const focusIndicatorVisible = hasKeyboardFocusTarget && (
+              (focusStyle.outlineStyle !== "none" && parseFloat(focusStyle.outlineWidth) > 0) ||
+              (focusStyle.boxShadow !== "none" && focusStyle.boxShadow !== "")
+            );
+            const reducedMotionAnimations = document.getAnimations().filter(animation => {
+              const timing = animation.effect?.getTiming();
+              return animation.playState === "running" && timing &&
+                (timing.iterations === Infinity || timing.duration > 1000);
+            }).length;
+            const cumulativeLayoutShift = (window.__uiForgeLayoutShifts || []).reduce((sum, value) => sum + value, 0);
             return {
               documentWidth: Math.max(root.scrollWidth, body?.scrollWidth ?? 0),
               viewportWidth: window.innerWidth, overflowing, unlabeledControls,
-              imagesWithoutAlt, emptyLinks, duplicateIds, infiniteAnimations
+              imagesWithoutAlt, emptyLinks, duplicateIds, infiniteAnimations,
+              clippedContent, hasKeyboardFocusTarget, focusIndicatorVisible,
+              reducedMotionAnimations, cumulativeLayoutShift
             };
           });
 
@@ -152,6 +191,35 @@ export async function runBrowserAudit(config, report, runDir) {
             impact: `${metrics.infiniteAnimations} element(s) have an infinite CSS animation; verify that each is meaningful and respects reduced-motion preferences.`,
             route, viewport: viewport.name, evidence: [screenshotEvidence]
           });
+          if (metrics.clippedContent.length > 0) addFinding(report, {
+            category: "responsive", severity: "medium", confidence: "medium",
+            title: "Potentially clipped content detected",
+            impact: `${metrics.clippedContent.length} element(s) hide vertically overflowing content.`,
+            route, viewport: viewport.name, evidence: [screenshotEvidence, JSON.stringify(metrics.clippedContent)],
+            suggestedRepair: "Check whether the clipped content is intentionally scrollable or whether text and controls are being hidden."
+          });
+          if (metrics.hasKeyboardFocusTarget && !metrics.focusIndicatorVisible) addFinding(report, {
+            category: "accessibility", severity: "medium", confidence: "medium",
+            title: "Keyboard focus indicator may be missing",
+            impact: "The first Tab-focused element has no detectable outline or box-shadow focus indicator.",
+            route, viewport: viewport.name, evidence: [screenshotEvidence],
+            suggestedRepair: "Provide a clearly visible :focus-visible style without removing the browser focus indicator."
+          });
+          if (metrics.reducedMotionAnimations > 0) addFinding(report, {
+            category: "motion", severity: "medium", confidence: "medium",
+            title: "Motion continues with reduced motion enabled",
+            impact: `${metrics.reducedMotionAnimations} animation(s) remain active when prefers-reduced-motion: reduce is emulated.`,
+            route, viewport: viewport.name, evidence: [screenshotEvidence],
+            suggestedRepair: "Disable or simplify non-essential motion inside a prefers-reduced-motion: reduce media query."
+          });
+          if (metrics.cumulativeLayoutShift > 0.1) addFinding(report, {
+            category: "performance", severity: "medium", confidence: "medium",
+            title: "Elevated layout shift observed during page load",
+            impact: `Observed layout-shift score: ${metrics.cumulativeLayoutShift.toFixed(3)} (smoke measurement; not a field Core Web Vitals result).`,
+            route, viewport: viewport.name, evidence: [screenshotEvidence],
+            suggestedRepair: "Reserve space for late-loading media and avoid inserting content above already-rendered content."
+          });
+          await page.emulateMedia({ reducedMotion: "no-preference" });
           report.coverage.checks.push(
             { name: `navigation:${route}:${viewport.name}`, status: response?.ok() ? "passed" : "failed" },
             { name: `screenshot:${route}:${viewport.name}`, status: "passed" },
@@ -163,7 +231,11 @@ export async function runBrowserAudit(config, report, runDir) {
             { name: `image-alt-smoke:${route}:${viewport.name}`, status: metrics.imagesWithoutAlt ? "failed" : "passed" },
             { name: `empty-link-smoke:${route}:${viewport.name}`, status: metrics.emptyLinks ? "failed" : "passed" },
             { name: `duplicate-id-smoke:${route}:${viewport.name}`, status: metrics.duplicateIds.length ? "failed" : "passed" },
-            { name: `infinite-animation-smoke:${route}:${viewport.name}`, status: metrics.infiniteAnimations ? "failed" : "passed" }
+            { name: `infinite-animation-smoke:${route}:${viewport.name}`, status: metrics.infiniteAnimations ? "failed" : "passed" },
+            { name: `clipped-content-smoke:${route}:${viewport.name}`, status: metrics.clippedContent.length ? "failed" : "passed" },
+            { name: `keyboard-focus-indicator:${route}:${viewport.name}`, status: !metrics.hasKeyboardFocusTarget ? "untested" : metrics.focusIndicatorVisible ? "passed" : "failed" },
+            { name: `reduced-motion:${route}:${viewport.name}`, status: metrics.reducedMotionAnimations ? "failed" : "passed" },
+            { name: `layout-shift-smoke:${route}:${viewport.name}`, status: metrics.cumulativeLayoutShift > 0.1 ? "failed" : "passed" }
           );
         } catch (error) {
           addFinding(report, {
