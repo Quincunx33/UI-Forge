@@ -15,7 +15,7 @@ function help() {
     "Options:\n" +
     "  --config <file>   Path to UI-Forge JSON configuration\n" +
     "  --agent <name>    Target coding agent for skill installation\n" +
-    "  --scope <scope>   project (default) or user\n" +
+    "  --scope <scope>   project (default) or user\n" +\n    "  --target <dir>     Project directory for installation (default: current directory)\n" +
     "  --force           Replace existing UI-Forge skill folders\n" +
     "  --help            Show this help\n\n" +
     "Detection is read-only. Start your local app separately before running an audit.\n"
