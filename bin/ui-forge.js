@@ -7,37 +7,91 @@ import { validateReportSchema } from "../src/schema.js";
 import { installSkills } from "../src/install.js";
 
 function help() {
-  process.stdout.write("UI-Forge — UI quality engineering plugin\n\nUsage:\n  ui-forge install --agent <codex|claude|cursor|all> [--scope project|user] [--force]\n  ui-forge detect --config <file>\n\nOptions:\n  --config <file>   Path to UI-Forge JSON configuration\n  --agent <name>    Target coding agent for skill installation\n  --scope <scope>   project (default) or user\n  --force           Replace existing UI-Forge skill folders\n  --help            Show this help\n\nDetection is read-only. Start your local app separately before running an audit.\n");
+  process.stdout.write(
+    "UI-Forge — UI quality engineering plugin\n\n" +
+    "Usage:\n" +
+    "  ui-forge install --agent <codex|claude|cursor|all> [--scope project|user] [--force]\n" +
+    "  ui-forge detect --config <file>\n\n" +
+    "Options:\n" +
+    "  --config <file>   Path to UI-Forge JSON configuration\n" +
+    "  --agent <name>    Target coding agent for skill installation\n" +
+    "  --scope <scope>   project (default) or user\n" +
+    "  --force           Replace existing UI-Forge skill folders\n" +
+    "  --help            Show this help\n\n" +
+    "Detection is read-only. Start your local app separately before running an audit.\n"
+  );
 }
 
 async function main(args) {
   const command = args[0];
   if (!command || command === "--help" || command === "help") return help();
-  if (command === "install") {\n    const agentIndex = args.indexOf("--agent");\n    if (agentIndex < 0 || !args[agentIndex + 1]) throw new Error("install requires --agent codex|claude|cursor|all.");\n    const scopeIndex = args.indexOf("--scope");\n    const scope = scopeIndex >= 0 ? args[scopeIndex + 1] : "project";\n    const result = await installSkills({ agent: args[agentIndex + 1], scope, force: args.includes("--force") });\n    process.stdout.write("Installed UI-Forge skills: " + result.skills.join(", ") + "\\nTargets: " + result.targets.join(", ") + "\\n");\n    return;\n  }\n  if (command !== "detect") throw new Error(`Unknown command: ${command}. Available commands: install, detect.`);
+
+  if (command === "install") {
+    const agentIndex = args.indexOf("--agent");
+    if (agentIndex < 0 || !args[agentIndex + 1]) {
+      throw new Error("install requires --agent codex|claude|cursor|all.");
+    }
+    const scopeIndex = args.indexOf("--scope");
+    const scope = scopeIndex >= 0 ? args[scopeIndex + 1] : "project";
+    const result = await installSkills({
+      agent: args[agentIndex + 1],
+      scope,
+      force: args.includes("--force")
+    });
+    process.stdout.write(
+      "Installed UI-Forge skills: " + result.skills.join(", ") +
+      "\nTargets: " + result.targets.join(", ") + "\n"
+    );
+    return;
+  }
+
+  if (command !== "detect") {
+    throw new Error("Unknown command: " + command + ". Available commands: install, detect.");
+  }
   const configIndex = args.indexOf("--config");
-  if (configIndex < 0 || !args[configIndex + 1]) throw new Error("detect requires --config <file>.");
+  if (configIndex < 0 || !args[configIndex + 1]) {
+    throw new Error("detect requires --config <file>.");
+  }
   const configPath = path.resolve(args[configIndex + 1]);
   const config = await loadConfig(configPath);
-  if (config.mode !== "detect") throw new Error("The browser runtime currently supports mode=detect only. Repair remains an agent-invoked workflow.");
+  if (config.mode !== "detect") {
+    throw new Error("The browser runtime currently supports mode=detect only. Repair remains an agent-invoked workflow.");
+  }
   const started = new Date();
   const runId = createRunId(started);
   const output = path.resolve(path.dirname(configPath), config.outputDir);
   const report = createReport({
-    runId, startedAt: started.toISOString(),
-    environment: { project: path.basename(process.cwd()), framework: null, baseUrl: config.baseUrl, browser: config.browser.engine, commit: process.env.GITHUB_SHA ?? null },
-    routes: config.routes, viewports: config.viewports.map(item => item.name)
+    runId,
+    startedAt: started.toISOString(),
+    environment: {
+      project: path.basename(process.cwd()),
+      framework: null,
+      baseUrl: config.baseUrl,
+      browser: config.browser.engine,
+      commit: process.env.GITHUB_SHA ?? null
+    },
+    routes: config.routes,
+    viewports: config.viewports.map(item => item.name)
   });
   await runBrowserAudit(config, report, path.join(output, runId));
   report.completedAt = new Date().toISOString();
   const validation = await validateReportSchema(report);
-  if (!validation.valid) throw new Error("Generated report failed schema validation: " + JSON.stringify(validation.errors));
-  report.summary = `${report.findings.length} finding(s); ${report.coverage.checks.length} check(s) recorded. No project source files were modified.`;
+  if (!validation.valid) {
+    throw new Error("Generated report failed schema validation: " + JSON.stringify(validation.errors));
+  }
+  report.summary = report.findings.length + " finding(s); " +
+    report.coverage.checks.length + " check(s) recorded. No project source files were modified.";
   const saved = await writeReport(report, output);
-  process.stdout.write(`UI-Forge audit complete\nFindings: ${report.findings.length}\nReport: ${saved.reportPath}\n`);
-  if (report.findings.some(item => ["critical", "high"].includes(item.severity))) process.exitCode = 2;
+  process.stdout.write(
+    "UI-Forge audit complete\nFindings: " + report.findings.length +
+    "\nReport: " + saved.reportPath + "\n"
+  );
+  if (report.findings.some(item => ["critical", "high"].includes(item.severity))) {
+    process.exitCode = 2;
+  }
 }
 
 main(process.argv.slice(2)).catch(error => {
-  process.stderr.write(`UI-Forge: ${error.message}\n`);
+  process.stderr.write("UI-Forge: " + error.message + "\n");
   process.exitCode = 1;
 });
