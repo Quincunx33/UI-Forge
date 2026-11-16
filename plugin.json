@@ -2,14 +2,16 @@
   "schema_version": "1.0",
   "id": "ui-forge",
   "name": "UI-Forge",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A portable coding-agent plugin for evidence-based UI quality audits, visual design review, and controlled frontend repair.",
   "license": "UNLICENSED",
   "capabilities": {
     "detection": "agent-skill-and-cli",
     "design_review": true,
     "repair": true,
-    "browser_automation": "optional-playwright-runtime"
+    "browser_automation": "optional-playwright-runtime",
+    "motion_audit": "initial-css-animation-smoke-check",
+    "accessibility_audit": "initial-dom-smoke-check"
   },
   "skills": [
     "skills/ui-detect/SKILL.md",
