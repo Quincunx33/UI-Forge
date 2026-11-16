@@ -54,7 +54,7 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Add CLI export for a single verified finding (`ui-forge handoff`).
 - [x] Add initial path-scope guard for traversal, sensitive paths, and bounded file counts.
 - [x] Add initial sensitive-path detection and approval gating (no diff review or sandbox enforcement).
-- [ ] Add scoped patch diff review and full blast-radius analysis.
+- [x] Add initial unified-diff review for path scope, binary patches, sensitive files, and changed-line thresholds (not a sandbox).\n- [ ] Add full semantic blast-radius analysis and patch application adapter.
 - [ ] Add repair execution adapter with user approval.
 - [ ] Add automated regression verification and before/after evidence.
 - [ ] Ensure repair stops on ambiguous causes or repeated failure.
