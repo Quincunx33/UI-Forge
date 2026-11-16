@@ -14,7 +14,7 @@ test("browser audit captures responsive and accessibility findings", async () =>
     .moving { animation: pulse 1s infinite; } .clipped { height: 8px; overflow: hidden; }
   </style></head><body>
     <div class="wide">overflow fixture</div>
-    <button></button><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
+    <button></button><button type="button" data-testid="safe-toggle" data-ui-forge-safe="true" onclick="document.querySelector('#result').textContent='Saved'">Run safe check</button><button type="button" data-testid="unsafe-toggle" onclick="document.querySelector('#result').textContent='Unsafe clicked'">Do not run</button><p id="result"></p><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
     <a href="/empty"></a><a href="/discovered">Discovered route</a><a href="https://example.com/out">External</a><a href="/search?q=secret">Query route</a><a href="/icon.svg">Asset</a><div class="moving"></div><div class="clipped">content that is clipped by the fixture</div>
   </body></html>`;
   const server = createServer((_request, response) => {
@@ -32,6 +32,10 @@ test("browser audit captures responsive and accessibility findings", async () =>
     });
     await runBrowserAudit({
       baseUrl: `http://127.0.0.1:${address.port}`, routes: ["/"], discovery: { enabled: true, maxRoutes: 5 },
+      interactions: [
+        { name: "safe-toggle", testId: "safe-toggle", route: "/", expectedText: "Saved" },
+        { name: "unsafe-toggle", testId: "unsafe-toggle", route: "/" }
+      ],
       viewports: [{ name: "mobile", width: 390, height: 844 }],
       browser: { engine: "chromium", headless: true, navigationTimeoutMs: 10000 }
     }, report, tempDir);
@@ -40,6 +44,8 @@ test("browser audit captures responsive and accessibility findings", async () =>
     assert.ok(!report.coverage.routesTested.includes("/icon.svg"));
     assert.ok(!report.coverage.routesTested.includes("https://example.com/out"));
     assert.ok(report.coverage.checks.some(item => item.name === "route-discovery" && item.status === "passed"));
+    assert.ok(report.coverage.checks.some(item => item.name.startsWith("interaction:safe-toggle:") && item.status === "passed"));
+    assert.ok(report.coverage.checks.some(item => item.name.startsWith("interaction:unsafe-toggle:") && item.status === "blocked"));
     const categories = report.findings.map(item => item.category);
     assert.ok(categories.includes("responsive"));
     assert.ok(categories.includes("accessibility"));
