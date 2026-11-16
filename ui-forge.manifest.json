@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "id": "ui-forge",
   "name": "UI-Forge",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "A portable coding-agent plugin for evidence-based UI quality audits, visual design review, and controlled frontend repair.",
   "license": "UNLICENSED",
   "capabilities": {
