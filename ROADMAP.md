@@ -27,7 +27,7 @@ This roadmap is the source of truth for project scope. Items are plans until imp
 - [x] Detect horizontal overflow and elements extending beyond viewport.
 - [x] Add basic accessible-name smoke check.
 - [x] Produce structured JSON reports with evidence paths and check statuses.
-- [ ] Add route discovery with safe limits.
+- [x] Enforce same-origin configured route navigation.\n- [ ] Add route discovery with safe limits.
 - [ ] Add functional interaction tests using safe mocks and opt-in controls.
 - [ ] Add DOM clipping/overlap and missing-content heuristics.
 
