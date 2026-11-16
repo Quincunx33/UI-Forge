@@ -20,7 +20,7 @@ Use when the user asks to audit, inspect, test, diagnose, or find UI/frontend bu
 6. Reproduce issues before classifying them as verified.
 7. Save evidence and produce a structured report using the UI-Forge report schema.
 
-## Audit workflow
+## CLI runtime\nIf the UI-Forge package is installed and the target app is already running locally, use the bundled command:\n\n- Install dependencies with npm install in the UI-Forge package.\n- Install the selected browser with npx playwright install chromium.\n- Copy ui-forge.config.example.json, set the local baseUrl and routes, then run npx ui-forge detect --config ./ui-forge.config.json.\n- Read the generated JSON report and screenshots under outputDir.\n\nThe current CLI performs route, console, failed-request, viewport overflow, accessible-name, missing image-alt, duplicate-ID, empty-link, and infinite-animation smoke checks. It does not click controls or edit source.\n\n## Audit workflow
 
 ### A. Discover
 - Identify framework, entry points, package manager, scripts, route definitions, and existing browser/unit tests.
