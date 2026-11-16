@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0
+
+- Added axe-core browser accessibility scans for WCAG 2.0/2.1 A/AA and best-practice tagged rules.
+- Marked axe-core incomplete/manual-review checks as untested.
+- Expanded browser integration assertions for common accessibility violations.
+- Updated plugin manifests and package version to 0.4.0.
+
 ## 0.3.0
 
 - Added a portable Agent Plugins 1.0.0 root manifest.
