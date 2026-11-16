@@ -13,10 +13,11 @@ A detection run should report:
 - functional interaction outcomes (or an explicit untested status when no safe interaction test is configured);
 - responsive and visual findings;
 - axe-core WCAG 2.0/2.1 A/AA and best-practice results, manual-review items, reduced-motion findings, and a short-run layout-shift smoke metric;
+- lab performance observations for TTFB, LCP (when an entry is observed), long tasks, and Resource Timing transfer sizes; unsupported or unavailable measurements must be marked untested;
 - clipped-content heuristics and first-Tab focus-indicator observations;
 - evidence and confidence for each issue.
 
-A skipped or axe-core incomplete/manual-review check is **untested**, not passed. Automated axe-core output alone is not a WCAG conformance claim.
+A skipped, unsupported, unobserved, or axe-core incomplete/manual-review check is **untested**, not passed. Lab timing and transfer measurements are diagnostic samples, not field Core Web Vitals or stable benchmarks. Automated axe-core output alone is not a WCAG conformance claim.
 
 ## Repair gate
 
