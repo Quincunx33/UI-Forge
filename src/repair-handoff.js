@@ -14,6 +14,7 @@ export function isSensitivePath(filePath) {
   const segments = normalized.split("/");
   return segments.some((segment, index) =>
     SENSITIVE_SEGMENTS.has(segment) ||
+    [...SENSITIVE_SEGMENTS].some(name => segment.startsWith(name + ".") || segment.startsWith(name + "-") || segment.startsWith(name + "_")) ||
     (segment.startsWith(".env") && index === segments.length - 1) ||
     (segment === ".github" && segments[index + 1] === "workflows")
   );
