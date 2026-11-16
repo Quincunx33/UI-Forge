@@ -14,6 +14,7 @@ export function reviewRepairPatch(handoff, patch, options = {}) {
   const files = [...new Set(headers.flatMap(match => [match[1], match[2]]))];
   const binary = /^(?:GIT binary patch|Binary files .+ and .+ differ)$/m.test(patch);
   const quotedPaths = headers.some(match => match[1].startsWith('"') || match[2].startsWith('"'));
+  const backslashPaths = headers.some(match => match[1].includes(String.fromCharCode(92)) || match[2].includes(String.fromCharCode(92)));
   const changedLines = patch.split("\n").filter(line =>
     (line.startsWith("+") && !line.startsWith("+++")) ||
     (line.startsWith("-") && !line.startsWith("---"))
@@ -25,7 +26,7 @@ export function reviewRepairPatch(handoff, patch, options = {}) {
   const scope = validateRepairScope(scopedHandoff, files);
   const oversized = changedLines > maxChangedLines;
   const approvalRequired = scope.approvalRequired || oversized;
-  const accepted = headers.length > 0 && !quotedPaths && !binary &&
+  const accepted = headers.length > 0 && !quotedPaths && !backslashPaths && !binary &&
     scope.unsafePaths.length === 0 && !scope.exceedsLimit &&
     (!approvalRequired || approvalGranted);
   return {
@@ -44,6 +45,7 @@ export function reviewRepairPatch(handoff, patch, options = {}) {
       ...(headers.length ? [] : ["No unified git diff file headers found."]),
       ...(binary ? ["Binary patches are not supported by this review adapter."] : []),
       ...(quotedPaths ? ["Quoted or escaped diff paths are not supported; inspect the patch manually."] : []),
+      ...(backslashPaths ? ["Backslash diff paths are not supported; use normalized repository-relative paths."] : []),
       ...(scope.unsafePaths.length ? ["Patch contains unsafe absolute or traversal paths."] : []),
       ...(scope.sensitivePaths.length && !approvalGranted ? ["Sensitive paths require explicit approval."] : []),
       ...(scope.exceedsLimit ? ["Patch exceeds the handoff file-count limit."] : []),
