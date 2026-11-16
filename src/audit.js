@@ -37,6 +37,10 @@ export async function runBrowserAudit(config, report, runDir) {
         await page.addInitScript(() => {
           window.__uiForgeLayoutShifts = [];
           window.__uiForgeLayoutShiftSupported = false;
+          window.__uiForgeLongTasks = [];
+          window.__uiForgeLongTaskSupported = false;
+          window.__uiForgeLcp = null;
+          window.__uiForgeLcpSupported = false;
           try {
             const observer = new PerformanceObserver(list => {
               for (const entry of list.getEntries()) {
@@ -45,6 +49,20 @@ export async function runBrowserAudit(config, report, runDir) {
             });
             observer.observe({ type: "layout-shift", buffered: true });
             window.__uiForgeLayoutShiftSupported = true;
+          } catch {}
+          try {
+            const observer = new PerformanceObserver(list => {
+              for (const entry of list.getEntries()) window.__uiForgeLongTasks.push(entry.duration);
+            });
+            observer.observe({ type: "longtask", buffered: true });
+            window.__uiForgeLongTaskSupported = true;
+          } catch {}
+          try {
+            const observer = new PerformanceObserver(list => {
+              for (const entry of list.getEntries()) window.__uiForgeLcp = entry.startTime;
+            });
+            observer.observe({ type: "largest-contentful-paint", buffered: true });
+            window.__uiForgeLcpSupported = true;
           } catch {}
         });
         page.setDefaultNavigationTimeout(config.browser.navigationTimeoutMs);
@@ -173,13 +191,27 @@ export async function runBrowserAudit(config, report, runDir) {
                 (timing.iterations === Infinity || timing.duration > 1000);
             }).length;
             const cumulativeLayoutShift = (window.__uiForgeLayoutShifts || []).reduce((sum, value) => sum + value, 0);
+            const navigation = performance.getEntriesByType("navigation")[0];
+            const resources = performance.getEntriesByType("resource");
+            const transferBytes = resources.reduce((sum, entry) => sum + (entry.transferSize || 0), 0);
+            const longTasks = window.__uiForgeLongTasks || [];
             return {
               documentWidth: Math.max(root.scrollWidth, body?.scrollWidth ?? 0),
               viewportWidth: window.innerWidth, overflowing, unlabeledControls,
               imagesWithoutAlt, emptyLinks, duplicateIds, infiniteAnimations,
               clippedContent, hasKeyboardFocusTarget, focusIndicatorVisible,
               reducedMotionAnimations, cumulativeLayoutShift,
-              layoutShiftSupported: window.__uiForgeLayoutShiftSupported === true
+              layoutShiftSupported: window.__uiForgeLayoutShiftSupported === true,
+              ttfb: navigation ? navigation.responseStart : null,
+              domContentLoaded: navigation ? navigation.domContentLoadedEventEnd : null,
+              loadEvent: navigation && navigation.loadEventEnd > 0 ? navigation.loadEventEnd : null,
+              largestContentfulPaint: Number.isFinite(window.__uiForgeLcp) ? window.__uiForgeLcp : null,
+              lcpSupported: window.__uiForgeLcpSupported === true,
+              transferBytes,
+              resourceCount: resources.length,
+              longTaskCount: longTasks.length,
+              longTaskDuration: longTasks.reduce((sum, value) => sum + value, 0),
+              longTaskSupported: window.__uiForgeLongTaskSupported === true
             };
           });
 
@@ -250,6 +282,27 @@ export async function runBrowserAudit(config, report, runDir) {
             route, viewport: viewport.name, evidence: [screenshotEvidence],
             suggestedRepair: "Disable or simplify non-essential motion inside a prefers-reduced-motion: reduce media query."
           });
+          if (metrics.ttfb !== null && metrics.ttfb > 800) addFinding(report, {
+            category: "performance", severity: "medium", confidence: "medium",
+            title: "High initial server response time observed",
+            impact: `Navigation responseStart was ${metrics.ttfb.toFixed(0)}ms (lab smoke measurement; server and network conditions affect this result).`,
+            route, viewport: viewport.name, evidence: [`ttfb-ms:${metrics.ttfb.toFixed(1)}`],
+            suggestedRepair: "Profile server response and critical middleware; repeat under stable network conditions before prioritizing."
+          });
+          if (metrics.largestContentfulPaint !== null && metrics.largestContentfulPaint > 2500) addFinding(report, {
+            category: "performance", severity: "medium", confidence: "medium",
+            title: "Slow largest contentful paint observed",
+            impact: `Largest Contentful Paint was ${metrics.largestContentfulPaint.toFixed(0)}ms in this browser run; this is a lab observation, not field data.`,
+            route, viewport: viewport.name, evidence: [`lcp-ms:${metrics.largestContentfulPaint.toFixed(1)}`],
+            suggestedRepair: "Inspect the LCP element, critical request chain, image sizing/format, and render-blocking resources."
+          });
+          if (metrics.longTaskCount > 0) addFinding(report, {
+            category: "performance", severity: "medium", confidence: "medium",
+            title: "Main-thread long tasks observed",
+            impact: `${metrics.longTaskCount} long task(s) totaling ${metrics.longTaskDuration.toFixed(0)}ms were observed during the audit window.`,
+            route, viewport: viewport.name, evidence: [`long-task-count:${metrics.longTaskCount}`, `long-task-duration-ms:${metrics.longTaskDuration.toFixed(1)}`],
+            suggestedRepair: "Profile long tasks and consider splitting expensive work, deferring non-critical code, or moving suitable computation off the main thread."
+          });
           if (metrics.layoutShiftSupported && metrics.cumulativeLayoutShift > 0.1) addFinding(report, {
             category: "performance", severity: "medium", confidence: "medium",
             title: "Elevated layout shift observed during page load",
@@ -273,7 +326,11 @@ export async function runBrowserAudit(config, report, runDir) {
             { name: `clipped-content-smoke:${route}:${viewport.name}`, status: metrics.clippedContent.length ? "failed" : "passed" },
             { name: `keyboard-focus-indicator:${route}:${viewport.name}`, status: !metrics.hasKeyboardFocusTarget ? "untested" : metrics.focusIndicatorVisible ? "passed" : "failed" },
             { name: `reduced-motion:${route}:${viewport.name}`, status: metrics.reducedMotionAnimations ? "failed" : "passed" },
-            { name: `layout-shift-smoke:${route}:${viewport.name}`, status: !metrics.layoutShiftSupported ? "untested" : metrics.cumulativeLayoutShift > 0.1 ? "failed" : "passed" }
+            { name: `layout-shift-smoke:${route}:${viewport.name}`, status: !metrics.layoutShiftSupported ? "untested" : metrics.cumulativeLayoutShift > 0.1 ? "failed" : "passed" },
+            { name: `ttfb-lab:${route}:${viewport.name}`, status: metrics.ttfb === null ? "untested" : metrics.ttfb > 800 ? "failed" : "passed", reason: metrics.ttfb === null ? "Navigation timing unavailable." : `responseStart=${metrics.ttfb.toFixed(1)}ms` },
+            { name: `lcp-lab:${route}:${viewport.name}`, status: !metrics.lcpSupported || metrics.largestContentfulPaint === null ? "untested" : metrics.largestContentfulPaint > 2500 ? "failed" : "passed", reason: metrics.largestContentfulPaint === null ? "No LCP entry was observed during this audit window." : `LCP=${metrics.largestContentfulPaint.toFixed(1)}ms` },
+            { name: `long-task-lab:${route}:${viewport.name}`, status: !metrics.longTaskSupported ? "untested" : metrics.longTaskCount ? "failed" : "passed", reason: metrics.longTaskSupported ? `${metrics.longTaskCount} long task(s), ${metrics.longTaskDuration.toFixed(1)}ms total.` : "Long Task API unavailable." },
+            { name: `resource-transfer-smoke:${route}:${viewport.name}`, status: "passed", reason: `${metrics.resourceCount} resource(s); ${metrics.transferBytes} transferred bytes visible to Resource Timing (cross-origin sizes may be restricted).` }
           );
         } catch (error) {
           addFinding(report, {
