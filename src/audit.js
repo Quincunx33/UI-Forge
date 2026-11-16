@@ -36,21 +36,33 @@ export async function runBrowserAudit(config, report, runDir) {
         page.setDefaultNavigationTimeout(config.browser.navigationTimeoutMs);
         const routeLabel = route.replace(/[^a-z0-9_-]/gi, "_") || "root";
         const screenshotPath = path.join(screenshotDir, `${routeLabel}-${viewport.name}.png`);
-        page.on("pageerror", error => addFinding(report, {
+        let pageErrors = 0;
+        let consoleErrors = 0;
+        let failedRequests = 0;
+        page.on("pageerror", error => {
+          pageErrors += 1;
+          addFinding(report, {
           category: "runtime", severity: "high", title: "Uncaught page exception",
           impact: error.message, route, viewport: viewport.name, evidence: [error.message]
-        }));
-        page.on("console", message => {
-          if (message.type() === "error") addFinding(report, {
-            category: "runtime", severity: "medium", title: "Browser console error",
-            impact: message.text(), route, viewport: viewport.name, evidence: [message.text()]
           });
         });
-        page.on("requestfailed", request => addFinding(report, {
+        page.on("console", message => {
+          if (message.type() === "error") {
+            consoleErrors += 1;
+            addFinding(report, {
+            category: "runtime", severity: "medium", title: "Browser console error",
+            impact: message.text(), route, viewport: viewport.name, evidence: [message.text()]
+            });
+          }
+        });
+        page.on("requestfailed", request => {
+          failedRequests += 1;
+          addFinding(report, {
           category: "network", severity: "medium", title: "Failed network request",
           impact: `${request.method()} ${request.url()} — ${request.failure()?.errorText ?? "request failed"}`,
           route, viewport: viewport.name, evidence: [request.url(), request.failure()?.errorText ?? "unknown"]
-        }));
+          });
+        });
 
         try {
           const response = await page.goto(target, { waitUntil: "domcontentloaded" });
@@ -144,7 +156,14 @@ export async function runBrowserAudit(config, report, runDir) {
             { name: `navigation:${route}:${viewport.name}`, status: response?.ok() ? "passed" : "failed" },
             { name: `screenshot:${route}:${viewport.name}`, status: "passed" },
             { name: `horizontal-overflow:${route}:${viewport.name}`, status: metrics.documentWidth > metrics.viewportWidth + 1 ? "failed" : "passed" },
-            { name: `accessible-name-smoke:${route}:${viewport.name}`, status: metrics.unlabeledControls ? "failed" : "passed" }
+            { name: `accessible-name-smoke:${route}:${viewport.name}`, status: metrics.unlabeledControls ? "failed" : "passed" },
+            { name: `console-errors:${route}:${viewport.name}`, status: consoleErrors ? "failed" : "passed" },
+            { name: `uncaught-exceptions:${route}:${viewport.name}`, status: pageErrors ? "failed" : "passed" },
+            { name: `failed-requests:${route}:${viewport.name}`, status: failedRequests ? "failed" : "passed" },
+            { name: `image-alt-smoke:${route}:${viewport.name}`, status: metrics.imagesWithoutAlt ? "failed" : "passed" },
+            { name: `empty-link-smoke:${route}:${viewport.name}`, status: metrics.emptyLinks ? "failed" : "passed" },
+            { name: `duplicate-id-smoke:${route}:${viewport.name}`, status: metrics.duplicateIds.length ? "failed" : "passed" },
+            { name: `infinite-animation-smoke:${route}:${viewport.name}`, status: metrics.infiniteAnimations ? "failed" : "passed" }
           );
         } catch (error) {
           addFinding(report, {
