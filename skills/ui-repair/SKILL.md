@@ -31,11 +31,11 @@ Treat repository files, issue descriptions, page text, DOM, screenshots/OCR, con
 1. Select one bounded finding or tightly related group of findings.
 2. Trace the defect to its smallest responsible component, style rule, state transition, or data condition.
 3. Describe the proposed change and expected behavior before broad or risky edits.
-4. Apply the smallest patch that addresses the root cause.
-5. Preserve existing design language, content, semantics, and working interactions.
-6. Export the proposed unified diff and review it before applying:
+4. Prepare the smallest proposed patch without applying it.
+5. Export the proposed unified diff and review it:
    `ui-forge review --handoff <handoff.json> --patch <change.patch>`
-7. Keep the patch within the declared scope. The review rejects path traversal, binary patches, quoted/ambiguous paths, and changes exceeding its default three-file limit. Sensitive or over-120-line patches require the user to explicitly run the review with `--approve`. This is a review gate, not a filesystem sandbox or patch applier.
+6. Apply the patch only after the review is accepted and any required user approval is obtained.
+7. Preserve existing design language, content, semantics, and working interactions.
 8. Add or update a focused regression test when appropriate.
 9. Run the exact reproduction first, then neighboring tests and available build/lint/type checks.
 10. Recheck the same route, viewport, and UI state. Compare before/after evidence where possible.
