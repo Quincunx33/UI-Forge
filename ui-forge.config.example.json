@@ -33,5 +33,9 @@
     "allowDependencyChanges": false
   },
   "ignore": [],
-  "allowRemote": false
+  "allowRemote": false,
+  "discovery": {
+    "enabled": false,
+    "maxRoutes": 20
+  }
 }
