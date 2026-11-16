@@ -184,6 +184,39 @@
           }
         }
       }
+    },
+    "visualRegression": {
+      "type": "object",
+      "additionalProperties": false,
+      "default": {
+        "enabled": false,
+        "baselineDir": ".ui-forge-baselines",
+        "threshold": 0.1,
+        "maxDiffPixels": 0
+      },
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "baselineDir": {
+          "type": "string",
+          "minLength": 1
+        },
+        "threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.1
+        },
+        "maxDiffPixels": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000000,
+          "default": 0
+        }
+      },
+      "description": "Compare captured PNG screenshots to manually approved baseline images. Missing baselines remain untested."
     }
   }
 }
