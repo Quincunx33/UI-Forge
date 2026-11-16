@@ -110,7 +110,7 @@ export async function runBrowserAudit(config, report, runDir) {
           }
           report.coverage.checks.push({
             name: `axe-wcag-accessibility:${route}:${viewport.name}`,
-            status: axeResults.violations.length ? "failed" : "passed",
+            status: axeResults.violations.length ? "failed" : axeResults.incomplete.length ? "untested" : "passed",
             reason: `${axeResults.violations.length} violation rule(s); ${axeResults.passes.length} rules passed; ${axeResults.incomplete.length} require manual review.`
           });
           await page.keyboard.press("Tab").catch(() => {});
