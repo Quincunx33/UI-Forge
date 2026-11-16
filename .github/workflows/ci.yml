@@ -1,0 +1,26 @@
+name: UI-Forge CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate JSON files
+        run: |
+          node -e "for (const f of ['package.json','plugin.json','ui-forge.config.example.json','schemas/config.schema.json','schemas/report.schema.json']) JSON.parse(require('fs').readFileSync(f,'utf8'))"
+      - name: Run syntax and unit checks
+        run: npm run check
