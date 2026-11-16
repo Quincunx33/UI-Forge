@@ -46,7 +46,7 @@ The initial Playwright detector checks:
 - axe-core accessibility rules tagged WCAG 2.0/2.1 A/AA and best-practice, plus DOM smoke checks;
 - infinite CSS animation and reduced-motion smoke checks;
 - first-Tab focus-indicator and short-run layout-shift smoke checks;
-- evidence-based repair handoff export (never grants edit authorization);
+- evidence-based repair handoff export and bounded unified-diff preflight review (never applies patches);
 - schema-validated JSON reports with evidence paths and explicit check outcomes.
 
 ## Repository layout
@@ -72,7 +72,7 @@ Detection is read-only with respect to project source. It does not submit forms,
 
 ## Current limitations
 
-This is an initial smoke-audit runtime, not a complete QA suite. Automated axe-core rule coverage is not a full WCAG conformance assessment: manual review, assistive-technology testing, exhaustive keyboard interaction coverage, field performance profiling, screenshot visual regression, AI screenshot interpretation, and executable autonomous repair remain outstanding. A first-pass smoke check is not a conformance claim. The repair skill is an agent workflow, not an automatic CLI patcher. See [ROADMAP.md](ROADMAP.md) and [Threat model](docs/THREAT-MODEL.md).
+This is an initial smoke-audit runtime, not a complete QA suite. Automated axe-core rule coverage is not a full WCAG conformance assessment: manual review, assistive-technology testing, exhaustive keyboard interaction coverage, field performance profiling, screenshot visual regression, AI screenshot interpretation, and executable autonomous repair remain outstanding. A first-pass smoke check is not a conformance claim. The repair skill is an agent workflow; the CLI can review a proposed diff but cannot apply it. See [ROADMAP.md](ROADMAP.md) and [Threat model](docs/THREAT-MODEL.md).
 
 ## License
 
