@@ -83,7 +83,8 @@ test("browser audit captures responsive and accessibility findings", async () =>
 
     const baselinePath = path.join(baselineDir, "_-mobile.png");
     const alteredBaseline = PNG.sync.read(await readFile(baselinePath));
-    alteredBaseline.data[0] = alteredBaseline.data[0] === 0 ? 255 : 0;
+    const centerPixel = (Math.floor(alteredBaseline.height / 2) * alteredBaseline.width + Math.floor(alteredBaseline.width / 2)) * 4;
+    alteredBaseline.data[centerPixel] = alteredBaseline.data[centerPixel] === 0 ? 255 : 0;
     await writeFile(baselinePath, PNG.sync.write(alteredBaseline));
     const visualFail = createReport({
       runId: "visual-fail", startedAt: new Date().toISOString(),
