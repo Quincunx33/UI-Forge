@@ -65,7 +65,8 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Add GitHub Actions CI workflow configuration.
 - [ ] Verify CI execution on a working GitHub Actions runner.
 - [ ] Add example projects and reproducible demos.
-- [x] Add versioned v0.3.0 changelog and installation documentation.\n- [ ] Publish a tagged release after CI is verified.
+- [x] Add versioned v0.3.0 changelog and installation documentation.
+- [ ] Publish a tagged release after CI is verified.
 
 ## Definition of done
 
