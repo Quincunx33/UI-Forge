@@ -17,7 +17,7 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Add explicitly invoked controlled repair skill.
 - [x] Document plugin usage and current limitations.
 - [x] Validate standard skill directory formats for Codex, Claude Code, and Cursor.
-- [x] Add project/user skill installer for Codex, Claude Code, and Cursor.
+- [x] Add project/user skill installer for Codex, Claude Code, and Cursor, including the `all` target.
 - [ ] Add other agent adapters when their skill formats are validated.
 
 ## Phase 2 — Detection runtime
@@ -45,7 +45,8 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Add first-pass lab performance signals for TTFB, observed LCP, long tasks, and resource transfer timing (not field data or full Core Web Vitals).
 - [ ] Add field-style performance metrics and full Core Web Vitals profiling.
 - [x] Add PNG visual baseline comparison with reviewable pixel-diff artifacts; baseline creation/approval remains manual.
-- [ ] Add screenshot interpretation adapter with confidence and evidence.
+- [x] Add evidence-based screenshot interpretation workflow to the agent design-review skill when host image understanding is available.
+- [ ] Add a dedicated automated vision/model adapter with calibrated confidence and structured evidence.
 - [ ] Add broad responsive content stress checks.
 - [ ] Avoid false claims where a check cannot be automated reliably.
 
