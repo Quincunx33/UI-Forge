@@ -40,6 +40,7 @@ Run unit tests with `npm test`; run the real-browser fixture separately with `np
 
 The initial Playwright detector checks:
 - route response and navigation failures;
+- opt-in, bounded same-origin anchor discovery (configured routes remain authoritative; query-string routes and asset links are skipped);
 - browser console errors, uncaught page exceptions, and failed requests;
 - screenshots at configured viewport sizes;
 - horizontal overflow, clipped-content heuristics, and elements extending past the viewport;
@@ -80,7 +81,7 @@ Use `--approve` only after the user explicitly approves a sensitive or broad pat
 
 ## Safety
 
-Detection is read-only with respect to project source. It does not submit forms, click controls, start or stop the target app, or perform repairs. Loopback targets are the default; remote targets require explicit allowRemote=true. Known cloud metadata endpoints and cross-origin route escapes are blocked. Treat only systems you own or are authorized to test.
+Detection is read-only with respect to project source. Optional route discovery follows same-origin anchor URLs only; it does not click controls, submit forms, start or stop the target app, or perform repairs. Discovery is disabled by default and capped at 50 additional routes. Loopback targets are the default; remote targets require explicit allowRemote=true. Known cloud metadata endpoints and cross-origin route escapes are blocked. Treat only systems you own or are authorized to test.
 
 ## Current limitations
 
