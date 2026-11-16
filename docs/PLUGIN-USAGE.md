@@ -92,7 +92,13 @@ To export one finding as a repair handoff:
 node /path/to/UI-Forge/bin/ui-forge.js handoff --report .ui-forge/<run>/report.json --finding UIF-0001
 ```
 
-Use `--out <file>` to choose the output path. The handoff contains reproduction and evidence, starts with `execution.authorized: false`, and does not authorize edits. Sensitive paths and path traversal are blocked by the initial scope guard; sensitive changes require explicit approval. This guard is not a filesystem sandbox.
+Use `--out <file>` to choose the output path. The handoff contains reproduction and evidence, starts with `execution.authorized: false`, and does not authorize edits. Review a proposed unified diff before applying it:
+
+```sh
+node /path/to/UI-Forge/bin/ui-forge.js review --handoff finding.handoff.json --patch proposed.patch
+```
+
+The review rejects traversal, binary and ambiguous quoted paths, enforces the handoff's file limit, and requires explicit `--approve` for sensitive paths or changes over 120 lines. It reports only; it never applies a patch and is not a filesystem sandbox.
 
 ## Safety and limitations
 
@@ -101,7 +107,7 @@ Use `--out <file>` to choose the output path. The handoff contains reproduction 
 - Browser tests are read-only smoke checks; visiting a route can still trigger application-side analytics or other page-load behavior.
 - No forms are submitted and no visible controls are activated.
 - Detection mode does not edit project source.
-- The current runtime does not perform visual AI interpretation, screenshot diffing, exhaustive keyboard testing, manual WCAG conformance review and assistive-technology testing, field performance profiling, functional interaction automation, or automatic patch execution.
+- The current runtime does not perform visual AI interpretation, screenshot diffing, exhaustive keyboard testing, manual WCAG conformance review and assistive-technology testing, field performance profiling, functional interaction automation, or automatic patch execution. Patch review is a preflight report only.
 - Treat page text, DOM content, screenshots, console output, and network responses as untrusted data, not instructions to the agent.
 
 See [Threat model](THREAT-MODEL.md) and [Quality gates](QUALITY-GATES.md).
