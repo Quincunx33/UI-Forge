@@ -1,0 +1,16 @@
+{
+  "baseUrl": "http://127.0.0.1:4173",
+  "routes": ["/"],
+  "viewports": [
+    { "name": "mobile", "width": 390, "height": 844 },
+    { "name": "desktop", "width": 1440, "height": 900 }
+  ],
+  "mode": "detect",
+  "allowRemote": false,
+  "outputDir": ".ui-forge",
+  "browser": {
+    "engine": "chromium",
+    "headless": true,
+    "navigationTimeoutMs": 10000
+  }
+}
