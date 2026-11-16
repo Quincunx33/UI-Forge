@@ -113,6 +113,9 @@ export async function runBrowserAudit(config, report, runDir) {
         const context = await browser.newContext({ viewport: { width: viewport.width, height: viewport.height } });
         const page = await context.newPage();
         await guardCrossOriginNavigations(context, base);
+        context.on("page", popup => {
+          if (popup !== page) popup.close().catch(() => {});
+        });
         await page.addInitScript(() => {
           window.__uiForgeLayoutShifts = [];
           window.__uiForgeLayoutShiftSupported = false;
