@@ -10,9 +10,10 @@ A detection run should report:
 - checks completed and skipped;
 - console and uncaught runtime errors;
 - failed requests observed;
-- functional interaction outcomes;
+- functional interaction outcomes (or an explicit untested status when no safe interaction test is configured);
 - responsive and visual findings;
-- accessibility, motion, and performance findings;
+- accessibility smoke checks, reduced-motion findings, and a short-run layout-shift smoke metric;
+- clipped-content heuristics and first-Tab focus-indicator observations;
 - evidence and confidence for each issue.
 
 A skipped check is **untested**, not passed.
