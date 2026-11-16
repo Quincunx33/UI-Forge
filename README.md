@@ -51,6 +51,7 @@ The initial Playwright detector checks:
 ├── bin/                  # CLI
 ├── src/                  # Runtime, installer, schema validation
 ├── skills/               # Canonical portable agent skills
+├── src/install.js        # Multi-agent installer
 ├── schemas/              # Config and report contracts
 ├── test/                 # Unit and browser integration tests
 ├── docs/
