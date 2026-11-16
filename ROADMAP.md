@@ -37,7 +37,8 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Add initial checks for missing image alt attributes, unlabeled controls, empty links, and duplicate IDs.
 - [x] Add initial infinite CSS animation smoke detection.
 - [x] Add a first-Tab focus-indicator smoke check.
-- [x] Integrate axe-core WCAG 2.0/2.1 A/AA and best-practice automated rules.\n- [ ] Add manual accessibility review, assistive-technology testing, and comprehensive keyboard/focus checks.
+- [x] Integrate axe-core WCAG 2.0/2.1 A/AA and best-practice automated rules.
+- [ ] Add manual accessibility review, assistive-technology testing, and comprehensive keyboard/focus checks.
 - [x] Add a first-pass reduced-motion preference check.
 - [ ] Add comprehensive motion audit: scroll hijacking and layout-animation analysis.
 - [x] Add a short-run layout-shift smoke metric.
@@ -52,7 +53,8 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Implement finding-to-repair task handoff format with evidence, approval state, and verification slots.
 - [x] Add CLI export for a single verified finding (`ui-forge handoff`).
 - [x] Add initial path-scope guard for traversal, sensitive paths, and bounded file counts.
-- [x] Add initial sensitive-path detection and approval gating (no diff review or sandbox enforcement).\n- [ ] Add scoped patch diff review and full blast-radius analysis.
+- [x] Add initial sensitive-path detection and approval gating (no diff review or sandbox enforcement).
+- [ ] Add scoped patch diff review and full blast-radius analysis.
 - [ ] Add repair execution adapter with user approval.
 - [ ] Add automated regression verification and before/after evidence.
 - [ ] Ensure repair stops on ambiguous causes or repeated failure.
