@@ -63,11 +63,11 @@ test("browser audit captures responsive and accessibility findings", async () =>
     assert.ok(report.coverage.checks.some(item => item.name.startsWith("resource-transfer-smoke:")));
     assert.ok(report.coverage.checks.length >= 8);
 
+    assert.ok(report.coverage.checks.some(item => item.name.startsWith("visual-regression:") && item.status === "untested"));
     const baselineDir = path.join(tempDir, "baselines");
     await mkdir(baselineDir, { recursive: true });
     const screenshotName = (await readdir(path.join(tempDir, "screenshots"))).find(name => name.endsWith("-mobile.png"));
     assert.ok(screenshotName);
-    await copyFile(path.join(tempDir, "screenshots", screenshotName), path.join(baselineDir, screenshotName));
     const visualConfig = {
       baseUrl: `http://127.0.0.1:${address.port}`, routes: ["/"],
       viewports: [{ name: "mobile", width: 390, height: 844 }],
@@ -75,6 +75,15 @@ test("browser audit captures responsive and accessibility findings", async () =>
       visualRegression: { enabled: true, baselineDir: "baselines", threshold: 0.1, maxDiffPixels: 0 },
       configDir: tempDir
     };
+    const visualMissing = createReport({
+      runId: "visual-missing", startedAt: new Date().toISOString(),
+      environment: { project: "fixture", baseUrl: `http://127.0.0.1:${address.port}`, browser: "chromium" },
+      routes: ["/"], viewports: ["mobile"]
+    });
+    await runBrowserAudit(visualConfig, visualMissing, path.join(tempDir, "visual-missing"));
+    assert.ok(visualMissing.coverage.checks.some(item => item.name.startsWith("visual-regression:") && item.status === "untested"));
+    await copyFile(path.join(tempDir, "screenshots", screenshotName), path.join(baselineDir, screenshotName));
+
     const visualPass = createReport({
       runId: "visual-pass", startedAt: new Date().toISOString(),
       environment: { project: "fixture", baseUrl: `http://127.0.0.1:${address.port}`, browser: "chromium" },
