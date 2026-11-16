@@ -1,57 +1,58 @@
 # Plugin usage and compatibility
 
-## Package model
+## Requirements
 
-UI-Forge uses a vendor-neutral core package:
-- `plugin.json` describes the plugin identity, capabilities, skill entry points, schemas, and safety defaults.
-- `skills/*/SKILL.md` contains independently invocable agent skills.
-- `schemas/` defines the configuration and report contracts.
+- Node.js 20 or newer for the CLI runtime.
+- A local development server started by the user or the project workflow.
+- Playwright and its browser binaries for browser-based detection.
 
-This layout is the canonical source. Agent-specific wrappers should point to or package these same instructions rather than maintaining divergent copies.
+## Install the plugin
 
-## Skills
+Clone the repository or copy it into your coding-agent workspace. The three portable Markdown skills are in the skills directory:
+- ui-detect: read-only inspection and reporting.
+- ui-design-review: read-only product-aware visual critique.
+- ui-repair: explicitly authorized, scoped code repair and regression verification.
 
-### ui-detect
-Read-only inspection. It can inspect source and run safe tests, but must not edit project source, styles, tests, or dependencies.
+Agent skill discovery paths differ. Copy each skill folder into the directory documented by the target agent. The canonical instructions remain in this repository; do not maintain divergent copies.
 
-### ui-design-review
-Read-only visual critique. It must separate objective usability defects from subjective preferences.
+## Run the browser detector
 
-### ui-repair
-Editing workflow. Invoke only after the user explicitly asks for a repair. It must use evidence, make minimal changes, and verify the original issue and relevant regressions.
+From the UI-Forge repository:
+
+1. Install package dependencies with npm install.
+2. Install Chromium with npx playwright install chromium.
+3. Start the target application separately, for example with the project's own development command.
+4. Copy ui-forge.config.example.json to a local config file and set baseUrl, routes, and viewports.
+5. Run:
+
+   npx ui-forge detect --config ./ui-forge.config.json
+
+The detector writes a timestamped report and screenshots under outputDir. It does not start or stop the application, submit forms, click controls, modify source files, or repair findings.
+
+The current detector checks route response, browser console errors, uncaught page exceptions, failed requests, horizontal overflow, elements extending past the viewport, and a basic accessible-name smoke check. These are initial automated checks, not a complete accessibility or functional test suite.
 
 ## Configuration
 
-The JSON Schema is in [schemas/config.schema.json](../schemas/config.schema.json). A minimal configuration:
+See ui-forge.config.example.json and schemas/config.schema.json. The runtime currently accepts:
+- baseUrl: target origin.
+- routes: local paths beginning with /.
+- viewports: named viewport dimensions.
+- mode: detect only for the executable browser runtime.
+- outputDir: report and screenshot destination.
+- browser: Playwright browser engine and navigation timeout.
 
-```json
-{
-  "mode": "detect",
-  "routes": ["/"],
-  "viewports": [
-    { "name": "mobile", "width": 390, "height": 844 },
-    { "name": "desktop", "width": 1440, "height": 900 }
-  ],
-  "outputDir": ".ui-forge"
-}
-```
-
-Configuration is a contract for future runtime adapters; the current skills do not yet execute this configuration automatically.
+The schema includes forward-looking repair settings; the CLI does not execute repair mode.
 
 ## Report format
 
-The report contract is in [schemas/report.schema.json](../schemas/report.schema.json). Findings must include severity, confidence, context, reproduction, evidence, and a truthful status. Checks that were not run must be marked `untested`.
+The JSON report follows schemas/report.schema.json. Checks not run must be marked untested or blocked, never passed. Evidence paths are relative to the individual run directory.
 
-## Agent compatibility
+## Safety and limitations
 
-The core instructions are portable Markdown, but skill discovery paths differ by agent and version. Do not assume that placing this repository in a project automatically installs every skill. For each target agent, validate:
-- its documented skill directory and frontmatter requirements;
-- whether it supports project-local or user-global skills;
-- how it grants browser, terminal, and file-edit permissions;
-- how approval prompts and tool restrictions are represented.
-
-Until those checks are completed, installation is manual: copy the relevant skill folder into the skill directory documented by your agent, then invoke the skill by name.
-
-## Runtime status
-
-This repository currently contains skill instructions and machine-readable contracts. It does **not** yet ship a browser automation executable, screenshot analyzer, visual regression runner, or autonomous patch executor. The skills must not claim those runtime features exist. Browser automation depends on the tools available to the connected coding agent until the dedicated runtime is implemented.
+- Only run against systems you own or are authorized to test.
+- Do not point the detector at production systems containing real user data unless explicitly authorized and appropriately isolated.
+- Browser tests are read-only smoke checks; visiting a route can still trigger application-side analytics or other page-load behavior.
+- No forms are submitted and no visible controls are activated.
+- Detection mode does not edit project source.
+- The current runtime does not perform visual AI interpretation, screenshot diffing, exhaustive keyboard testing, full WCAG auditing, performance profiling, or automatic repair.
+- Agent skills provide portable workflows; browser capabilities depend on the connected agent and installed tools.
