@@ -151,7 +151,7 @@
         "enabled": false,
         "maxRoutes": 20
       },
-      "description": "Opt-in same-origin anchor crawl. No controls are clicked or forms submitted; hard-capped at 50 routes."
+      "description": "Opt-in same-origin anchor crawl. No controls are clicked or forms submitted; capped at 50 additional same-origin routes; explicitly configured routes are always retained."
     }
   }
 }
