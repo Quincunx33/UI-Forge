@@ -30,7 +30,7 @@ async function discoverSameOriginRoutes(browser, base, seeds, maxRoutes, timeout
         const hrefs = await page.locator("a[href]").evaluateAll(links => links.map(link => link.getAttribute("href")));
         for (const href of hrefs) {
           if (discovered.size >= maxRoutes) break;
-          if (typeof href !== "string" || !href.trim() || href.startsWith("//") || href.includes("\\\\")) continue;
+          if (typeof href !== "string" || !href.trim() || href.startsWith("//") || href.includes(String.fromCharCode(92))) continue;
           let candidate;
           try { candidate = new URL(href, base); } catch { continue; }
           if (candidate.origin !== base.origin || candidate.username || candidate.password || candidate.search || candidate.hash) continue;
