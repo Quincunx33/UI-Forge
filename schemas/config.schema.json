@@ -5,47 +5,132 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "baseUrl": { "type": "string", "format": "uri" },
-    "routes": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "baseUrl": {
+      "type": "string",
+      "format": "uri"
+    },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
     "viewports": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["name", "width", "height"],
+        "required": [
+          "name",
+          "width",
+          "height"
+        ],
         "properties": {
-          "name": { "type": "string", "minLength": 1 },
-          "width": { "type": "integer", "minimum": 240, "maximum": 7680 },
-          "height": { "type": "integer", "minimum": 320, "maximum": 4320 },
-          "deviceScaleFactor": { "type": "number", "minimum": 0.5, "maximum": 4 }
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 240,
+            "maximum": 7680
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 320,
+            "maximum": 4320
+          },
+          "deviceScaleFactor": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 4
+          }
         }
       },
       "default": [
-        { "name": "mobile", "width": 390, "height": 844 },
-        { "name": "tablet", "width": 768, "height": 1024 },
-        { "name": "desktop", "width": 1440, "height": 900 }
+        {
+          "name": "mobile",
+          "width": 390,
+          "height": 844
+        },
+        {
+          "name": "tablet",
+          "width": 768,
+          "height": 1024
+        },
+        {
+          "name": "desktop",
+          "width": 1440,
+          "height": 900
+        }
       ]
     },
-    "mode": { "enum": ["detect", "design-review", "repair"], "default": "detect" },
-    "outputDir": { "type": "string", "default": ".ui-forge" },
+    "mode": {
+      "enum": [
+        "detect",
+        "design-review",
+        "repair"
+      ],
+      "default": "detect"
+    },
+    "outputDir": {
+      "type": "string",
+      "default": ".ui-forge"
+    },
     "browser": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "engine": { "enum": ["chromium", "firefox", "webkit"] },
-        "headless": { "type": "boolean", "default": true },
-        "navigationTimeoutMs": { "type": "integer", "minimum": 1000, "maximum": 120000 }
+        "engine": {
+          "enum": [
+            "chromium",
+            "firefox",
+            "webkit"
+          ]
+        },
+        "headless": {
+          "type": "boolean",
+          "default": true
+        },
+        "navigationTimeoutMs": {
+          "type": "integer",
+          "minimum": 1000,
+          "maximum": 120000
+        }
       }
     },
     "repair": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "maxAttemptsPerFinding": { "type": "integer", "minimum": 1, "maximum": 3, "default": 2 },
-        "requireApprovalForSensitiveFiles": { "type": "boolean", "default": true },
-        "allowDependencyChanges": { "type": "boolean", "default": false }
+        "maxAttemptsPerFinding": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3,
+          "default": 2
+        },
+        "requireApprovalForSensitiveFiles": {
+          "type": "boolean",
+          "default": true
+        },
+        "allowDependencyChanges": {
+          "type": "boolean",
+          "default": false
+        }
       }
     },
-    "ignore": { "type": "array", "items": { "type": "string" }, "default": [] }
+    "ignore": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "allowRemote": {
+      "type": "boolean",
+      "default": false,
+      "description": "Explicitly allow a non-loopback audit target. Use only for systems you own or are authorized to test."
+    }
   }
 }
