@@ -17,14 +17,16 @@ function help() {
     "  ui-forge install --agent <codex|claude|cursor|all> [--scope project|user] [--target <dir>] [--force]\n" +
     "  ui-forge detect --config <file>\n" +
     "  ui-forge handoff --report <report.json> --finding <UIF-ID> [--out <file>]\n" +
-    "  ui-forge review --handoff <file> --patch <diff.patch> [--approve]\n\n" +
+    "  ui-forge review --handoff <file> --patch <diff.patch> [--approve]\n" +
+    "  ui-forge apply --handoff <file> --patch <diff.patch> --root <repo> --approve --apply\n\n" +
     "Options:\n" +
     "  --config <file>   Path to UI-Forge JSON configuration\n" +
     "  --agent <name>    Target coding agent for skill installation\n" +
     "  --scope <scope>   project (default) or user\n" +
     "  --target <dir>    Project directory for installation (default: current directory)\n" +
     "  --force           Replace existing UI-Forge skill folders\n" +
-    "  --approve         Explicitly approve review of sensitive or broad patches (does not apply them)\n" +
+    "  --approve         Explicitly approve patch application after review\n" +
+    "  --apply           Confirm actual patch application (required with --approve)\n" +
     "  --help            Show this help\n\n" +
     "Detection is read-only. Start your local app separately before running an audit.\n" +
     "A repair handoff packages evidence; it never authorizes edits.\n"
@@ -78,7 +80,7 @@ async function main(args) {
       approved: args.includes("--approve"),
       applyConfirmed: args.includes("--apply")
     });
-    process.stdout.write(JSON.stringify(result, null, 2) + "\\n");
+    process.stdout.write(JSON.stringify(result, null, 2) + "\n");
     return;
   }
 
