@@ -70,7 +70,7 @@ Inspect CSS and runtime behavior for:
 Do not ban all animation. Keep purposeful state feedback and meaningful transitions.
 
 ### Accessibility Auditor
-Check semantic HTML, accessible names, keyboard operation, focus visibility, focus order, contrast, form errors, and reduced-motion behavior. Automated checks are not a substitute for manual assistive-technology review.
+Run axe-core rules tagged WCAG 2.0/2.1 A/AA and best-practice, plus UI-Forge DOM/focus/reduced-motion smoke checks. Preserve incomplete axe rules as untested. Automated checks are not a substitute for manual conformance review or assistive-technology testing.
 
 ### Repair Planner
 Prioritize verified defects by impact, reproducibility, and confidence. Explain the root cause and propose the smallest viable patch. Preserve the established visual language unless the user requests redesign.
@@ -103,6 +103,7 @@ Severity must be based on user impact:
 - Start in report-only mode.
 - Do not edit files during detection-only runs.
 - Keep repairs scoped to confirmed findings.
+- Review proposed unified diffs for path traversal, binary/ambiguous paths, sensitive paths, file count, and changed-line thresholds before applying. This is a preflight check, not a sandbox or patch applier.
 - Ask before broad redesigns, dependency upgrades, or changes to sensitive flows.
 - Never remove or weaken tests to hide failures.
 - Bound repair retries and stop on repeated failure.
