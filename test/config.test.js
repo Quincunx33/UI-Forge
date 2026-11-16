@@ -19,3 +19,15 @@ test("rejects unknown mode and browser engine", () => {
   assert.ok(errors.some(error => error.includes("mode")));
   assert.ok(errors.some(error => error.includes("browser.engine")));
 });
+
+test("requires explicit opt-in for remote targets and blocks metadata hosts", () => {
+  assert.ok(validateConfig({ baseUrl: "https://example.com" }).some(error => error.includes("allowRemote")));
+  assert.deepEqual(validateConfig({ baseUrl: "https://example.com", allowRemote: true }), []);
+  assert.ok(validateConfig({ baseUrl: "http://169.254.169.254", allowRemote: true }).some(error => error.includes("metadata")));
+  assert.ok(validateConfig({ baseUrl: "http://user:pass@localhost:3000" }).some(error => error.includes("credentials")));
+});
+
+test("rejects protocol-relative and backslash routes", () => {
+  assert.ok(validateConfig({ baseUrl: "http://localhost:3000", routes: ["//other-host/path"] }).some(error => error.includes("local absolute paths")));
+  assert.ok(validateConfig({ baseUrl: "http://localhost:3000", routes: ["/\\\\evil.test"] }).some(error => error.includes("local absolute paths")));
+});
