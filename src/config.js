@@ -12,6 +12,7 @@ const DEFAULTS = {
   mode: "detect",
   allowRemote: false,
   discovery: { enabled: false, maxRoutes: 20 },
+  interactions: [],
   outputDir: ".ui-forge",
   browser: { engine: "chromium", headless: true, navigationTimeoutMs: 30000 },
   repair: { maxAttemptsPerFinding: 2, requireApprovalForSensitiveFiles: true, allowDependencyChanges: false },
@@ -73,6 +74,16 @@ export function validateConfig(input) {
       }
     }
   }
+  if (input.interactions !== undefined) {
+    if (!Array.isArray(input.interactions)) errors.push("interactions must be an array.");
+    else for (const [index, item] of input.interactions.entries()) {
+      if (!item || typeof item !== "object" || Array.isArray(item)) { errors.push(`interactions[${index}] must be an object.`); continue; }
+      if (typeof item.name !== "string" || !item.name.trim()) errors.push(`interactions[${index}].name must be a non-empty string.`);
+      if (typeof item.testId !== "string" || !/^[a-zA-Z0-9_-]{1,64}$/.test(item.testId)) errors.push(`interactions[${index}].testId must use 1-64 letters, numbers, underscores, or hyphens.`);
+      if (typeof item.route !== "string" || !item.route.startsWith("/") || item.route.startsWith("//") || item.route.includes(String.fromCharCode(92))) errors.push(`interactions[${index}].route must be a local absolute path.`);
+      if (item.expectedText !== undefined && (typeof item.expectedText !== "string" || item.expectedText.length > 500)) errors.push(`interactions[${index}].expectedText must be a string of at most 500 characters.`);
+    }
+  }
   if (input.outputDir !== undefined && (typeof input.outputDir !== "string" || !input.outputDir.trim())) {
     errors.push("outputDir must be a non-empty path.");
   }
@@ -102,6 +113,7 @@ export async function loadConfig(configPath) {
     browser: { ...DEFAULTS.browser, ...(parsed.browser ?? {}) },
     repair: { ...DEFAULTS.repair, ...(parsed.repair ?? {}) },
     discovery: { ...DEFAULTS.discovery, ...(parsed.discovery ?? {}) },
+    interactions: parsed.interactions ?? [],
     configDir: path.dirname(absolutePath)
   };
 }
