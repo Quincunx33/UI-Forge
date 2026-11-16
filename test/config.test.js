@@ -50,3 +50,7 @@ test("visual regression settings validate thresholds and pixel budgets", () => {
   assert.ok(validateConfig({ baseUrl: "http://localhost:3000", visualRegression: { threshold: 1.1 } }).some(error => error.includes("threshold")));
   assert.ok(validateConfig({ baseUrl: "http://localhost:3000", visualRegression: { maxDiffPixels: -1 } }).some(error => error.includes("maxDiffPixels")));
 });
+
+test("rejects viewport labels that could escape artifact directories", () => {
+  assert.ok(validateConfig({ baseUrl: "http://localhost:3000", viewports: [{ name: "../outside", width: 390, height: 844 }] }).some(error => error.includes("viewports[0]")));
+});
