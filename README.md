@@ -30,7 +30,7 @@ cp /path/to/UI-Forge/ui-forge.config.example.json ui-forge.config.json
 node /path/to/UI-Forge/bin/ui-forge.js detect --config ./ui-forge.config.json
 ```
 
-The installer supports Codex, Claude Code, and Cursor project/user skill directories. See [Plugin usage](docs/PLUGIN-USAGE.md).
+The root manifest follows the portable Agent Plugins 1.0 format. Cursor and Claude Code marketplace manifests are also included. The installer can copy skills into Codex, Claude Code, and Cursor project/user skill directories. See [Plugin usage](docs/PLUGIN-USAGE.md).
 
 ## Browser detection runtime
 
