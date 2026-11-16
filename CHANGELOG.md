@@ -2,16 +2,17 @@
 
 ## Unreleased
 
-- Added opt-in functional smoke checks restricted to explicitly marked safe test buttons; unmarked controls are blocked.
-- Added PNG screenshot comparison against manually approved baselines, with pixel-diff artifacts and untested status for missing baselines.
-- Added configuration validation and browser integration coverage for safe interactions and visual regression.
-
-## Unreleased
+- Added explicit allowlisted Git patch application via `ui-forge apply`, requiring approval, confirmation, a clean worktree, symlink checks, and `git apply --check`.
+- Added tests for patch application success and refusal of implicit, out-of-scope, dirty-tree, and symlink-traversal operations.
 
 - Added opt-in same-origin anchor route discovery with a configurable cap of up to 50 additional routes; configured routes are always retained.
 - Excluded external, query-string, fragment, asset, and encoded-separator links from discovery.
 - Added lab performance observations for TTFB, observed LCP, long tasks, and resource transfer timing, with unsupported measurements marked untested.
 - Expanded browser integration coverage for route discovery and performance check reporting.
+
+- Added opt-in functional smoke checks restricted to explicitly marked safe test buttons; unmarked controls are blocked.
+- Added PNG screenshot comparison against manually approved baselines, with pixel-diff artifacts and untested status for missing baselines.
+- Added configuration validation and browser integration coverage for safe interactions and visual regression.
 
 ## 0.4.0
 
