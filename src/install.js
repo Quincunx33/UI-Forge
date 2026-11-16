@@ -24,7 +24,7 @@ export async function installSkills({ agent, scope = "project", force = false, c
   const conflicts = [];
   for (const target of targets) {
     for (const name of skillNames) {
-      try { await access(path.join(target, name, "SKILL.md")); conflicts.push(path.join(target, name)); }
+      try { await access(path.join(target, name)); conflicts.push(path.join(target, name)); }
       catch { /* target skill does not exist */ }
     }
   }
