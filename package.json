@@ -1,6 +1,6 @@
 {
   "name": "@quincunx33/ui-forge",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Portable agent skills and browser-based UI quality auditing.",
   "type": "module",
   "engines": {
