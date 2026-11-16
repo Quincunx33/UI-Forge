@@ -2,58 +2,73 @@
 
 **Autonomous UI Quality Engineering & Repair Plugin**
 
-UI-Forge is a cross-agent engineering plugin designed to help coding agents build, inspect, test, and repair real web interfaces without falling into generic AI-generated design patterns.
+UI-Forge is a modular, portable coding-agent plugin for evidence-based UI inspection, design review, frontend testing, and controlled repair.
 
-It combines two independent but connected systems:
+It is designed around three separate agent skills:
 
-1. **Detection & Verification** — browser-driven functional tests, visual inspection, responsive checks, accessibility audits, performance checks, and evidence-backed reports.
-2. **Controlled Repair** — root-cause analysis, minimal code changes, targeted retesting, regression checks, and safe rollback guidance.
+| Skill | Purpose | Can edit project source? |
+|---|---|---:|
+| `ui-detect` | Find and document UI defects with evidence | **No** |
+| `ui-design-review` | Review visual quality and provide prioritized recommendations | **No** |
+| `ui-repair` | Fix confirmed defects and run regression checks | **Yes, only when explicitly invoked** |
 
-UI-Forge is not a one-click redesign tool. It must preserve product intent and existing behavior while fixing demonstrable defects.
+## Current implementation
+
+- [x] Portable plugin manifest (`plugin.json`)
+- [x] Three reusable agent skills with explicit responsibilities
+- [x] Configuration JSON Schema
+- [x] Structured audit-report JSON Schema
+- [x] Detection-only and repair safety boundaries
+- [ ] Browser automation runtime and executable audit commands
+- [ ] Automated visual, responsive, accessibility, motion, and functional checks
+- [ ] Regression verification and CI validation
+- [ ] Validated agent-specific installation adapters
+
+The skills are usable as agent instructions now. Browser testing is **not yet bundled as an executable engine**; it requires a compatible browser automation tool or a future UI-Forge runtime.
+
+## Quick start
+
+1. Copy the `skills/` directory into the skill location supported by your coding agent.
+2. Ask the agent to use **ui-detect** to inspect a web project. This is report-only and must not modify source files.
+3. Ask for **ui-design-review** when you want a product-aware visual critique without code changes.
+4. After reviewing findings, explicitly ask the agent to use **ui-repair** for an approved fix.
+5. Keep the generated report and evidence with the project so repairs can be verified later.
+
+See [Plugin usage and compatibility](docs/PLUGIN-USAGE.md) for installation guidance and current limitations.
 
 ## Design principles
 
 - **Evidence before edits:** reproduce and record a defect before changing code.
 - **Minimal repair:** fix the root cause; do not rewrite unrelated components.
-- **No generic AI styling:** no automatic blue/green gradients, glassmorphism, excessive cards, badges, glow, or decorative motion.
-- **Motion with purpose:** animation must communicate state or improve interaction; respect reduced-motion preferences.
+- **No generic AI styling:** avoid gratuitous gradients, glass effects, glow, floating decoration, excessive cards, badges, and decorative motion.
+- **Motion with purpose:** keep useful interaction feedback and respect reduced-motion preferences.
 - **Responsive by verification:** test actual viewport sizes and content, not just CSS breakpoints.
 - **Accessibility is functional quality:** keyboard, focus, semantics, contrast, and assistive-technology behavior matter.
-- **Regression protection:** every repair must rerun relevant tests.
+- **Regression protection:** every repair must rerun relevant checks.
 - **Honest reporting:** distinguish verified failures, suspected issues, and untested areas.
 
-## Planned capabilities
+## Repository structure
 
-| Area | Responsibility |
-|---|---|
-| Design intelligence | Product-aware visual direction and design-system consistency |
-| Browser automation | Navigation, interaction, screenshots, console and network errors |
-| Visual QA | Layout, spacing, typography, overflow, clipping, and visual regression |
-| Responsive QA | Mobile, tablet, laptop, and desktop viewport checks |
-| Interaction QA | Buttons, links, forms, menus, dialogs, and keyboard flows |
-| Motion audit | Excessive, distracting, inaccessible, or expensive animations |
-| Accessibility audit | Semantic structure, keyboard access, focus, contrast, and reduced motion |
-| Performance audit | Rendering, layout shifts, heavy effects, and avoidable work |
-| Repair engine | Root-cause analysis and minimal, scoped code changes |
-| Regression engine | Retest repaired behavior and detect newly introduced defects |
-
-## Repository status
-
-This repository is currently in the **foundation / specification phase**. The architecture and roadmap are being established before implementation. Do not assume a capability is implemented merely because it appears in the plan.
-
-## Documentation
-
-- [Architecture](docs/ARCHITECTURE.md)
-- [Quality gates](docs/QUALITY-GATES.md)
-- [Roadmap](ROADMAP.md)
-
-## Intended compatibility
-
-The design targets multiple coding-agent environments rather than one vendor-specific runtime. Agent-specific adapters and skill packaging will be added as the supported formats are validated.
+```text
+.
+├── plugin.json
+├── skills/
+│   ├── ui-detect/SKILL.md
+│   ├── ui-design-review/SKILL.md
+│   └── ui-repair/SKILL.md
+├── schemas/
+│   ├── config.schema.json
+│   └── report.schema.json
+└── docs/
+    ├── ARCHITECTURE.md
+    ├── PLUGIN-USAGE.md
+    └── QUALITY-GATES.md
+```
 
 ## Safety boundaries
 
-- Never claim a page is secure, encrypted, accessible, or fully responsive without evidence.
+- Detection and design review must not edit project source files.
+- Repair requires explicit user intent and must remain scoped to confirmed findings.
 - Never modify authentication, payment, security-sensitive, or destructive flows without explicit authorization.
 - Never delete user data, disable tests, or weaken quality gates to make a build pass.
 - Ask before broad redesigns, dependency migrations, or destructive changes.
