@@ -32,8 +32,8 @@ This roadmap is the source of truth for project scope. Items are plans until imp
 - [ ] Add DOM clipping/overlap and missing-content heuristics.
 
 ## Phase 3 — Automated quality audits
-- [ ] Add dedicated accessibility engine and keyboard/focus checks.
-- [ ] Add motion audit: excessive loops, scroll hijacking, layout animation, reduced-motion gaps.
+- [x] Add initial checks for missing image alt attributes, unlabeled controls, empty links, and duplicate IDs.\n- [ ] Add dedicated accessibility engine and keyboard/focus checks.
+- [x] Add initial infinite CSS animation smoke detection.\n- [ ] Add motion audit: scroll hijacking, layout animation, reduced-motion gaps.
 - [ ] Add performance metrics and layout-shift checks.
 - [ ] Add visual baseline comparison and reviewable diffs.
 - [ ] Add screenshot interpretation adapter with confidence and evidence.
