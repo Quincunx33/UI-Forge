@@ -2,77 +2,62 @@
 
 **Autonomous UI Quality Engineering & Repair Plugin**
 
-UI-Forge is a modular, portable coding-agent plugin for evidence-based UI inspection, design review, frontend testing, and controlled repair.
+UI-Forge is a modular coding-agent plugin for evidence-based UI inspection, design review, frontend testing, and controlled repair.
 
-It is designed around three separate agent skills:
+## Three agent skills
 
-| Skill | Purpose | Can edit project source? |
-|---|---|---:|
-| `ui-detect` | Find and document UI defects with evidence | **No** |
-| `ui-design-review` | Review visual quality and provide prioritized recommendations | **No** |
-| `ui-repair` | Fix confirmed defects and run regression checks | **Yes, only when explicitly invoked** |
+| Skill | Purpose | Source editing |
+|---|---|---|
+| ui-detect | Find and document UI defects with evidence | Never |
+| ui-design-review | Review visual quality and recommend improvements | Never |
+| ui-repair | Fix confirmed defects and run regression checks | Only when explicitly invoked |
 
-## Current implementation
+## Executable browser detector
 
-- [x] Portable plugin manifest (`plugin.json`)
-- [x] Three reusable agent skills with explicit responsibilities
-- [x] Configuration JSON Schema
-- [x] Structured audit-report JSON Schema
-- [x] Detection-only and repair safety boundaries
-- [ ] Browser automation runtime and executable audit commands
-- [ ] Automated visual, responsive, accessibility, motion, and functional checks
-- [ ] Regression verification and CI validation
-- [ ] Validated agent-specific installation adapters
+The repository now includes a Node.js CLI and optional Playwright browser runtime.
 
-The skills are usable as agent instructions now. Browser testing is **not yet bundled as an executable engine**; it requires a compatible browser automation tool or a future UI-Forge runtime.
+- Route response checks.
+- Browser console errors and uncaught exceptions.
+- Failed network requests.
+- Screenshots at configured viewport sizes.
+- Horizontal overflow and off-screen element smoke checks.
+- Basic accessible-name smoke checks.
+- Timestamped JSON reports with evidence references.
 
-## Quick start
+### Quick start
 
-1. Copy the `skills/` directory into the skill location supported by your coding agent.
-2. Ask the agent to use **ui-detect** to inspect a web project. This is report-only and must not modify source files.
-3. Ask for **ui-design-review** when you want a product-aware visual critique without code changes.
-4. After reviewing findings, explicitly ask the agent to use **ui-repair** for an approved fix.
-5. Keep the generated report and evidence with the project so repairs can be verified later.
+```sh
+npm install
+npx playwright install chromium
+# Start your own local development server separately.
+cp ui-forge.config.example.json ui-forge.config.json
+# Edit baseUrl and routes, then:
+npx ui-forge detect --config ./ui-forge.config.json
+```
 
-See [Plugin usage and compatibility](docs/PLUGIN-USAGE.md) for installation guidance and current limitations.
+See [Plugin usage](docs/PLUGIN-USAGE.md) for setup, configuration, and limitations.
 
-## Design principles
-
-- **Evidence before edits:** reproduce and record a defect before changing code.
-- **Minimal repair:** fix the root cause; do not rewrite unrelated components.
-- **No generic AI styling:** avoid gratuitous gradients, glass effects, glow, floating decoration, excessive cards, badges, and decorative motion.
-- **Motion with purpose:** keep useful interaction feedback and respect reduced-motion preferences.
-- **Responsive by verification:** test actual viewport sizes and content, not just CSS breakpoints.
-- **Accessibility is functional quality:** keyboard, focus, semantics, contrast, and assistive-technology behavior matter.
-- **Regression protection:** every repair must rerun relevant checks.
-- **Honest reporting:** distinguish verified failures, suspected issues, and untested areas.
-
-## Repository structure
+## Repository layout
 
 ```text
 .
 ├── plugin.json
-├── skills/
-│   ├── ui-detect/SKILL.md
-│   ├── ui-design-review/SKILL.md
-│   └── ui-repair/SKILL.md
-├── schemas/
-│   ├── config.schema.json
-│   └── report.schema.json
-└── docs/
-    ├── ARCHITECTURE.md
-    ├── PLUGIN-USAGE.md
-    └── QUALITY-GATES.md
+├── bin/                  # CLI
+├── src/                  # Runtime and browser audit
+├── skills/               # Portable agent skills
+├── schemas/              # Config and report contracts
+├── test/                 # Node.js tests
+├── docs/
+└── .github/workflows/    # CI
 ```
 
-## Safety boundaries
+## Safety
 
-- Detection and design review must not edit project source files.
-- Repair requires explicit user intent and must remain scoped to confirmed findings.
-- Never modify authentication, payment, security-sensitive, or destructive flows without explicit authorization.
-- Never delete user data, disable tests, or weaken quality gates to make a build pass.
-- Ask before broad redesigns, dependency migrations, or destructive changes.
-- Keep a clear record of files changed, checks run, and remaining risks.
+Detection is read-only with respect to project source. The CLI does not submit forms, click controls, start or stop the target app, or perform repairs. Run only against systems you own or are authorized to test. Repair requires explicit user intent and must remain scoped to confirmed findings.
+
+## Current limitations
+
+The browser runtime is an initial smoke-audit engine, not a complete QA suite. Full accessibility auditing, keyboard interaction coverage, motion/performance analysis, screenshot visual regression, AI screenshot interpretation, and executable autonomous repair are not yet implemented. See [ROADMAP.md](ROADMAP.md).
 
 ## License
 
