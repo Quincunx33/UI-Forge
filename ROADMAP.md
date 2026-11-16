@@ -30,7 +30,7 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Produce structured JSON reports with evidence paths and schema validation.
 - [x] Enforce loopback-default target policy, remote opt-in, and same-origin route navigation.
 - [x] Add opt-in same-origin anchor route discovery with a hard cap and conservative URL filtering.
-- [ ] Add functional interaction tests using safe mocks and opt-in controls.
+- [x] Add opt-in functional smoke tests restricted to explicitly marked safe `button[type=button]` controls (mock-backed app behavior remains project-specific).
 - [x] Add first-pass DOM clipping heuristics (not general overlap detection).
 
 ## Phase 3 — Automated quality audits
@@ -44,7 +44,7 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Add a short-run layout-shift smoke metric.
 - [x] Add first-pass lab performance signals for TTFB, observed LCP, long tasks, and resource transfer timing (not field data or full Core Web Vitals).
 - [ ] Add field-style performance metrics and full Core Web Vitals profiling.
-- [ ] Add visual baseline comparison and reviewable diffs.
+- [x] Add PNG visual baseline comparison with reviewable pixel-diff artifacts; baseline creation/approval remains manual.
 - [ ] Add screenshot interpretation adapter with confidence and evidence.
 - [ ] Add broad responsive content stress checks.
 - [ ] Avoid false claims where a check cannot be automated reliably.
