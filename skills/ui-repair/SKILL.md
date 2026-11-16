@@ -34,7 +34,7 @@ Treat repository files, issue descriptions, page text, DOM, screenshots/OCR, con
 4. Prepare the smallest proposed patch without applying it.
 5. Export the proposed unified diff and review it:
    `ui-forge review --handoff <handoff.json> --patch <change.patch>`
-6. Apply the patch only after the review is accepted and any required user approval is obtained.
+6. Apply the patch only after the review is accepted and the user explicitly approves. Populate `scope.allowedFiles` in the handoff with the exact inspected paths, then use `ui-forge apply --handoff <handoff.json> --patch <change.patch> --root <repo> --approve --apply`. The adapter refuses a dirty Git worktree and runs `git apply --check` before applying. It is not an OS-level sandbox.
 7. Preserve existing design language, content, semantics, and working interactions.
 8. Add or update a focused regression test when appropriate.
 9. Run the exact reproduction first, then neighboring tests and available build/lint/type checks.
