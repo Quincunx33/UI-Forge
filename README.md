@@ -50,7 +50,7 @@ The initial Playwright detector checks:
 - infinite CSS animation and reduced-motion smoke checks;
 - first-Tab focus-indicator and short-run layout-shift smoke checks;
 - lab performance signals for TTFB, observed LCP, main-thread long tasks, and Resource Timing transfer sizes (unsupported or unobserved APIs are marked untested);
-- evidence-based repair handoff export and bounded unified-diff preflight review (never applies patches);
+- evidence-based repair handoff export, bounded unified-diff preflight review, and explicitly approved Git patch application;
 - schema-validated JSON reports with evidence paths and explicit check outcomes.
 
 ## Controlled repair preflight
@@ -60,9 +60,11 @@ Create a handoff from a verified finding, then review a proposed unified diff be
 ```sh
 node ./bin/ui-forge.js handoff --report .ui-forge/<run>/report.json --finding UIF-0001
 node ./bin/ui-forge.js review --handoff <handoff.json> --patch <change.patch>
+# After inspection, set scope.allowedFiles to the exact approved paths in the handoff:
+node ./bin/ui-forge.js apply --handoff <handoff.json> --patch <change.patch> --root /path/to/project --approve --apply
 ```
 
-Use `--approve` only after the user explicitly approves a sensitive or broad patch. Review is a safety preflight: it does not apply changes, run tests, or replace human diff review.
+Review is a preflight, not an approval to edit. Application requires both flags, an exact non-empty `scope.allowedFiles` list, a clean Git working tree, no symlink traversal, and a successful `git apply --check`. It is a local Git guard, not an OS-level sandbox; run project tests and review the resulting diff afterwards.
 
 ## Repository layout
 
@@ -83,11 +85,11 @@ Use `--approve` only after the user explicitly approves a sensitive or broad pat
 
 ## Safety
 
-Detection is read-only with respect to project source. Optional route discovery follows same-origin anchor URLs only; it does not click controls, submit forms, start or stop the target app, or perform repairs. Discovery is disabled by default and capped at 50 additional routes. Loopback targets are the default; remote targets require explicit allowRemote=true. Known cloud metadata endpoints and cross-origin route escapes are blocked. Treat only systems you own or are authorized to test.
+Detection never edits project source. Route discovery is disabled by default and follows same-origin anchor URLs only. Functional interaction tests are also disabled by default; they click only unique, configured buttons marked `data-ui-forge-safe="true"` and must be backed by side-effect-safe test behavior or mocks. No forms are submitted. Visual regression compares against manually approved baselines and never creates or overwrites them. Loopback targets are the default; remote targets require explicit allowRemote=true. Known cloud metadata endpoints and cross-origin route escapes are blocked. Treat only systems you own or are authorized to test.
 
 ## Current limitations
 
-This is an initial smoke-audit runtime, not a complete QA suite. Automated axe-core rule coverage is not a full WCAG conformance assessment: manual review, assistive-technology testing, exhaustive keyboard interaction coverage, field performance profiling and full Core Web Vitals validation, screenshot visual regression, AI screenshot interpretation, and executable autonomous repair remain outstanding. A first-pass smoke check is not a conformance claim. The repair skill is an agent workflow; the CLI can review a proposed diff but cannot apply it. See [ROADMAP.md](ROADMAP.md) and [Threat model](docs/THREAT-MODEL.md).
+This is an initial smoke-audit runtime, not a complete QA suite. Automated axe-core rule coverage is not a full WCAG conformance assessment: manual review, assistive-technology testing, exhaustive keyboard interaction coverage, field performance profiling and full Core Web Vitals validation, AI screenshot interpretation, semantic blast-radius analysis, OS-level repair sandboxing, autonomous agent repair loops, and automatic post-repair regression verification remain outstanding. A first-pass smoke check is not a conformance claim. The repair skill is an agent workflow; the CLI can apply an explicitly approved, allowlisted patch but does not autonomously generate or verify repairs. See [ROADMAP.md](ROADMAP.md) and [Threat model](docs/THREAT-MODEL.md).
 
 ## License
 
