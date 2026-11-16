@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Added opt-in same-origin anchor route discovery with a configurable cap of up to 50 additional routes; configured routes are always retained.
+- Excluded external, query-string, fragment, asset, and encoded-separator links from discovery.
+- Added lab performance observations for TTFB, observed LCP, long tasks, and resource transfer timing, with unsupported measurements marked untested.
+- Expanded browser integration coverage for route discovery and performance check reporting.
+
 ## 0.4.0
 
 - Added axe-core browser accessibility scans for WCAG 2.0/2.1 A/AA and best-practice tagged rules.
