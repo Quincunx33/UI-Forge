@@ -534,5 +534,14 @@ export async function runBrowserAudit(config, report, runDir) {
         } finally { await context.close(); }
       }
     }
+    for (const interaction of (config.interactions ?? [])) {
+      if (!routesToAudit.includes(interaction.route)) {
+        report.coverage.checks.push({
+          name: `interaction:${interaction.name}:${interaction.route}`,
+          status: "untested",
+          reason: "The interaction route was not included in the audited route set."
+        });
+      }
+    }
   } finally { await browser.close(); }
 }
