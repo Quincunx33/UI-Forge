@@ -40,7 +40,9 @@ The initial Playwright detector checks:
 - screenshots at configured viewport sizes;
 - horizontal overflow, clipped-content heuristics, and elements extending past the viewport;
 - potentially unlabeled controls, missing image alt attributes, empty links, and duplicate IDs;
-- infinite CSS animation and reduced-motion smoke checks;\n- first-Tab focus-indicator and short-run layout-shift smoke checks;\n- evidence-based repair handoff export (never grants edit authorization);
+- infinite CSS animation and reduced-motion smoke checks;
+- first-Tab focus-indicator and short-run layout-shift smoke checks;
+- evidence-based repair handoff export (never grants edit authorization);
 - schema-validated JSON reports with evidence paths and explicit check outcomes.
 
 ## Repository layout
@@ -54,7 +56,8 @@ The initial Playwright detector checks:
 ├── src/                    # Runtime, installer, schema validation
 ├── skills/                 # Canonical portable agent skills
 ├── schemas/                # Config, report, and plugin schemas
-├── test/                   # Unit and browser integration tests\n├── examples/vanilla-demo/  # Reproducible intentionally-buggy demo
+├── test/                   # Unit and browser integration tests
+├── examples/vanilla-demo/  # Reproducible intentionally-buggy demo
 ├── docs/
 └── .github/workflows/      # CI
 ```
