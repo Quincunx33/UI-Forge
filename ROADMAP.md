@@ -37,7 +37,7 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Add initial checks for missing image alt attributes, unlabeled controls, empty links, and duplicate IDs.
 - [x] Add initial infinite CSS animation smoke detection.
 - [x] Add a first-Tab focus-indicator smoke check.
-- [ ] Add dedicated accessibility engine and comprehensive keyboard/focus checks.
+- [x] Integrate axe-core WCAG 2.0/2.1 A/AA and best-practice automated rules.\n- [ ] Add manual accessibility review, assistive-technology testing, and comprehensive keyboard/focus checks.
 - [x] Add a first-pass reduced-motion preference check.
 - [ ] Add comprehensive motion audit: scroll hijacking and layout-animation analysis.
 - [x] Add a short-run layout-shift smoke metric.
@@ -70,7 +70,7 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Add GitHub Actions CI workflow configuration.
 - [ ] Verify CI execution on a working GitHub Actions runner.
 - [x] Add a loopback-only vanilla demo with intentional UI defects.
-- [x] Add versioned v0.3.0 changelog and installation documentation.
+- [x] Add versioned v0.3.0 and v0.4.0 changelog and installation documentation.
 - [ ] Publish a tagged release after CI is verified.
 
 ## Definition of done
