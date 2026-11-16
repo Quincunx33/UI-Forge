@@ -7,7 +7,9 @@ UI-Forge must not mark a project as healthy based on a single screenshot or a su
 A detection run should report:
 - project and environment details;
 - routes and viewports actually tested, including whether opt-in route discovery ran;
-- discovery restricted to same-origin anchor links with a configurable cap; no query-string crawling, form submission, or control activation;
+- discovery restricted to same-origin anchor links with a configurable cap; no query-string crawling or form submission;
+- functional interactions disabled by default and limited to unique, explicitly configured `button[type=button]` elements carrying `data-ui-forge-safe="true"`; test buttons must be side-effect-safe or backed by project-owned mocks;
+- visual regression only against manually approved PNG baselines; missing baselines are untested, and changed pixels produce a diff artifact;
 - checks completed and skipped;
 - console and uncaught runtime errors;
 - failed requests observed;
