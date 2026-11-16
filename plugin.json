@@ -11,7 +11,13 @@
     "repair": true,
     "browser_automation": "optional-playwright-runtime",
     "motion_audit": "initial-css-animation-smoke-check",
-    "accessibility_audit": "initial-dom-smoke-check"
+    "accessibility_audit": "initial-dom-smoke-check",
+    "target_policy": "loopback-default-remote-opt-in",
+    "skill_installer": [
+      "codex",
+      ".claude",
+      "cursor"
+    ]
   },
   "skills": [
     "skills/ui-detect/SKILL.md",
