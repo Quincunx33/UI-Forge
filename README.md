@@ -30,7 +30,7 @@ cp /path/to/UI-Forge/ui-forge.config.example.json ui-forge.config.json
 node /path/to/UI-Forge/bin/ui-forge.js detect --config ./ui-forge.config.json
 ```
 
-The root manifest follows the portable Agent Plugins 1.0.0 format. Cursor and Claude Code marketplace manifests are included. The installer can copy skills into Codex, Claude Code, and Cursor project/user skill directories. See [Plugin usage](docs/PLUGIN-USAGE.md).
+The root manifest follows the portable Agent Plugins 1.0.0 format. Cursor and Claude Code marketplace manifests are included. The installer can copy skills into Codex, Claude Code, and Cursor project/user skill directories. See [Plugin usage](docs/PLUGIN-USAGE.md). To try the detector, follow [the vanilla demo](examples/vanilla-demo/README.md).
 
 ## Browser detection runtime
 
@@ -38,9 +38,9 @@ The initial Playwright detector checks:
 - route response and navigation failures;
 - browser console errors, uncaught page exceptions, and failed requests;
 - screenshots at configured viewport sizes;
-- horizontal overflow and elements extending past the viewport;
+- horizontal overflow, clipped-content heuristics, and elements extending past the viewport;
 - potentially unlabeled controls, missing image alt attributes, empty links, and duplicate IDs;
-- infinite CSS animation smoke signals;
+- infinite CSS animation and reduced-motion smoke checks;\n- first-Tab focus-indicator and short-run layout-shift smoke checks;\n- evidence-based repair handoff export (never grants edit authorization);
 - schema-validated JSON reports with evidence paths and explicit check outcomes.
 
 ## Repository layout
@@ -54,7 +54,7 @@ The initial Playwright detector checks:
 ├── src/                    # Runtime, installer, schema validation
 ├── skills/                 # Canonical portable agent skills
 ├── schemas/                # Config, report, and plugin schemas
-├── test/                   # Unit and browser integration tests
+├── test/                   # Unit and browser integration tests\n├── examples/vanilla-demo/  # Reproducible intentionally-buggy demo
 ├── docs/
 └── .github/workflows/      # CI
 ```
@@ -65,7 +65,7 @@ Detection is read-only with respect to project source. It does not submit forms,
 
 ## Current limitations
 
-This is an initial smoke-audit runtime, not a complete QA suite. Full WCAG auditing, keyboard interaction coverage, comprehensive reduced-motion analysis, performance profiling, screenshot visual regression, AI screenshot interpretation, and executable autonomous repair are not yet implemented. The repair skill is an agent workflow, not an automatic CLI patcher. See [ROADMAP.md](ROADMAP.md) and [Threat model](docs/THREAT-MODEL.md).
+This is an initial smoke-audit runtime, not a complete QA suite. Full WCAG auditing, exhaustive keyboard interaction coverage, comprehensive reduced-motion analysis, field performance profiling, screenshot visual regression, AI screenshot interpretation, and executable autonomous repair are not yet implemented. A first-pass smoke check is not a conformance claim. The repair skill is an agent workflow, not an automatic CLI patcher. See [ROADMAP.md](ROADMAP.md) and [Threat model](docs/THREAT-MODEL.md).
 
 ## License
 
