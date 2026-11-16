@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Blocked cross-origin top-level navigation and redirect requests during route discovery and audit runs.
+- Hardened screenshot artifact names against traversal and route-name collisions; viewport labels are validated.
+- Fixed the `all` installer target to include Codex, Claude Code, and Cursor.
+- Added host-agent screenshot interpretation guidance to the visual design review skill.
+
 - Added explicit allowlisted Git patch application via `ui-forge apply`, requiring approval, confirmation, a clean worktree, symlink checks, and `git apply --check`.
 - Added tests for patch application success and refusal of implicit, out-of-scope, dirty-tree, and symlink-traversal operations.
 
