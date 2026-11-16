@@ -12,7 +12,8 @@
   "scripts": {
     "test": "node --test",
     "check": "node --check bin/ui-forge.js && node --check src/config.js && node --check src/audit.js && node --check src/report.js && npm test",
-    "test:browser": "node --test test/browser.integration.js"
+    "test:browser": "node --test test/browser.integration.js",
+    "ui-forge": "node ./bin/ui-forge.js"
   },
   "license": "UNLICENSED",
   "optionalDependencies": {
