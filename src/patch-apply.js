@@ -31,11 +31,13 @@ export async function applyReviewedPatch({ handoff, patch, root, approved, apply
   if (status.trim()) throw new Error("Refusing to apply a repair patch while the Git working tree is not clean. Commit or stash existing work first.");
   for (const file of review.files) {
     let current = gitRoot;
-    for (const segment of file.split("/")) {
+    const segments = file.split("/");
+    for (const [index, segment] of segments.entries()) {
       current = path.join(current, segment);
       try {
         const info = await lstat(current);
         if (info.isSymbolicLink()) throw new Error(`Refusing to patch through a symbolic link: ${file}`);
+        if (index === segments.length - 1 && info.isFile() && info.nlink > 1) throw new Error(`Refusing to patch a multiply-linked file: ${file}`);
       } catch (error) {
         if (error.code === "ENOENT") break;
         throw error;
