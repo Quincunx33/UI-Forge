@@ -109,7 +109,7 @@ The review rejects traversal, binary and ambiguous quoted paths, enforces the ha
 
 - Only run against systems you own or are authorized to test.
 - Do not point the detector at production systems containing real user data unless explicitly authorized and appropriately isolated.
-- Browser tests are read-only smoke checks; visiting a route can still trigger application-side analytics or other page-load behavior.
+- Browser audits do not edit source files; visiting routes can still trigger application-side analytics or other page-load behavior, and explicitly configured safe test buttons can trigger their test behavior.
 - No forms are submitted. Visible controls are activated only when explicitly listed in `interactions` and marked as safe test buttons.
 - Detection mode does not edit project source.
 - The runtime does not provide a dedicated computer-vision model, exhaustive keyboard testing, manual WCAG conformance review and assistive-technology testing, field performance profiling, semantic blast-radius analysis, OS-level sandboxing, or automatic post-repair regression verification. The design-review skill asks the host agent to inspect actual screenshots when image understanding is available. The local patch adapter applies only explicitly approved, allowlisted diffs on a clean Git worktree; it is not a sandbox.
