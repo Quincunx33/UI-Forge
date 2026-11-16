@@ -13,6 +13,7 @@ const DEFAULTS = {
   allowRemote: false,
   discovery: { enabled: false, maxRoutes: 20 },
   interactions: [],
+  visualRegression: { enabled: false, baselineDir: ".ui-forge-baselines", threshold: 0.1, maxDiffPixels: 0 },
   outputDir: ".ui-forge",
   browser: { engine: "chromium", headless: true, navigationTimeoutMs: 30000 },
   repair: { maxAttemptsPerFinding: 2, requireApprovalForSensitiveFiles: true, allowDependencyChanges: false },
@@ -84,6 +85,16 @@ export function validateConfig(input) {
       if (item.expectedText !== undefined && (typeof item.expectedText !== "string" || item.expectedText.length > 500)) errors.push(`interactions[${index}].expectedText must be a string of at most 500 characters.`);
     }
   }
+  if (input.visualRegression !== undefined) {
+    const visual = input.visualRegression;
+    if (!visual || typeof visual !== "object" || Array.isArray(visual)) errors.push("visualRegression must be an object.");
+    else {
+      if (visual.enabled !== undefined && typeof visual.enabled !== "boolean") errors.push("visualRegression.enabled must be a boolean.");
+      if (visual.baselineDir !== undefined && (typeof visual.baselineDir !== "string" || !visual.baselineDir.trim())) errors.push("visualRegression.baselineDir must be a non-empty path.");
+      if (visual.threshold !== undefined && (typeof visual.threshold !== "number" || visual.threshold < 0 || visual.threshold > 1)) errors.push("visualRegression.threshold must be between 0 and 1.");
+      if (visual.maxDiffPixels !== undefined && (!Number.isInteger(visual.maxDiffPixels) || visual.maxDiffPixels < 0 || visual.maxDiffPixels > 10000000)) errors.push("visualRegression.maxDiffPixels must be an integer between 0 and 10000000.");
+    }
+  }
   if (input.outputDir !== undefined && (typeof input.outputDir !== "string" || !input.outputDir.trim())) {
     errors.push("outputDir must be a non-empty path.");
   }
@@ -114,6 +125,7 @@ export async function loadConfig(configPath) {
     repair: { ...DEFAULTS.repair, ...(parsed.repair ?? {}) },
     discovery: { ...DEFAULTS.discovery, ...(parsed.discovery ?? {}) },
     interactions: parsed.interactions ?? [],
+    visualRegression: { ...DEFAULTS.visualRegression, ...(parsed.visualRegression ?? {}) },
     configDir: path.dirname(absolutePath)
   };
 }
