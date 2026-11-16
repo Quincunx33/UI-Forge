@@ -1,19 +1,20 @@
 #!/usr/bin/env node
 import path from "node:path";
 import { readFile, writeFile } from "node:fs/promises";
-import { buildRepairHandoff } from "../src/repair-handoff.js";
 import { loadConfig } from "../src/config.js";
 import { runBrowserAudit } from "../src/audit.js";
 import { createReport, createRunId, writeReport } from "../src/report.js";
 import { validateReportSchema } from "../src/schema.js";
 import { installSkills } from "../src/install.js";
+import { buildRepairHandoff } from "../src/repair-handoff.js";
 
 function help() {
   process.stdout.write(
     "UI-Forge — UI quality engineering plugin\n\n" +
     "Usage:\n" +
     "  ui-forge install --agent <codex|claude|cursor|all> [--scope project|user] [--target <dir>] [--force]\n" +
-    "  ui-forge detect --config <file>\n\n" +
+    "  ui-forge detect --config <file>\n" +
+    "  ui-forge handoff --report <report.json> --finding <UIF-ID> [--out <file>]\n\n" +
     "Options:\n" +
     "  --config <file>   Path to UI-Forge JSON configuration\n" +
     "  --agent <name>    Target coding agent for skill installation\n" +
@@ -21,7 +22,8 @@ function help() {
     "  --target <dir>    Project directory for installation (default: current directory)\n" +
     "  --force           Replace existing UI-Forge skill folders\n" +
     "  --help            Show this help\n\n" +
-    "Detection is read-only. Start your local app separately before running an audit.\n"
+    "Detection is read-only. Start your local app separately before running an audit.\n" +
+    "A repair handoff packages evidence; it never authorizes edits.\n"
   );
 }
 
@@ -31,24 +33,14 @@ async function main(args) {
 
   if (command === "install") {
     const agentIndex = args.indexOf("--agent");
-    if (agentIndex < 0 || !args[agentIndex + 1]) {
-      throw new Error("install requires --agent codex|claude|cursor|all.");
-    }
+    if (agentIndex < 0 || !args[agentIndex + 1]) throw new Error("install requires --agent codex|claude|cursor|all.");
     const scopeIndex = args.indexOf("--scope");
     const scope = scopeIndex >= 0 ? args[scopeIndex + 1] : "project";
     const targetIndex = args.indexOf("--target");
     if (targetIndex >= 0 && !args[targetIndex + 1]) throw new Error("--target requires a directory path.");
     const target = targetIndex >= 0 ? path.resolve(args[targetIndex + 1]) : process.cwd();
-    const result = await installSkills({
-      agent: args[agentIndex + 1],
-      scope,
-      force: args.includes("--force"),
-      cwd: target
-    });
-    process.stdout.write(
-      "Installed UI-Forge skills: " + result.skills.join(", ") +
-      "\nTargets: " + result.targets.join(", ") + "\n"
-    );
+    const result = await installSkills({ agent: args[agentIndex + 1], scope, force: args.includes("--force"), cwd: target });
+    process.stdout.write("Installed UI-Forge skills: " + result.skills.join(", ") + "\nTargets: " + result.targets.join(", ") + "\n");
     return;
   }
 
@@ -59,64 +51,47 @@ async function main(args) {
     if (reportIndex < 0 || !args[reportIndex + 1] || findingIndex < 0 || !args[findingIndex + 1]) {
       throw new Error("handoff requires --report <report.json> and --finding <UIF-ID>.");
     }
+    if (outputIndex >= 0 && !args[outputIndex + 1]) throw new Error("--out requires a file path.");
     const reportPath = path.resolve(args[reportIndex + 1]);
     const report = JSON.parse(await readFile(reportPath, "utf8"));
     const validation = await validateReportSchema(report);
     if (!validation.valid) throw new Error("Input report failed schema validation: " + JSON.stringify(validation.errors));
     const handoff = buildRepairHandoff(report, args[findingIndex + 1]);
     const outputPath = outputIndex >= 0
-      ? path.resolve(args[outputIndex + 1] ?? "")
-      : reportPath.replace(/\\.json$/i, "") + "." + args[findingIndex + 1] + ".handoff.json";
-    if (outputPath === path.parse(outputPath).root) throw new Error("--out requires a file path.");
-    await writeFile(outputPath, JSON.stringify(handoff, null, 2) + "\\n", { flag: "wx" });
-    process.stdout.write("Repair handoff created (not authorization): " + outputPath + "\\n");
+      ? path.resolve(args[outputIndex + 1])
+      : reportPath.replace(/\.json$/i, "") + "." + args[findingIndex + 1] + ".handoff.json";
+    await writeFile(outputPath, JSON.stringify(handoff, null, 2) + "\n", { flag: "wx" });
+    process.stdout.write("Repair handoff created (not authorization): " + outputPath + "\n");
     return;
   }
 
-  if (command !== "detect") {
-    throw new Error("Unknown command: " + command + ". Available commands: install, detect.");
-  }
+  if (command !== "detect") throw new Error("Unknown command: " + command + ". Available commands: install, detect, handoff.");
   const configIndex = args.indexOf("--config");
-  if (configIndex < 0 || !args[configIndex + 1]) {
-    throw new Error("detect requires --config <file>.");
-  }
+  if (configIndex < 0 || !args[configIndex + 1]) throw new Error("detect requires --config <file>.");
   const configPath = path.resolve(args[configIndex + 1]);
   const config = await loadConfig(configPath);
-  if (config.mode !== "detect") {
-    throw new Error("The browser runtime currently supports mode=detect only. Repair remains an agent-invoked workflow.");
-  }
+  if (config.mode !== "detect") throw new Error("The browser runtime currently supports mode=detect only. Repair remains an agent-invoked workflow.");
+
   const started = new Date();
   const runId = createRunId(started);
   const output = path.resolve(path.dirname(configPath), config.outputDir);
   const report = createReport({
-    runId,
-    startedAt: started.toISOString(),
+    runId, startedAt: started.toISOString(),
     environment: {
-      project: path.basename(process.cwd()),
-      framework: null,
-      baseUrl: config.baseUrl,
-      browser: config.browser.engine,
-      commit: process.env.GITHUB_SHA ?? null
+      project: path.basename(process.cwd()), framework: null, baseUrl: config.baseUrl,
+      browser: config.browser.engine, commit: process.env.GITHUB_SHA ?? null
     },
-    routes: config.routes,
-    viewports: config.viewports.map(item => item.name)
+    routes: config.routes, viewports: config.viewports.map(item => item.name)
   });
   await runBrowserAudit(config, report, path.join(output, runId));
   report.completedAt = new Date().toISOString();
   const validation = await validateReportSchema(report);
-  if (!validation.valid) {
-    throw new Error("Generated report failed schema validation: " + JSON.stringify(validation.errors));
-  }
-  report.summary = report.findings.length + " finding(s); " +
-    report.coverage.checks.length + " check(s) recorded. No project source files were modified.";
+  if (!validation.valid) throw new Error("Generated report failed schema validation: " + JSON.stringify(validation.errors));
+  report.summary = report.findings.length + " finding(s); " + report.coverage.checks.length +
+    " check(s) recorded. No project source files were modified.";
   const saved = await writeReport(report, output);
-  process.stdout.write(
-    "UI-Forge audit complete\nFindings: " + report.findings.length +
-    "\nReport: " + saved.reportPath + "\n"
-  );
-  if (report.findings.some(item => ["critical", "high"].includes(item.severity))) {
-    process.exitCode = 2;
-  }
+  process.stdout.write("UI-Forge audit complete\nFindings: " + report.findings.length + "\nReport: " + saved.reportPath + "\n");
+  if (report.findings.some(item => ["critical", "high"].includes(item.severity))) process.exitCode = 2;
 }
 
 main(process.argv.slice(2)).catch(error => {
