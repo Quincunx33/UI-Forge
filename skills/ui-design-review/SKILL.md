@@ -14,10 +14,11 @@ Use when the user asks for UI/UX critique, visual polish, design quality review,
 ## Review process
 1. Identify the product purpose, target users, primary tasks, brand constraints, and existing design language from project context.
 2. Inspect the actual implementation and rendered interface when available. Do not judge only from component names or a design description.
-3. Review hierarchy, information density, typography, spacing, alignment, contrast, component consistency, responsive behavior, and interaction feedback.
-4. Identify visual noise: gratuitous gradients, glow, glass effects, decorative floating elements, excessive cards/badges, oversized radii, and unnecessary animation.
-5. Distinguish objective usability/accessibility problems from subjective aesthetic preferences.
-6. Prioritize recommendations by user impact and implementation scope.
+3. When UI-Forge screenshot artifacts exist, open and inspect the actual images at each viewport. Compare desktop, tablet, and mobile views; identify clipping, overlap, hierarchy, spacing, typography, contrast, visual noise, and inconsistent components. Never infer image contents from filenames or report a visual defect without image or DOM evidence.
+4. Review hierarchy, information density, typography, spacing, alignment, contrast, component consistency, responsive behavior, and interaction feedback.
+5. Identify visual noise: gratuitous gradients, glow, glass effects, decorative floating elements, excessive cards/badges, oversized radii, and unnecessary animation.
+6. Distinguish objective usability/accessibility problems from subjective aesthetic preferences.
+7. Prioritize recommendations by user impact and implementation scope.
 
 ## Design principles
 - Make the interface serve its task; do not decorate for decoration's sake.
@@ -28,6 +29,12 @@ Use when the user asks for UI/UX critique, visual polish, design quality review,
 - Keep motion purposeful, brief, and compatible with prefers-reduced-motion.
 - Do not impose a fashionable style that conflicts with the product or its users.
 - Do not replace an existing coherent design system without a user request.
+
+## Visual evidence
+- Prefer actual screenshots and measured DOM/layout evidence over assumptions.
+- If the host agent can inspect images, describe visible regions and tie each observation to route, viewport, and screenshot artifact.
+- If images cannot be opened or visual evidence is missing, mark visual interpretation as untested rather than guessing.
+- Separate visual observations from accessibility claims; use axe results as automated evidence and require manual keyboard/assistive-technology checks for broader conclusions.
 
 ## Output
 Provide:
