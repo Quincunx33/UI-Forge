@@ -39,7 +39,7 @@ async function discoverSameOriginRoutes(browser, base, seeds, maxRoutes, timeout
           const pathname = candidate.pathname;
           if (!pathname.startsWith("/") || /\\.(?:avif|css|csv|gif|ico|jpe?g|js|json|map|mp[34]|pdf|png|svg|txt|webp|woff2?|xml|zip)$/i.test(pathname)) continue;
           if (/^\/(?:api|_next|assets|static|\.well-known)(?:\/|$)/i.test(pathname)) continue;
-          const normalized = pathname.replace(/\\/{2,}/g, "/");
+          const normalized = pathname;
           if (!discovered.has(normalized)) {
             discovered.add(normalized);
             queue.push(normalized);
