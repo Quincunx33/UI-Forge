@@ -21,7 +21,7 @@ jobs:
           node-version: 22
       - name: Validate JSON files
         run: |
-          node -e "for (const f of ['package.json','plugin.json','ui-forge.config.example.json','schemas/config.schema.json','schemas/report.schema.json']) JSON.parse(require('fs').readFileSync(f,'utf8'))"
+          node -e "for (const f of ['package.json','plugin.json','ui-forge.config.example.json','schemas/config.schema.json','schemas/report.schema.json','schemas/agent-plugin.schema.json','.cursor-plugin/plugin.json','.cursor-plugin/marketplace.json','.claude-plugin/plugin.json','.claude-plugin/marketplace.json','ui-forge.manifest.json']) JSON.parse(require('fs').readFileSync(f,'utf8'))"
       - name: Install dependencies
         run: npm install
       - name: Run syntax and unit checks
