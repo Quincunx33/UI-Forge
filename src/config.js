@@ -57,7 +57,7 @@ export function validateConfig(input) {
       errors.push("viewports must be a non-empty array.");
     } else {
       for (const [index, viewport] of input.viewports.entries()) {
-        if (!viewport || typeof viewport.name !== "string" || !Number.isInteger(viewport.width) ||
+        if (!viewport || typeof viewport.name !== "string" || !/^[a-zA-Z0-9_-]{1,64}$/.test(viewport.name) || !Number.isInteger(viewport.width) ||
           !Number.isInteger(viewport.height) || viewport.width < 240 || viewport.height < 320) {
           errors.push(`viewports[${index}] requires a name, width >= 240, and height >= 320.`);
         }
