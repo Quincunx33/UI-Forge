@@ -66,7 +66,7 @@ This roadmap is the source of truth for project scope. A checked item means the 
 ## Phase 5 — Regression and verification
 - [ ] Rerun the failing test after each repair.
 - [ ] Run relevant existing project tests and build checks.
-- [ ] Compare screenshots at the same viewport and state.
+- [x] Compare screenshots against approved baselines at the same route and viewport (initial loaded state; post-repair verification remains outstanding).
 - [ ] Detect regressions outside the original defect.
 - [ ] Generate final quality report with verified, unresolved, and untested items.
 
