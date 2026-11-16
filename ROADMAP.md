@@ -46,7 +46,9 @@ This roadmap is the source of truth for project scope. A checked item means the 
 
 ## Phase 4 — Controlled repair engine
 - [x] Define explicit repair skill, approval gates, and bounded retry policy.
-- [ ] Implement finding-to-repair task handoff format.
+- [x] Implement finding-to-repair task handoff format with evidence, approval state, and verification slots.
+- [x] Add CLI export for a single verified finding (`ui-forge handoff`).
+- [x] Add initial path-scope guard for traversal, sensitive paths, and bounded file counts.
 - [ ] Add scoped patch review and sensitive-file detection.
 - [ ] Add repair execution adapter with user approval.
 - [ ] Add automated regression verification and before/after evidence.
