@@ -7,7 +7,7 @@
 - Playwright and a browser binary for browser-based detection.
 - A target application started separately by the operator.
 
-## Install agent skills
+## Install the complete plugin\n\n### Cursor\n\nThe repository contains a root Agent Plugin manifest and a Cursor marketplace manifest. In Cursor, open Customize, choose From GitHub Repository, and import this repository. Alternatively, place the plugin directory under ~/.cursor/plugins/local/ui-forge and reload the window.\n\n### Claude Code\n\nThe repository includes .claude-plugin/plugin.json and a marketplace entry. Add the repository as a marketplace, then install the plugin:\n\n```sh\nclaude plugin marketplace add Quincunx33/UI-Forge\nclaude plugin install ui-forge@quincunx33-ui-forge\n```\n\nFor local development, run Claude Code with --plugin-dir pointing to the cloned repository. Validate locally with claude plugin validate.\n\n### Codex and standalone skill installation\n\n## Install agent skills
 
 Clone UI-Forge, then run its installer. Use --target to specify the project where skills should be installed:
 
