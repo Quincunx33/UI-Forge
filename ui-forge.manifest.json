@@ -17,7 +17,9 @@
       "codex",
       ".claude",
       "cursor"
-    ]
+    ],
+    "visual_regression": "png-baseline-pixel-diff",
+    "functional_testing": "opt-in-safe-test-buttons"
   },
   "skills": [
     "skills/ui-detect/SKILL.md",
@@ -40,7 +42,8 @@
     "commands": [
       "detect",
       "handoff",
-      "review"
+      "review",
+      "apply"
     ]
   }
 }
