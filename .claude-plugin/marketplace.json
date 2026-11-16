@@ -9,7 +9,7 @@
       "name": "ui-forge",
       "source": ".",
       "description": "Evidence-based UI quality audits, visual design review, and controlled frontend repair skills.",
-      "version": "0.3.0"
+      "version": "0.4.0"
     }
   ]
 }
