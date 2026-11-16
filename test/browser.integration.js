@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { mkdtemp, rm, mkdir, copyFile, readFile, writeFile } from "node:fs/promises";
+import { mkdtemp, rm, mkdir, copyFile, readFile, writeFile, readdir } from "node:fs/promises";
 import { PNG } from "pngjs";
 import os from "node:os";
 import path from "node:path";
@@ -65,7 +65,9 @@ test("browser audit captures responsive and accessibility findings", async () =>
 
     const baselineDir = path.join(tempDir, "baselines");
     await mkdir(baselineDir, { recursive: true });
-    await copyFile(path.join(tempDir, "screenshots", "_-mobile.png"), path.join(baselineDir, "_-mobile.png"));
+    const screenshotName = (await readdir(path.join(tempDir, "screenshots"))).find(name => name.endsWith("-mobile.png"));
+    assert.ok(screenshotName);
+    await copyFile(path.join(tempDir, "screenshots", screenshotName), path.join(baselineDir, screenshotName));
     const visualConfig = {
       baseUrl: `http://127.0.0.1:${address.port}`, routes: ["/"],
       viewports: [{ name: "mobile", width: 390, height: 844 }],
@@ -81,7 +83,7 @@ test("browser audit captures responsive and accessibility findings", async () =>
     await runBrowserAudit(visualConfig, visualPass, path.join(tempDir, "visual-pass"));
     assert.ok(visualPass.coverage.checks.some(item => item.name.startsWith("visual-regression:") && item.status === "passed"));
 
-    const baselinePath = path.join(baselineDir, "_-mobile.png");
+    const baselinePath = path.join(baselineDir, screenshotName);
     const alteredBaseline = PNG.sync.read(await readFile(baselinePath));
     const centerPixel = (Math.floor(alteredBaseline.height / 2) * alteredBaseline.width + Math.floor(alteredBaseline.width / 2)) * 4;
     alteredBaseline.data[centerPixel] = alteredBaseline.data[centerPixel] === 0 ? 255 : 0;
