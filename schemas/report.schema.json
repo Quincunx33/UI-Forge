@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ui-forge.invalid/schemas/report.schema.json",
+  "title": "UI-Forge Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "runId", "mode", "startedAt", "environment", "coverage", "findings"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "runId": { "type": "string", "minLength": 1 },
+    "mode": { "enum": ["detect", "design-review", "repair"] },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "completedAt": { "type": "string", "format": "date-time" },
+    "environment": {
+      "type": "object",
+      "required": ["project"],
+      "properties": {
+        "project": { "type": "string" },
+        "framework": { "type": ["string", "null"] },
+        "baseUrl": { "type": ["string", "null"] },
+        "browser": { "type": ["string", "null"] },
+        "commit": { "type": ["string", "null"] }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "required": ["routesTested", "viewportsTested", "checks"],
+      "properties": {
+        "routesTested": { "type": "array", "items": { "type": "string" } },
+        "viewportsTested": { "type": "array", "items": { "type": "string" } },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "status"],
+            "properties": {
+              "name": { "type": "string" },
+              "status": { "enum": ["passed", "failed", "untested", "blocked"] },
+              "reason": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "category", "severity", "confidence", "title", "status"],
+        "properties": {
+          "id": { "type": "string" },
+          "category": { "enum": ["visual", "responsive", "functional", "accessibility", "motion", "performance", "runtime", "network", "design"] },
+          "severity": { "enum": ["critical", "high", "medium", "low", "info"] },
+          "confidence": { "enum": ["high", "medium", "low"] },
+          "title": { "type": "string" },
+          "impact": { "type": "string" },
+          "route": { "type": ["string", "null"] },
+          "viewport": { "type": ["string", "null"] },
+          "state": { "type": ["string", "null"] },
+          "reproduction": { "type": "array", "items": { "type": "string" } },
+          "evidence": { "type": "array", "items": { "type": "string" } },
+          "rootCauseHypothesis": { "type": ["string", "null"] },
+          "suggestedRepair": { "type": ["string", "null"] },
+          "status": { "enum": ["verified", "likely", "not_reproduced", "untested", "fixed_and_verified", "fixed_verification_incomplete"] }
+        }
+      }
+    },
+    "changedFiles": { "type": "array", "items": { "type": "string" } },
+    "summary": { "type": "string" }
+  }
+}
