@@ -25,7 +25,7 @@ From the UI-Forge repository:
 4. Copy ui-forge.config.example.json to a local config file and set baseUrl, routes, and viewports.
 5. Run:
 
-   npx ui-forge detect --config ./ui-forge.config.json
+   node ./bin/ui-forge.js detect --config ./ui-forge.config.json
 
 The detector writes a timestamped report and screenshots under outputDir. It does not start or stop the application, submit forms, click controls, modify source files, or repair findings.
 
