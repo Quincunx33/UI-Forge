@@ -15,6 +15,45 @@ function addFinding(report, item) {
   });
 }
 
+async function discoverSameOriginRoutes(browser, base, seeds, maxRoutes, timeoutMs) {
+  const queue = [...new Set(seeds)];
+  const discovered = new Set(queue);
+  const page = await browser.newPage();
+  page.setDefaultNavigationTimeout(timeoutMs);
+  try {
+    for (let index = 0; index < queue.length && discovered.size < maxRoutes; index += 1) {
+      const route = queue[index];
+      const url = new URL(route, base);
+      if (url.origin !== base.origin || url.search || url.hash) continue;
+      try {
+        await page.goto(url.toString(), { waitUntil: "domcontentloaded" });
+        const hrefs = await page.locator("a[href]").evaluateAll(links => links.map(link => link.getAttribute("href")));
+        for (const href of hrefs) {
+          if (discovered.size >= maxRoutes) break;
+          if (typeof href !== "string" || !href.trim() || href.startsWith("//") || href.includes("\\\\")) continue;
+          let candidate;
+          try { candidate = new URL(href, base); } catch { continue; }
+          if (candidate.origin !== base.origin || candidate.username || candidate.password || candidate.search || candidate.hash) continue;
+          if (!/^https?:$/.test(candidate.protocol)) continue;
+          const pathname = candidate.pathname;
+          if (!pathname.startsWith("/") || /\\.(?:avif|css|csv|gif|ico|jpe?g|js|json|map|mp[34]|pdf|png|svg|txt|webp|woff2?|xml|zip)$/i.test(pathname)) continue;
+          if (/^\/(?:api|_next|assets|static|\.well-known)(?:\/|$)/i.test(pathname)) continue;
+          const normalized = pathname.replace(/\\/{2,}/g, "/");
+          if (!discovered.has(normalized)) {
+            discovered.add(normalized);
+            queue.push(normalized);
+          }
+        }
+      } catch {
+        // A failed discovery page is not a reason to abort the actual configured audit.
+      }
+    }
+  } finally {
+    await page.close();
+  }
+  return [...discovered].slice(0, maxRoutes);
+}
+
 export async function runBrowserAudit(config, report, runDir) {
   let playwright;
   try { playwright = await import("playwright"); }
@@ -25,9 +64,28 @@ export async function runBrowserAudit(config, report, runDir) {
   const screenshotDir = path.join(runDir, "screenshots");
   await mkdir(screenshotDir, { recursive: true });
   const base = new URL(config.baseUrl);
+  let routesToAudit = [...config.routes];
+  if (config.discovery?.enabled === true) {
+    try {
+      routesToAudit = await discoverSameOriginRoutes(
+        browser, base, config.routes, Math.min(50, config.discovery.maxRoutes ?? 20),
+        config.browser.navigationTimeoutMs
+      );
+      report.coverage.checks.push({
+        name: "route-discovery",
+        status: routesToAudit.length > config.routes.length ? "passed" : "untested",
+        reason: `Discovered ${Math.max(0, routesToAudit.length - config.routes.length)} additional same-origin route(s); ${routesToAudit.length} total route(s) within the configured cap.`
+      });
+    } catch (error) {
+      routesToAudit = [...config.routes];
+      report.coverage.checks.push({ name: "route-discovery", status: "blocked", reason: error.message });
+    }
+  } else {
+    report.coverage.checks.push({ name: "route-discovery", status: "untested", reason: "Route discovery is disabled; only configured routes will be audited." });
+  }
 
   try {
-    for (const route of config.routes) {
+    for (const route of routesToAudit) {
       const targetUrl = new URL(route, base);
       if (targetUrl.origin !== base.origin) throw new Error("Refusing cross-origin route: " + route);
       const target = targetUrl.toString();
