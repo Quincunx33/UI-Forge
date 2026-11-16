@@ -10,7 +10,7 @@
     "ui-forge": "./bin/ui-forge.js"
   },
   "scripts": {
-    "test": "node --test",
+    "test": "node --test test/config.test.js test/schema.test.js test/install.test.js test/repair-handoff.test.js",
     "check": "node --check bin/ui-forge.js && node --check src/config.js && node --check src/audit.js && node --check src/report.js && node --check src/schema.js && node --check src/install.js && node --check src/repair-handoff.js && npm test",
     "test:browser": "node --test test/browser.integration.js",
     "ui-forge": "node ./bin/ui-forge.js"
