@@ -29,6 +29,8 @@ The repository now includes a Node.js CLI and optional Playwright browser runtim
 ```sh
 npm install
 npx playwright install chromium
+# Install the skills for Codex + Claude Code (Cursor also discovers these):
+node ./bin/ui-forge.js install --agent all
 # Start your own local development server separately.
 cp ui-forge.config.example.json ui-forge.config.json
 # Edit baseUrl and routes, then:
