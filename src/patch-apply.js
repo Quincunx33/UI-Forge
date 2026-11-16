@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { lstat, mkdtemp, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
@@ -26,6 +26,19 @@ export async function applyReviewedPatch({ handoff, patch, root, approved, apply
   if (gitRoot !== requestedRoot) throw new Error("Run patch application from the exact Git repository root.");
   const { stdout: status } = await execFileAsync("git", ["status", "--porcelain", "--untracked-files=all"], { cwd: gitRoot });
   if (status.trim()) throw new Error("Refusing to apply a repair patch while the Git working tree is not clean. Commit or stash existing work first.");
+  for (const file of review.files) {
+    let current = gitRoot;
+    for (const segment of file.split("/")) {
+      current = path.join(current, segment);
+      try {
+        const info = await lstat(current);
+        if (info.isSymbolicLink()) throw new Error(`Refusing to patch through a symbolic link: ${file}`);
+      } catch (error) {
+        if (error.code === "ENOENT") break;
+        throw error;
+      }
+    }
+  }
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "ui-forge-patch-"));
   const patchPath = path.join(tempDir, "reviewed.patch");
   try {
