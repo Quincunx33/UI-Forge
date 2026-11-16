@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { validateConfigSchema } from "./schema.js";
 
 const DEFAULTS = {
   routes: ["/"],
@@ -45,6 +46,8 @@ export async function loadConfig(configPath) {
   catch (error) { throw new Error(`Cannot read config ${absolutePath}: ${error.message}`); }
   const errors = validateConfig(parsed);
   if (errors.length) throw new Error(`Invalid UI-Forge config:\n- ${errors.join("\n- ")}`);
+  const schemaResult = await validateConfigSchema(parsed);
+  if (!schemaResult.valid) throw new Error("Configuration does not match schemas/config.schema.json: " + JSON.stringify(schemaResult.errors));
   return {
     ...DEFAULTS, ...parsed,
     browser: { ...DEFAULTS.browser, ...(parsed.browser ?? {}) },
