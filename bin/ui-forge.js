@@ -10,12 +10,13 @@ function help() {
   process.stdout.write(
     "UI-Forge — UI quality engineering plugin\n\n" +
     "Usage:\n" +
-    "  ui-forge install --agent <codex|claude|cursor|all> [--scope project|user] [--force]\n" +
+    "  ui-forge install --agent <codex|claude|cursor|all> [--scope project|user] [--target <dir>] [--force]\n" +
     "  ui-forge detect --config <file>\n\n" +
     "Options:\n" +
     "  --config <file>   Path to UI-Forge JSON configuration\n" +
     "  --agent <name>    Target coding agent for skill installation\n" +
-    "  --scope <scope>   project (default) or user\n" +\n    "  --target <dir>     Project directory for installation (default: current directory)\n" +
+    "  --scope <scope>   project (default) or user\n" +
+    "  --target <dir>    Project directory for installation (default: current directory)\n" +
     "  --force           Replace existing UI-Forge skill folders\n" +
     "  --help            Show this help\n\n" +
     "Detection is read-only. Start your local app separately before running an audit.\n"
@@ -33,10 +34,13 @@ async function main(args) {
     }
     const scopeIndex = args.indexOf("--scope");
     const scope = scopeIndex >= 0 ? args[scopeIndex + 1] : "project";
+    const targetIndex = args.indexOf("--target");
+    const target = targetIndex >= 0 ? path.resolve(args[targetIndex + 1] ?? "") : process.cwd();
     const result = await installSkills({
       agent: args[agentIndex + 1],
       scope,
-      force: args.includes("--force")
+      force: args.includes("--force"),
+      cwd: target
     });
     process.stdout.write(
       "Installed UI-Forge skills: " + result.skills.join(", ") +
