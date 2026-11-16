@@ -15,7 +15,7 @@ const patch = [
   "diff --git a/src/app.css b/src/app.css",
   "--- a/src/app.css", "+++ b/src/app.css",
   "@@ -1 +1 @@", "-.app { width: 900px; }", "+.app { max-width: 100%; }"
-].join("\\n");
+].join("\n");
 
 async function makeRepo() {
   const root = await mkdtemp(path.join(os.tmpdir(), "ui-forge-apply-test-"));
@@ -23,7 +23,7 @@ async function makeRepo() {
   execFileSync("git", ["config", "user.email", "ui-forge-test@example.invalid"], { cwd: root });
   execFileSync("git", ["config", "user.name", "UI Forge Test"], { cwd: root });
   await mkdir(path.join(root, "src"));
-  await writeFile(path.join(root, "src/app.css"), ".app { width: 900px; }\\n");
+  await writeFile(path.join(root, "src/app.css"), ".app { width: 900px; }\n");
   execFileSync("git", ["add", "."], { cwd: root });
   execFileSync("git", ["commit", "-qm", "fixture"], { cwd: root });
   return root;
@@ -84,7 +84,7 @@ test("refuses to patch through a symbolic-link directory", async () => {
       "diff --git a/link/file.txt b/link/file.txt",
       "--- /dev/null", "+++ b/link/file.txt",
       "@@ -0,0 +1 @@", "+outside write"
-    ].join("\\n");
+    ].join("\n");
     await assert.rejects(
       applyReviewedPatch({ handoff: linkHandoff, patch: linkPatch, root, approved: true, applyConfirmed: true }),
       /symbolic link/
