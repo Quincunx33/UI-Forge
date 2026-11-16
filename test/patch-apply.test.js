@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, writeFile, readFile, rm } from "node:fs/promises";
+import { mkdtemp, mkdir, writeFile, readFile, rm, symlink } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
@@ -63,4 +63,34 @@ test("refuses to apply when the working tree is dirty", async () => {
       /working tree is not clean/
     );
   } finally { await rm(root, { recursive: true, force: true }); }
+});
+
+test("refuses to patch through a symbolic-link directory", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "ui-forge-symlink-test-"));
+  const outside = await mkdtemp(path.join(os.tmpdir(), "ui-forge-outside-test-"));
+  try {
+    execFileSync("git", ["init", "-q"], { cwd: root });
+    execFileSync("git", ["config", "user.email", "ui-forge-test@example.invalid"], { cwd: root });
+    execFileSync("git", ["config", "user.name", "UI Forge Test"], { cwd: root });
+    await symlink(outside, path.join(root, "link"), "dir");
+    execFileSync("git", ["add", "."], { cwd: root });
+    execFileSync("git", ["commit", "-qm", "symlink fixture"], { cwd: root });
+    const linkHandoff = {
+      kind: "ui-forge-repair-handoff",
+      scope: { maxFiles: 3, allowedFiles: ["link/file.txt"], forbiddenFiles: [] },
+      approval: { required: false, granted: false }
+    };
+    const linkPatch = [
+      "diff --git a/link/file.txt b/link/file.txt",
+      "--- /dev/null", "+++ b/link/file.txt",
+      "@@ -0,0 +1 @@", "+outside write"
+    ].join("\\n");
+    await assert.rejects(
+      applyReviewedPatch({ handoff: linkHandoff, patch: linkPatch, root, approved: true, applyConfirmed: true }),
+      /symbolic link/
+    );
+  } finally {
+    await rm(root, { recursive: true, force: true });
+    await rm(outside, { recursive: true, force: true });
+  }
 });
