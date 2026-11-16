@@ -21,7 +21,8 @@ test("creates a non-authorizing repair handoff from a verified finding", () => {
 });
 
 test("refuses untested and missing findings", () => {
-  assert.throws(() => buildRepairHandoff({ findings: [{ id: "x", status: "untested" }] }, "x"), /cannot be handed/);
+  assert.throws(() => buildRepairHandoff({ findings: [{ id: "x", status: "untested" }] }, "x"), /only verified/);
+  assert.throws(() => buildRepairHandoff({ findings: [{ id: "x", status: "likely" }] }, "x"), /only verified/);
   assert.throws(() => buildRepairHandoff(report, "missing"), /not found/);
 });
 
@@ -49,4 +50,7 @@ test("rejects traversal, absolute paths, sensitive files and oversized scopes", 
   assert.equal(validateRepairScope(handoff, [".github/workflows/ci.yml"]).allowed, true);
   assert.equal(validateRepairScope(handoff, ["C:\\\\outside\\\\file.js"]).allowed, false);
   assert.equal(validateRepairScope(handoff, ["a.js", "b.js", "c.js", "d.js"]).allowed, false);
+  const unbounded = { ...handoff, scope: { ...handoff.scope, maxFiles: 999 } };
+  assert.equal(validateRepairScope(unbounded, ["a.js", "b.js", "c.js", "d.js"]).allowed, false);
+  assert.throws(() => validateRepairScope({ kind: handoff.kind }, ["a.js"]), /Invalid repair handoff/);
 });
