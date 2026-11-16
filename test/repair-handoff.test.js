@@ -27,6 +27,7 @@ test("refuses untested and missing findings", () => {
 
 test("detects sensitive paths and requires approval", () => {
   assert.equal(isSensitivePath(".env.production"), true);
+  assert.equal(isSensitivePath("src/auth.ts"), true);
   assert.equal(isSensitivePath("src/components/Header.jsx"), false);
   const handoff = buildRepairHandoff({
     ...report, findings: [{ ...report.findings[0], impact: "This touches authentication and personal data." }]
