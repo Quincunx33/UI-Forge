@@ -15,7 +15,7 @@ test("browser audit captures responsive and accessibility findings", async () =>
   </style></head><body>
     <div class="wide">overflow fixture</div>
     <button></button><img src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=">
-    <a href="/empty"></a><div class="moving"></div><div class="clipped">content that is clipped by the fixture</div>
+    <a href="/empty"></a><a href="/discovered">Discovered route</a><div class="moving"></div><div class="clipped">content that is clipped by the fixture</div>
   </body></html>`;
   const server = createServer((_request, response) => {
     response.writeHead(200, { "content-type": "text/html" });
@@ -31,10 +31,12 @@ test("browser audit captures responsive and accessibility findings", async () =>
       routes: ["/"], viewports: ["mobile"]
     });
     await runBrowserAudit({
-      baseUrl: `http://127.0.0.1:${address.port}`, routes: ["/"],
+      baseUrl: `http://127.0.0.1:${address.port}`, routes: ["/"], discovery: { enabled: true, maxRoutes: 5 },
       viewports: [{ name: "mobile", width: 390, height: 844 }],
       browser: { engine: "chromium", headless: true, navigationTimeoutMs: 10000 }
     }, report, tempDir);
+    assert.ok(report.coverage.routesTested.includes("/discovered"));
+    assert.ok(report.coverage.checks.some(item => item.name === "route-discovery" && item.status === "passed"));
     const categories = report.findings.map(item => item.category);
     assert.ok(categories.includes("responsive"));
     assert.ok(categories.includes("accessibility"));
