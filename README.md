@@ -16,6 +16,8 @@ UI-Forge is a modular coding-agent plugin for evidence-based UI inspection, desi
 
 Requirements: Node.js 20+, npm, and a Playwright browser.
 
+For a quick reproducible test, run the [vanilla demo](examples/vanilla-demo/README.md).
+
 ```sh
 # In the UI-Forge repository
 npm install
@@ -33,6 +35,8 @@ node /path/to/UI-Forge/bin/ui-forge.js detect --config ./ui-forge.config.json
 The root manifest follows the portable Agent Plugins 1.0.0 format. Cursor and Claude Code marketplace manifests are included. The installer can copy skills into Codex, Claude Code, and Cursor project/user skill directories. See [Plugin usage](docs/PLUGIN-USAGE.md). To try the detector, follow [the vanilla demo](examples/vanilla-demo/README.md).
 
 ## Browser detection runtime
+
+Run unit tests with `npm test`; run the real-browser fixture separately with `npm run test:browser` after installing Chromium.
 
 The initial Playwright detector checks:
 - route response and navigation failures;
