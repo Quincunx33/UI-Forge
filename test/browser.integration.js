@@ -40,6 +40,9 @@ test("browser audit captures responsive and accessibility findings", async () =>
     assert.ok(categories.includes("accessibility"));
     assert.ok(categories.includes("motion"));
     assert.ok(report.findings.some(item => item.title === "Potentially clipped content detected"));
+    assert.ok(report.coverage.checks.some(item => item.name.startsWith("axe-wcag-accessibility:")));
+    assert.ok(report.findings.some(item => item.title === "Accessibility rule: image-alt"));
+    assert.ok(report.findings.some(item => item.title === "Accessibility rule: button-name"));
     assert.ok(report.coverage.checks.some(item => item.name.startsWith("reduced-motion:")));
     assert.ok(report.coverage.checks.some(item => item.name.startsWith("keyboard-focus-indicator:")));
     assert.ok(report.coverage.checks.length >= 4);
