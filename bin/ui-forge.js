@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import path from "node:path";
+import { readFile, writeFile } from "node:fs/promises";
+import { buildRepairHandoff } from "../src/repair-handoff.js";
 import { loadConfig } from "../src/config.js";
 import { runBrowserAudit } from "../src/audit.js";
 import { createReport, createRunId, writeReport } from "../src/report.js";
@@ -47,6 +49,27 @@ async function main(args) {
       "Installed UI-Forge skills: " + result.skills.join(", ") +
       "\nTargets: " + result.targets.join(", ") + "\n"
     );
+    return;
+  }
+
+  if (command === "handoff") {
+    const reportIndex = args.indexOf("--report");
+    const findingIndex = args.indexOf("--finding");
+    const outputIndex = args.indexOf("--out");
+    if (reportIndex < 0 || !args[reportIndex + 1] || findingIndex < 0 || !args[findingIndex + 1]) {
+      throw new Error("handoff requires --report <report.json> and --finding <UIF-ID>.");
+    }
+    const reportPath = path.resolve(args[reportIndex + 1]);
+    const report = JSON.parse(await readFile(reportPath, "utf8"));
+    const validation = await validateReportSchema(report);
+    if (!validation.valid) throw new Error("Input report failed schema validation: " + JSON.stringify(validation.errors));
+    const handoff = buildRepairHandoff(report, args[findingIndex + 1]);
+    const outputPath = outputIndex >= 0
+      ? path.resolve(args[outputIndex + 1] ?? "")
+      : reportPath.replace(/\\.json$/i, "") + "." + args[findingIndex + 1] + ".handoff.json";
+    if (outputPath === path.parse(outputPath).root) throw new Error("--out requires a file path.");
+    await writeFile(outputPath, JSON.stringify(handoff, null, 2) + "\\n", { flag: "wx" });
+    process.stdout.write("Repair handoff created (not authorization): " + outputPath + "\\n");
     return;
   }
 
