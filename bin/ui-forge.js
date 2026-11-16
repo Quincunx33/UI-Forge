@@ -71,7 +71,7 @@ async function main(args) {
     if (handoffIndex < 0 || !args[handoffIndex + 1] || patchIndex < 0 || !args[patchIndex + 1]) {
       throw new Error("apply requires --handoff <file> and --patch <diff.patch>.");
     }
-    if (rootIndex >= 0 && !args[rootIndex + 1]) throw new Error("--root requires the Git repository root.");
+    if (rootIndex < 0 || !args[rootIndex + 1]) throw new Error("apply requires --root <Git repository root>.");
     const handoff = JSON.parse(await readFile(path.resolve(args[handoffIndex + 1]), "utf8"));
     const patch = await readFile(path.resolve(args[patchIndex + 1]), "utf8");
     const result = await applyReviewedPatch({
