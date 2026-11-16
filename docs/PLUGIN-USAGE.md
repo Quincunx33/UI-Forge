@@ -79,6 +79,9 @@ See ui-forge.config.example.json and schemas/config.schema.json.
 - allowRemote: false by default. Set true only when you intentionally test a remote system you own or are authorized to test.
 - outputDir: report and screenshot destination.
 - browser: Playwright browser engine and navigation timeout.
+- discovery: opt-in same-origin anchor discovery, capped at 50 additional routes.
+- interactions: opt-in checks that click only unique, explicitly configured safe test buttons; these should use mock-backed behavior.
+- visualRegression: compare PNG screenshots with manually approved baselines; missing baselines remain untested and are never auto-created.
 
 The runtime blocks known cloud metadata hosts, rejects embedded URL credentials, and rejects cross-origin route escapes. These controls reduce accidental exposure but are not a complete network sandbox.
 
