@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  unit:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,5 +22,23 @@ jobs:
       - name: Validate JSON files
         run: |
           node -e "for (const f of ['package.json','plugin.json','ui-forge.config.example.json','schemas/config.schema.json','schemas/report.schema.json']) JSON.parse(require('fs').readFileSync(f,'utf8'))"
+      - name: Install dependencies
+        run: npm install
       - name: Run syntax and unit checks
         run: npm run check
+
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run browser integration test
+        run: npm run test:browser
