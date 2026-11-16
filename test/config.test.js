@@ -44,3 +44,9 @@ test("safe interaction tests require a named route and constrained test id", () 
   assert.ok(validateConfig({ baseUrl: "http://localhost:3000", interactions: [{ name: "save", testId: "bad selector]", route: "/" }] }).some(error => error.includes("testId")));
   assert.ok(validateConfig({ baseUrl: "http://localhost:3000", interactions: [{ name: "save", testId: "save", route: "//evil.test" }] }).some(error => error.includes("local absolute path")));
 });
+
+test("visual regression settings validate thresholds and pixel budgets", () => {
+  assert.deepEqual(validateConfig({ baseUrl: "http://localhost:3000", visualRegression: { enabled: true, baselineDir: "baselines", threshold: 0.2, maxDiffPixels: 10 } }), []);
+  assert.ok(validateConfig({ baseUrl: "http://localhost:3000", visualRegression: { threshold: 1.1 } }).some(error => error.includes("threshold")));
+  assert.ok(validateConfig({ baseUrl: "http://localhost:3000", visualRegression: { maxDiffPixels: -1 } }).some(error => error.includes("maxDiffPixels")));
+});
