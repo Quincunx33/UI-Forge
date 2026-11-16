@@ -69,7 +69,7 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Add Node.js unit tests, schema tests, and a Playwright integration fixture.
 - [x] Add GitHub Actions CI workflow configuration.
 - [ ] Verify CI execution on a working GitHub Actions runner.
-- [ ] Add example projects and reproducible demos.
+- [x] Add a loopback-only vanilla demo with intentional UI defects.
 - [x] Add versioned v0.3.0 changelog and installation documentation.
 - [ ] Publish a tagged release after CI is verified.
 
