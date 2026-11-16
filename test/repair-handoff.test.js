@@ -42,6 +42,8 @@ test("detects sensitive paths and requires approval", () => {
 test("rejects traversal, absolute paths, sensitive files and oversized scopes", () => {
   const handoff = buildRepairHandoff(report, "UIF-0001");
   assert.equal(validateRepairScope(handoff, ["../outside.js"]).allowed, false);
+  assert.equal(validateRepairScope(handoff, ["src/./file.js"]).allowed, false);
+  assert.equal(validateRepairScope(handoff, ["src//file.js"]).allowed, false);
   assert.equal(validateRepairScope(handoff, ["/etc/passwd"]).allowed, false);
   const sensitive = validateRepairScope(handoff, [".github/workflows/ci.yml"]);
   assert.equal(sensitive.allowed, false);
