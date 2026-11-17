@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Added a universal `ui-forge` orchestrator skill for evidence-based detect, design review, repair, and verification across AI hosts.
+- Added Google AI Studio Agent Playground discovery files and a Build Mode System Instructions adapter.
+- Added root `AGENTS.md`, generic AI setup documentation, and installer support for the fourth universal skill.
+
 - Blocked cross-origin top-level navigation and redirect requests during route discovery and audit runs.
 - Hardened screenshot artifact names against traversal and route-name collisions; viewport labels are validated.
 - Fixed the `all` installer target to include Codex, Claude Code, and Cursor.
