@@ -4,7 +4,7 @@
 
 - Added the `ui-create` frontend design and implementation skill for new websites, dashboards, app interfaces, and explicitly requested redesigns.
 - Added a responsive Morrow workspace showcase with local project navigation, filtering, search, and project creation interactions.
-- Added Playwright browser coverage for the showcase at mobile and desktop sizes, including safe interaction checks.
+- Added Playwright browser coverage for the showcase at narrow-mobile, mobile, tablet, and desktop sizes, including safe interaction checks.
 - Updated installer, plugin documentation, manifests, and universal setup guidance to include all five skills.
 
 - Added a universal `ui-forge` orchestrator skill for evidence-based detect, design review, repair, and verification across AI hosts.
