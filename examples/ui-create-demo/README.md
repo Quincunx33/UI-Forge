@@ -12,7 +12,7 @@ npx serve examples/ui-create-demo
 
 ## Included behavior
 
-- Switch between Overview, Projects, Calendar, and Archive views.
+- Switch between Overview and Projects views.
 - Filter projects by status and search by name.
 - Open a project dialog, validate its name, create a local project card, and show a confirmation message.
 - Use the `/` keyboard shortcut to focus search and Escape to close the dialog.
