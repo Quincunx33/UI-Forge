@@ -1,14 +1,15 @@
 # UI-Forge
 
-**Evidence-based UI Quality Engineering & Controlled Repair Plugin**
+**Frontend Design, UI Quality Engineering & Controlled Repair Plugin**
 
-UI-Forge is a modular coding-agent plugin for evidence-based UI inspection, design review, frontend testing, and controlled repair.
+UI-Forge is a modular coding-agent plugin that creates distinctive, responsive frontends from scratch, implements requested redesigns, reviews visual quality, detects UI defects, and supports controlled repair with evidence-based verification.
 
 ## Agent skills
 
 | Skill | Purpose | Source editing |
 |---|---|---|
-| ui-forge | Universal orchestrator for detect → review → repair → verify across AI hosts | Depends on the explicitly selected mode |
+| ui-forge | Universal orchestrator for create → review → detect → repair → verify across AI hosts | Depends on the explicitly selected mode |
+| ui-create | Design and build polished, responsive frontends from a brief or reference | Yes, when requested |
 | ui-detect | Find and document UI defects with evidence | Never |
 | ui-design-review | Review visual quality and recommend improvements | Never |
 | ui-repair | Fix confirmed defects and run regression checks | Only when explicitly invoked |
@@ -33,11 +34,11 @@ cp /path/to/UI-Forge/ui-forge.config.example.json ui-forge.config.json
 node /path/to/UI-Forge/bin/ui-forge.js detect --config ./ui-forge.config.json
 ```
 
-The root manifest follows the portable Agent Plugins 1.0.0 format. Cursor and Claude Code marketplace manifests are included. The installer can copy all four skills into Codex, Claude Code, and Cursor project/user skill directories. Google AI Studio Agent Playground support is provided through `.agents/AGENTS.md` and `.agents/skills/`; Build Mode has a dedicated System Instructions adapter. Other AI assistants can use the portable `AGENTS.md` and `skills/ui-forge/SKILL.md`. See [Universal AI setup](docs/UNIVERSAL-AGENT-SETUP.md) and [Plugin usage](docs/PLUGIN-USAGE.md). To try the detector, follow [the vanilla demo](examples/vanilla-demo/README.md).
+The root manifest follows the portable Agent Plugins 1.0.0 format. Cursor and Claude Code marketplace manifests are included. The installer can copy all five skills into Codex, Claude Code, and Cursor project/user skill directories. Google AI Studio Agent Playground support is provided through `.agents/AGENTS.md` and `.agents/skills/`; Build Mode has a dedicated System Instructions adapter. Other AI assistants can use the portable `AGENTS.md` and `skills/ui-forge/SKILL.md`. See [Universal AI setup](docs/UNIVERSAL-AGENT-SETUP.md) and [Plugin usage](docs/PLUGIN-USAGE.md). To try frontend creation, open the [UI creation showcase](examples/ui-create-demo/README.md). To try the detector, follow [the vanilla demo](examples/vanilla-demo/README.md).
 
 ## Browser detection runtime
 
-Run unit tests with `npm test`; run the real-browser fixture separately with `npm run test:browser` after installing Chromium.
+Run unit tests with `npm test`; run the browser fixtures—including the UI creation showcase at mobile and desktop sizes—with `npm run test:browser` after installing Chromium. The `ui-create` agent skill drives frontend design and implementation; it is not a CLI generator command.
 
 The initial Playwright detector checks:
 - route response and navigation failures;
@@ -82,7 +83,8 @@ Review is a preflight, not an approval to edit. Application requires both flags,
 ├── skills/                 # Canonical portable agent skills
 ├── schemas/                # Config, report, and plugin schemas
 ├── test/                   # Unit and browser integration tests
-├── examples/vanilla-demo/  # Reproducible intentionally-buggy demo
+├── examples/vanilla-demo/  # Reproducible intentionally-buggy audit demo
+├── examples/ui-create-demo/ # Responsive frontend creation showcase
 ├── docs/
 └── .github/workflows/      # CI
 ```
@@ -93,7 +95,7 @@ Detection never edits project source. Route discovery is disabled by default and
 
 ## Current limitations
 
-This is an initial smoke-audit runtime, not a complete QA suite. Automated axe-core rule coverage is not a full WCAG conformance assessment: manual review, assistive-technology testing, exhaustive keyboard interaction coverage, field performance profiling and full Core Web Vitals validation, a dedicated automated vision/model adapter, semantic blast-radius analysis, OS-level repair sandboxing, autonomous agent repair loops, and automatic post-repair regression verification remain outstanding. A first-pass smoke check is not a conformance claim. The repair skill is an agent workflow; the CLI can apply an explicitly approved, allowlisted patch but does not autonomously generate or verify repairs. See [ROADMAP.md](ROADMAP.md) and [Threat model](docs/THREAT-MODEL.md).
+The agent skills provide frontend creation, visual review, detection, and controlled repair workflows. The CLI remains an initial smoke-audit and patch runtime, not a complete QA suite. The `ui-create` workflow depends on the host agent's actual coding, preview, and browser capabilities; visual or interaction checks unavailable in that host must be reported as untested. Automated axe-core rule coverage is not a full WCAG conformance assessment: manual review, assistive-technology testing, exhaustive keyboard interaction coverage, field performance profiling and full Core Web Vitals validation, a dedicated automated vision/model adapter, semantic blast-radius analysis, OS-level repair sandboxing, autonomous agent repair loops, and automatic post-repair regression verification remain outstanding. A first-pass smoke check is not a conformance claim. The `ui-create` skill guides the host agent through implementation and refinement; the CLI does not generate frontend code. The repair skill is an agent workflow; the CLI can apply an explicitly approved, allowlisted patch but does not autonomously generate or verify repairs. See [ROADMAP.md](ROADMAP.md) and [Threat model](docs/THREAT-MODEL.md).
 
 ## License
 
