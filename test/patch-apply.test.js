@@ -60,6 +60,7 @@ test("rejects a mixed-format patch before an unapproved file can be modified", a
   const root = await makeRepo();
   const mixedPatch = [
     "diff --git a/src/app.css b/src/app.css",
+    "index 1111111..2222222 100644",
     "--- a/src/app.css", "+++ b/src/app.css",
     "@@ -1 +1 @@", "-.app { width: 900px; }", "+.app { max-width: 100%; }",
     "--- a/src/secret.txt", "+++ b/src/secret.txt",
