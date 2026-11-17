@@ -38,7 +38,7 @@ The root manifest follows the portable Agent Plugins 1.0.0 format. Cursor and Cl
 
 ## Browser detection runtime
 
-Run unit tests with `npm test`; run the browser fixtures—including the UI creation showcase at mobile and desktop sizes—with `npm run test:browser` after installing Chromium. The `ui-create` agent skill drives frontend design and implementation; it is not a CLI generator command.
+Run unit tests with `npm test`; run the browser fixtures—including the UI creation showcase at narrow-mobile, mobile, tablet, and desktop sizes—with `npm run test:browser` after installing Chromium. The `ui-create` agent skill drives frontend design and implementation; it is not a CLI generator command.
 
 The initial Playwright detector checks:
 - route response and navigation failures;
