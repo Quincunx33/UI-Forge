@@ -4,7 +4,13 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const skillNames = ["ui-detect", "ui-design-review", "ui-repair"];
+const skillSources = {
+  "ui-forge": "skills/ui-forge",
+  "ui-detect": "skills/ui-detect",
+  "ui-design-review": "skills/ui-design-review",
+  "ui-repair": "skills/ui-repair"
+};
+const skillNames = Object.keys(skillSources);
 
 export function resolveSkillTargets(agent, scope = "project", cwd = process.cwd(), home = os.homedir()) {
   const locations = {
@@ -39,7 +45,7 @@ export async function installSkills({ agent, scope = "project", force = false, c
   for (const target of targets) {
     await mkdir(target, { recursive: true });
     for (const name of skillNames) {
-      await cp(path.join(root, "skills", name), path.join(target, name), { recursive: true, force, errorOnExist: !force });
+      await cp(path.join(root, skillSources[name]), path.join(target, name), { recursive: true, force, errorOnExist: !force });
     }
   }
   return { targets, skills: skillNames };
