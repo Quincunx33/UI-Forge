@@ -8,6 +8,7 @@ const skillSources = {
   "ui-forge": "skills/ui-forge",
   "ui-detect": "skills/ui-detect",
   "ui-design-review": "skills/ui-design-review",
+  "ui-create": "skills/ui-create",
   "ui-repair": "skills/ui-repair"
 };
 const skillNames = Object.keys(skillSources);
