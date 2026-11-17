@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f4ef">
+  <meta name="description" content="A responsive UI-Forge frontend creation showcase.">
+  <title>Morrow — Studio workspace</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#overview" aria-label="Morrow home">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>Morrow<span class="brand-sub">STUDIO</span></span>
+      </a>
+      <div class="topbar-center"><span class="workspace-dot"></span> Personal workspace <span class="chevron" aria-hidden="true">⌄</span></div>
+      <div class="topbar-actions">
+        <label class="search-box">
+          <span class="sr-only">Search projects</span>
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.8" cy="8.8" r="5.7"></circle><path d="m13 13 4 4"></path></svg>
+          <input id="project-search" type="search" placeholder="Search projects…" autocomplete="off">
+          <kbd>/</kbd>
+        </label>
+        <button class="avatar" type="button" aria-label="Account menu">A</button>
+      </div>
+    </header>
+
+    <div class="workspace">
+      <aside class="sidebar" aria-label="Workspace navigation">
+        <div class="sidebar-label">WORKSPACE</div>
+        <nav class="side-nav">
+          <button class="side-link is-active" type="button" data-view="Overview" aria-current="page">
+            <span class="nav-icon" aria-hidden="true">◫</span> Overview
+          </button>
+          <button class="side-link" type="button" data-view="Projects">
+            <span class="nav-icon" aria-hidden="true">▤</span> Projects <span class="nav-count">3</span>
+          </button>
+          <button class="side-link" type="button" data-view="Calendar">
+            <span class="nav-icon" aria-hidden="true">▦</span> Calendar
+          </button>
+          <button class="side-link" type="button" data-view="Archive">
+            <span class="nav-icon" aria-hidden="true">▱</span> Archive
+          </button>
+        </nav>
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-label">YOUR SPACE</div>
+        <div class="space-card">
+          <span class="space-icon">✳</span>
+          <span><strong>Design studio</strong><small>Personal space</small></span>
+          <span class="space-more" aria-hidden="true">···</span>
+        </div>
+        <div class="sidebar-bottom">
+          <div class="upgrade-card">
+            <span class="upgrade-spark" aria-hidden="true">✳</span>
+            <strong>Make room for ideas.</strong>
+            <p>A calmer place for your next big thing.</p>
+            <button type="button" class="text-button" data-view="Projects">Explore projects <span aria-hidden="true">↗</span></button>
+          </div>
+          <div class="profile-row"><span class="profile-avatar">A</span><span><strong>Alex Morgan</strong><small>Free workspace</small></span><span class="space-more">···</span></div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <div class="page-topline"><span>MONDAY, MAY 19, 2025</span><span class="sync-status"><i></i> All changes saved</span></div>
+        <section class="welcome">
+          <div>
+            <p class="eyebrow">YOUR CREATIVE SPACE</p>
+            <h1 id="page-heading">A little progress,<br><em>a lot of possibility.</em></h1>
+            <p class="welcome-copy">Good morning, Alex. Here's what's moving in your world.</p>
+          </div>
+          <button class="primary-button" id="create-project" type="button" data-ui-forge-safe="true" data-testid="create-project">
+            <span aria-hidden="true">＋</span> New project
+          </button>
+        </section>
+
+        <section class="stats-grid" aria-label="Workspace summary">
+          <article class="stat-card stat-featured">
+            <div class="stat-top"><span>IN MOTION</span><span class="stat-icon">↗</span></div>
+            <div class="stat-value">02<span class="stat-unit"> / 03</span></div>
+            <div class="stat-foot"><span class="status-dot blue"></span> Active projects</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>THIS WEEK</span><span class="stat-icon">◷</span></div>
+            <div class="stat-value">08</div>
+            <div class="stat-foot">Tasks completed</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>UP NEXT</span><span class="stat-icon">⌁</span></div>
+            <div class="stat-value">03<span class="stat-unit"> days</span></div>
+            <div class="stat-foot">Until next milestone</div>
+          </article>
+        </section>
+
+        <section class="projects-section" aria-labelledby="projects-title">
+          <div class="section-heading">
+            <div><p class="eyebrow">MADE BY YOU</p><h2 id="projects-title">Your projects</h2></div>
+            <button class="quiet-button" type="button" data-view="Projects">View all <span aria-hidden="true">→</span></button>
+          </div>
+          <div class="project-toolbar">
+            <div class="filter-tabs" role="group" aria-label="Filter projects">
+              <button class="filter-tab is-selected" type="button" data-filter="all">All <span>3</span></button>
+              <button class="filter-tab" type="button" data-filter="active" data-ui-forge-safe="true" data-testid="filter-active">In progress <span>2</span></button>
+              <button class="filter-tab" type="button" data-filter="complete">Completed <span>1</span></button>
+            </div>
+            <span class="project-count" id="project-count" aria-live="polite">3 projects</span>
+          </div>
+          <div class="project-grid" id="project-grid">
+            <article class="project-card" data-status="active" data-search="northstar brand identity visual identity">
+              <div class="project-art art-northstar"><span class="art-orbit orbit-one"></span><span class="art-orbit orbit-two"></span><span class="art-star">✳</span><span class="art-caption">NORTH / 01</span></div>
+              <div class="project-info"><div class="project-title-row"><h3>Northstar identity</h3><span class="project-menu">···</span></div><p>Brand & visual identity</p><div class="project-meta"><span class="project-status"><i class="status-dot blue"></i> In progress</span><span>68%</span></div><div class="progress-track"><span style="width:68%"></span></div></div>
+            </article>
+            <article class="project-card" data-status="active" data-search="fieldnotes mobile app product design">
+              <div class="project-art art-field"><span class="field-sun"></span><span class="field-line line-one"></span><span class="field-line line-two"></span><span class="art-caption">FIELDNOTES / 02</span></div>
+              <div class="project-info"><div class="project-title-row"><h3>Fieldnotes app</h3><span class="project-menu">···</span></div><p>Product design</p><div class="project-meta"><span class="project-status"><i class="status-dot blue"></i> In progress</span><span>42%</span></div><div class="progress-track"><span style="width:42%"></span></div></div>
+            </article>
+            <article class="project-card" data-status="complete" data-search="slow mornings editorial photography">
+              <div class="project-art art-mornings"><span class="morning-type">slow<br><i>mornings.</i></span><span class="art-caption">ISSUE Nº 04</span></div>
+              <div class="project-info"><div class="project-title-row"><h3>Slow mornings</h3><span class="project-menu">···</span></div><p>Editorial & photography</p><div class="project-meta"><span class="project-status"><i class="status-dot green"></i> Completed</span><span>100%</span></div><div class="progress-track complete"><span style="width:100%"></span></div></div>
+            </article>
+          </div>
+          <p class="empty-state" id="empty-state" hidden>No projects match that search. Try another name.</p>
+        </section>
+
+        <section class="bottom-grid">
+          <article class="focus-card">
+            <div class="section-heading compact"><div><p class="eyebrow">A GENTLE REMINDER</p><h2>Today's focus</h2></div><span class="focus-date">19 MAY</span></div>
+            <div class="focus-task"><span class="task-check" aria-hidden="true">✓</span><span><strong>Gather references for Northstar</strong><small>Northstar identity · 10:30 AM</small></span><span class="task-arrow">↗</span></div>
+            <div class="focus-task"><span class="task-check pending" aria-hidden="true"></span><span><strong>Review the onboarding flow</strong><small>Fieldnotes app · 2:00 PM</small></span><span class="task-arrow">↗</span></div>
+          </article>
+          <article class="note-card">
+            <span class="note-mark" aria-hidden="true">“</span>
+            <p>Great things are made by showing up for the small things.</p>
+            <span class="note-credit">A NOTE TO YOUR FUTURE SELF</span>
+          </article>
+        </section>
+        <footer class="footer-note"><span>Made for the work that matters.</span><span>TAKE IT ONE DAY AT A TIME <b>✳</b></span></footer>
+      </main>
+    </div>
+  </div>
+
+  <dialog class="project-dialog" id="project-dialog" aria-labelledby="dialog-title">
+    <form id="project-form" method="dialog">
+      <div class="dialog-top"><span class="eyebrow">A NEW BEGINNING</span><button class="dialog-close" type="button" id="close-dialog" aria-label="Close dialog">×</button></div>
+      <h2 id="dialog-title">New project</h2>
+      <p class="dialog-copy">Give your next idea a place to grow.</p>
+      <label class="field-label" for="project-name">Project name</label>
+      <input class="dialog-input" id="project-name" name="projectName" placeholder="e.g. A better kind of morning" required maxlength="48">
+      <label class="field-label" for="project-type">What are you making?</label>
+      <select class="dialog-input" id="project-type" name="projectType"><option>Brand & identity</option><option>Product design</option><option>Writing & editorial</option><option>Something else</option></select>
+      <div class="dialog-actions"><button class="quiet-button" type="button" id="cancel-dialog">Not now</button><button class="primary-button" type="submit">Create project <span aria-hidden="true">→</span></button></div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
