@@ -46,13 +46,15 @@ test("UI creation demo renders responsively and its primary interactions work", 
       startedAt: new Date().toISOString(),
       environment: { project: "ui-create-demo", baseUrl, browser: "chromium" },
       routes: ["/"],
-      viewports: ["mobile", "desktop"]
+      viewports: ["narrow-mobile", "mobile", "tablet", "desktop"]
     });
     await runBrowserAudit({
       baseUrl,
       routes: ["/"],
       viewports: [
+        { name: "narrow-mobile", width: 360, height: 800 },
         { name: "mobile", width: 390, height: 844 },
+        { name: "tablet", width: 768, height: 1024 },
         { name: "desktop", width: 1440, height: 1000 }
       ],
       interactions: [
@@ -63,7 +65,7 @@ test("UI creation demo renders responsively and its primary interactions work", 
       browser: { engine: "chromium", headless: true, navigationTimeoutMs: 10000 }
     }, report, outputDir);
 
-    for (const viewport of ["mobile", "desktop"]) {
+    for (const viewport of ["narrow-mobile", "mobile", "tablet", "desktop"]) {
       for (const interaction of ["switch-to-projects", "filter-active-projects", "open-create-project-dialog"]) {
         const check = report.coverage.checks.find(item =>
           item.name.startsWith(`interaction:${interaction}:/:${viewport}`)
