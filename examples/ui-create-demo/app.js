@@ -26,6 +26,15 @@ function updateProjects() {
     : activeFilter === "complete"
       ? `${visible} completed projects`
       : `${visible} projects`;
+  const total = projectCards.length;
+  const active = projectCards.filter(card => card.dataset.status === "active").length;
+  const completed = total - active;
+  document.querySelector('[data-filter="all"] span').textContent = total;
+  document.querySelector('[data-filter="active"] span').textContent = active;
+  document.querySelector('[data-filter="complete"] span').textContent = completed;
+  document.querySelector(".nav-count").textContent = total;
+  document.querySelector(".stat-featured .stat-value").innerHTML =
+    `${String(active).padStart(2, "0")}<span class="stat-unit"> / ${String(total).padStart(2, "0")}</span>`;
   emptyState.hidden = visible !== 0;
 }
 
