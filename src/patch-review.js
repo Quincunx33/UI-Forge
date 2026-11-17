@@ -5,6 +5,7 @@ function inspectCanonicalDiff(patch) {
   const sections = [];
   let current = null;
   let valid = true;
+  let changedLines = 0;
 
   const startHunk = line => {
     const match = line.match(/^@@ -\d+(?:,(\d+))? \+\d+(?:,(\d+))? @@/);
@@ -88,8 +89,10 @@ function inspectCanonicalDiff(patch) {
       current.newRemaining -= 1;
     } else if (line.startsWith("-")) {
       current.oldRemaining -= 1;
+      changedLines += 1;
     } else if (line.startsWith("+")) {
       current.newRemaining -= 1;
+      changedLines += 1;
     } else if (line !== "\\ No newline at end of file") {
       valid = false;
     }
@@ -97,7 +100,7 @@ function inspectCanonicalDiff(patch) {
   }
 
   finishSection();
-  return { valid: valid && sections.length > 0, sections };
+  return { valid: valid && sections.length > 0, sections, changedLines };
 }
 
 export function reviewRepairPatch(handoff, patch, options = {}) {
@@ -118,10 +121,7 @@ export function reviewRepairPatch(handoff, patch, options = {}) {
   const modeChanges = /^(?:old mode|new mode|new file mode|deleted file mode) /m.test(patch);
   const quotedPaths = headers.some(match => match[1].startsWith('"') || match[2].startsWith('"'));
   const backslashPaths = headers.some(match => match[1].includes(String.fromCharCode(92)) || match[2].includes(String.fromCharCode(92)));
-  const changedLines = patch.split("\n").filter(line =>
-    (line.startsWith("+") && !line.startsWith("+++")) ||
-    (line.startsWith("-") && !line.startsWith("---"))
-  ).length;
+  const changedLines = canonicalDiff.changedLines;
   const scopedHandoff = {
     ...handoff,
     approval: { ...handoff.approval, granted: approvalGranted }
