@@ -54,7 +54,12 @@ export async function applyReviewedPatch({ handoff, patch, root, approved, apply
     const changedPaths = changed.split("\n").filter(Boolean).map(line => line.slice(3).replace(/^"(.*)"$/, "$1"));
     const unexpectedChanges = changedPaths.filter(file => !allowed.has(file));
     if (unexpectedChanges.length) {
-      throw new Error("Applied patch produced paths outside the approved allowlist: " + unexpectedChanges.join(", ") + ". Inspect the working tree immediately.");
+      try {
+        await execFileAsync("git", ["apply", "--reverse", "--whitespace=nowarn", patchPath], { cwd: gitRoot, maxBuffer: 1024 * 1024 });
+      } catch (rollbackError) {
+        throw new Error("Applied patch escaped the approved allowlist and automatic rollback failed. Inspect the working tree immediately: " + rollbackError.message);
+      }
+      throw new Error("Applied patch produced paths outside the approved allowlist and was rolled back: " + unexpectedChanges.join(", "));
     }
     return { applied: true, root: gitRoot, files: review.files, changedPaths };
   } finally {
