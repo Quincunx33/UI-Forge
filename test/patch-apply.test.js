@@ -24,6 +24,7 @@ async function makeRepo() {
   execFileSync("git", ["config", "user.name", "UI Forge Test"], { cwd: root });
   await mkdir(path.join(root, "src"));
   await writeFile(path.join(root, "src/app.css"), ".app { width: 900px; }\n");
+  await writeFile(path.join(root, "src/secret.txt"), "keep-secret\n");
   execFileSync("git", ["add", "."], { cwd: root });
   execFileSync("git", ["commit", "-qm", "fixture"], { cwd: root });
   return root;
