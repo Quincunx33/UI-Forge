@@ -59,7 +59,7 @@ The canonical universal skill is maintained in `skills/ui-forge/SKILL.md`. The f
 
 Use the `ui-create` skill when the request is to build a new website, dashboard, app interface, landing page, or to implement a substantial redesign. It guides the host agent to establish a visual direction, implement real responsive pages and interactions, inspect the rendered preview, and run available checks. There is no `ui-forge create` CLI command: creation is performed by the coding agent using the tools available in its host environment.
 
-A self-contained example is available in [the Morrow workspace showcase](../examples/ui-create-demo/README.md). Run `npm run test:browser` to exercise its project navigation, active-project filter, and create-project dialog at mobile and desktop viewport sizes.
+A self-contained example is available in [the Morrow workspace showcase](../examples/ui-create-demo/README.md). Run `npm run test:browser` to exercise its project navigation, active-project filter, and create-project dialog at narrow-mobile, mobile, tablet, and desktop viewport sizes.
 
 ## Google AI Studio and universal AI support
 
