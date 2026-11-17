@@ -24,7 +24,10 @@ test("installs skills and refuses to overwrite without force", async () => {
   const cwd = await mkdtemp(path.join(os.tmpdir(), "ui-forge-install-"));
   try {
     const result = await installSkills({ agent: "codex", cwd });
-    assert.equal(result.skills.length, 3);
+    assert.equal(result.skills.length, 4);
+    assert.ok(result.skills.includes("ui-forge"));
+    const universal = path.join(cwd, ".agents/skills/ui-forge/SKILL.md");
+    assert.match(await readFile(universal, "utf8"), /Universal UI Engineering Skill/);
     const installed = path.join(cwd, ".agents/skills/ui-detect/SKILL.md");
     const original = await readFile(installed, "utf8");
     assert.match(original, /UI-Forge: UI Detection/);
