@@ -85,7 +85,7 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [ ] Verify CI execution on a working GitHub Actions runner.
 - [x] Add a loopback-only vanilla demo with intentional UI defects.
 - [x] Add a polished responsive frontend creation showcase with working local navigation, search/filter, and project-creation interactions.
-- [x] Add Playwright browser integration checks for the creation showcase at mobile and desktop sizes, including safe interaction outcomes.
+- [x] Add Playwright browser integration checks for the creation showcase at narrow-mobile, mobile, tablet, and desktop sizes, including safe interaction outcomes.
 - [x] Add versioned v0.3.0 and v0.4.0 changelog and installation documentation.
 - [ ] Publish a tagged release after CI is verified.
 
