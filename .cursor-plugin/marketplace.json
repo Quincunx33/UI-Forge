@@ -11,7 +11,7 @@
     {
       "name": "ui-forge",
       "source": ".",
-      "description": "Evidence-based UI quality audits, visual design review, and controlled repair skills.",
+      "description": "Frontend creation and redesign, evidence-based UI quality audits, visual design review, and controlled repair skills.",
       "version": "0.4.0",
       "author": {
         "name": "Quincunx33"
@@ -23,7 +23,10 @@
         "frontend",
         "responsive-design",
         "accessibility",
-        "playwright"
+        "playwright",
+        "frontend-design",
+        "ui-creation",
+        "web-design"
       ],
       "category": "Developer Tools"
     }
