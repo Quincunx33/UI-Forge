@@ -154,7 +154,7 @@ node /path/to/UI-Forge/bin/ui-forge.js review --handoff finding.handoff.json --p
 node /path/to/UI-Forge/bin/ui-forge.js apply --handoff finding.handoff.json --patch proposed.patch --root /path/to/project --approve --apply
 ```
 
-The review rejects traversal, binary and ambiguous quoted paths, enforces the handoff's file limit, and requires explicit `--approve` for sensitive paths or changes over 120 lines. It reports only. To apply a patch, populate the handoff's exact `scope.allowedFiles` allowlist and run the separate, explicit command below; the adapter is not a filesystem sandbox.
+The review rejects traversal, binary and ambiguous quoted paths, mixed-format diff sections, enforces the handoff's file limit, and requires explicit `--approve` for sensitive paths or changes over 120 lines. The apply adapter also checks actual changed paths and attempts to reverse the patch if an unexpected path appears. It reports only. To apply a patch, populate the handoff's exact `scope.allowedFiles` allowlist and run the separate, explicit command below; the adapter is not a filesystem sandbox.
 
 ## Safety and limitations
 
