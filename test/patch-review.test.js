@@ -46,6 +46,18 @@ test("rejects traversal, binary, and oversized patches", () => {
 });
 
 
+
+test("counts changed source lines that themselves begin with plus or minus", () => {
+  const patch = [
+    "diff --git a/src/prefix.css b/src/prefix.css",
+    "--- a/src/prefix.css", "+++ b/src/prefix.css",
+    "@@ -1 +1 @@", "--- old source line", "+++ new source line"
+  ].join("\\n");
+  const result = reviewRepairPatch(handoff, patch);
+  assert.equal(result.accepted, true);
+  assert.equal(result.changedLines, 2);
+});
+
 test("rejects a traditional unified-diff section hidden after an allowlisted git diff", () => {
   const mixedPatch = [
     "diff --git a/src/layout.css b/src/layout.css",
