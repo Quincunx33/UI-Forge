@@ -2,6 +2,19 @@
 
 UI-Forge must not mark a project as healthy based on a single screenshot or a successful build.
 
+## Frontend creation gate
+
+A Create-mode implementation should report and verify these separately:
+- product brief, target users, chosen visual direction, and design tokens;
+- routes, page states, responsive breakpoints, and important content implemented;
+- real control behavior for navigation, filters, menus, forms, dialogs, and other requested interactions;
+- keyboard operation, visible focus, semantic labels, contrast, and reduced-motion behavior;
+- actual rendered screenshots or preview observations at relevant mobile and desktop sizes;
+- build, lint, unit, and browser checks that were actually run;
+- any unavailable visual or functional checks marked **untested**.
+
+A screenshot does not prove interactions work. A successful build does not prove visual quality. A static source review does not prove responsive rendering. The creation workflow is complete only when its implementation and available visual/functional evidence are reported separately.
+
 ## Detection gate
 
 A detection run should report:
