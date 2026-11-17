@@ -18,7 +18,7 @@
 
 - Added explicit allowlisted Git patch application via `ui-forge apply`, requiring approval, confirmation, a clean worktree, symlink checks, and `git apply --check`.
 - Added tests for patch application success and refusal of implicit, out-of-scope, dirty-tree, and symlink-traversal operations.
-- Hardened patch review against mixed-format unified diffs that could bypass the exact file allowlist; added a regression test and rollback guard for unexpected post-apply paths.
+- Hardened patch review against mixed-format unified diffs that could bypass the exact file allowlist, and now counts changed lines from validated hunk bodies; added regression tests and a rollback guard for unexpected post-apply paths.
 
 - Added opt-in same-origin anchor route discovery with a configurable cap of up to 50 additional routes; configured routes are always retained.
 - Excluded external, query-string, fragment, asset, and encoded-separator links from discovery.
