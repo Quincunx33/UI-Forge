@@ -47,12 +47,19 @@ The canonical skill sources remain in skills/ in this repository. The installer 
 
 ## Skills
 
-- ui-forge: universal orchestrator for evidence-based inspection, design review, authorized repair, and regression verification across AI hosts.
+- ui-forge: universal orchestrator for frontend creation, visual review, evidence-based inspection, authorized repair, and verification across AI hosts.
+- ui-create: design-first frontend creation and substantial redesign, including responsive implementation and working interactions.
 - ui-detect: read-only inspection and reporting.
 - ui-design-review: read-only product-aware visual critique.
 - ui-repair: explicitly authorized, scoped code repair and regression verification.
 
-The canonical universal skill is maintained in `skills/ui-forge/SKILL.md`. A lightweight entry point at `.agents/skills/ui-forge/SKILL.md` makes it discoverable by Google AI Studio Agent Playground and Codex. Root `AGENTS.md` and `.agents/AGENTS.md` provide shared project instructions.
+The canonical universal skill is maintained in `skills/ui-forge/SKILL.md`. The frontend creation workflow is maintained in `skills/ui-create/SKILL.md`. A lightweight entry point at `.agents/skills/ui-forge/SKILL.md` makes it discoverable by Google AI Studio Agent Playground and Codex. Root `AGENTS.md` and `.agents/AGENTS.md` provide shared project instructions.
+
+## Create a frontend
+
+Use the `ui-create` skill when the request is to build a new website, dashboard, app interface, landing page, or to implement a substantial redesign. It guides the host agent to establish a visual direction, implement real responsive pages and interactions, inspect the rendered preview, and run available checks. There is no `ui-forge create` CLI command: creation is performed by the coding agent using the tools available in its host environment.
+
+A self-contained example is available in [the Morrow workspace showcase](../examples/ui-create-demo/README.md). Run `npm run test:browser` to exercise its project navigation, active-project filter, and create-project dialog at mobile and desktop viewport sizes.
 
 ## Google AI Studio and universal AI support
 
