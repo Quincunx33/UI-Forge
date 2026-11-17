@@ -99,9 +99,9 @@ Use no more than two speculative repair attempts for the same unresolved finding
 
 When this repository or package is available, prefer its canonical skills and CLI rather than recreating their behavior:
 
-- Detection details: `skills/ui-detect/SKILL.md`
-- Visual critique: `skills/ui-design-review/SKILL.md`
-- Controlled repair: `skills/ui-repair/SKILL.md`
+- Detection details: `skills/ui-detect/SKILL.md` (repository) or `.agents/skills/ui-detect/SKILL.md` (Codex installation).
+- Visual critique: `skills/ui-design-review/SKILL.md` (repository) or `.agents/skills/ui-design-review/SKILL.md` (Codex installation).
+- Controlled repair: `skills/ui-repair/SKILL.md` (repository) or `.agents/skills/ui-repair/SKILL.md` (Codex installation).
 - CLI and setup: `docs/PLUGIN-USAGE.md`
 - Threat boundaries: `docs/THREAT-MODEL.md`
 
@@ -120,7 +120,7 @@ Only run commands supported by the checked-out version and the current environme
 - For Google AI Studio Agent Playground, use the mounted `.agents/AGENTS.md` and this skill under `.agents/skills/ui-forge/SKILL.md`.
 - For Google AI Studio Build Mode, use `adapters/google-ai-studio/SYSTEM_INSTRUCTIONS.md` as persistent instructions and explicitly ask the agent to apply them to the current project.
 - For Codex, use the project `AGENTS.md` and the skill in `.agents/skills/ui-forge/SKILL.md`.
-- For Claude Code and Cursor, use their installed plugin/skill integration or the standalone `skills/` sources.
+- For Claude Code and Cursor, use their installed plugin/skill integration or the installed `ui-forge`, `ui-detect`, `ui-design-review`, and `ui-repair` skill folders.
 - For any other AI, provide this file and the project `AGENTS.md` as context. If it cannot access project files or execute tests, it can still review supplied evidence but must state the limitation.
 
 ## Completion report
