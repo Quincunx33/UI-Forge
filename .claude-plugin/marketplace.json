@@ -8,7 +8,7 @@
     {
       "name": "ui-forge",
       "source": ".",
-      "description": "Evidence-based UI quality audits, visual design review, and controlled frontend repair skills.",
+      "description": "Frontend creation and redesign, evidence-based UI quality audits, visual design review, and controlled repair skills.",
       "version": "0.4.0"
     }
   ]
