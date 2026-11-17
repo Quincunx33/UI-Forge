@@ -63,17 +63,18 @@ test("rejects a mixed-format patch before an unapproved file can be modified", a
     "@@ -1 +1 @@", "-.app { width: 900px; }", "+.app { max-width: 100%; }",
     "--- a/src/secret.txt", "+++ b/src/secret.txt",
     "@@ -1 +1 @@", "-keep-secret", "+compromised"
-  ].join("\\n");
+  ].join("\n");
   try {
     await assert.rejects(
       applyReviewedPatch({ handoff, patch: mixedPatch, root, approved: true, applyConfirmed: true }),
       /malformed or additional unified-diff file sections/
     );
-    assert.equal(await readFile(path.join(root, "src/app.css"), "utf8"), ".app { width: 900px; }\\n");
-    assert.equal(await readFile(path.join(root, "src/secret.txt"), "utf8"), "keep-secret\\n");
+    assert.equal(await readFile(path.join(root, "src/app.css"), "utf8"), ".app { width: 900px; }\n");
+    assert.equal(await readFile(path.join(root, "src/secret.txt"), "utf8"), "keep-secret\n");
   } finally { await rm(root, { recursive: true, force: true }); }
 });
-\ntest("refuses to apply when the working tree is dirty", async () => {
+
+test("refuses to apply when the working tree is dirty", async () => {
   const root = await makeRepo();
   try {
     await writeFile(path.join(root, "uncommitted.txt"), "keep me");
