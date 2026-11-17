@@ -19,6 +19,9 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Validate standard skill directory formats for Codex, Claude Code, and Cursor.
 - [x] Add project/user skill installer for Codex, Claude Code, and Cursor, including the `all` target.
 - [x] Add a universal UI-Forge orchestrator skill shared across supported AI hosts.
+- [x] Add a dedicated `ui-create` skill for new frontend creation and explicitly requested substantial redesigns.
+- [x] Add Create-mode routing to the universal skill, Google AI Studio Build Mode adapter, and agent entry points.
+- [x] Include `ui-create` in the five-skill Codex, Claude Code, and Cursor installer.
 - [x] Add Google AI Studio Agent Playground entry point using `.agents/AGENTS.md` and `.agents/skills/`.
 - [x] Add Google AI Studio Build Mode System Instructions adapter.
 - [x] Add generic `AGENTS.md` entry point and setup documentation for other AI assistants.
@@ -80,6 +83,8 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Add GitHub Actions CI workflow configuration.
 - [ ] Verify CI execution on a working GitHub Actions runner.
 - [x] Add a loopback-only vanilla demo with intentional UI defects.
+- [x] Add a polished responsive frontend creation showcase with working local navigation, search/filter, and project-creation interactions.
+- [x] Add Playwright browser integration checks for the creation showcase at mobile and desktop sizes, including safe interaction outcomes.
 - [x] Add versioned v0.3.0 and v0.4.0 changelog and installation documentation.
 - [ ] Publish a tagged release after CI is verified.
 
