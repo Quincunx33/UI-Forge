@@ -53,12 +53,13 @@ test("rejects a traditional unified-diff section hidden after an allowlisted git
     "@@ -1 +1 @@", "-.page { width: 1000px; }", "+.page { max-width: 100%; }",
     "--- a/src/private.txt", "+++ b/src/private.txt",
     "@@ -1 +1 @@", "-private", "+exposed"
-  ].join("\\n");
+  ].join("\n");
   const result = reviewRepairPatch(handoff, mixedPatch, { approvalGranted: true });
   assert.equal(result.accepted, false);
   assert.ok(result.reasons.some(reason => reason.includes("additional unified-diff file sections")));
 });
-\ntest("requires explicit approval for sensitive paths", () => {
+
+test("requires explicit approval for sensitive paths", () => {
   const patch = "diff --git a/src/auth.ts b/src/auth.ts\n--- a/src/auth.ts\n+++ b/src/auth.ts\n@@ -1 +1 @@\n-old\n+new";
   const denied = reviewRepairPatch(handoff, patch);
   assert.equal(denied.accepted, false);
