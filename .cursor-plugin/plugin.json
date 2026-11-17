@@ -2,7 +2,7 @@
   "name": "ui-forge",
   "displayName": "UI-Forge",
   "version": "0.4.0",
-  "description": "Evidence-based UI quality audits, axe-core accessibility scans, visual design review, and controlled frontend repair skills.",
+  "description": "Frontend creation and redesign, evidence-based UI quality audits, axe-core accessibility scans, visual design review, and controlled repair skills.",
   "author": {
     "name": "Quincunx33"
   },
@@ -14,7 +14,10 @@
     "responsive-design",
     "accessibility",
     "playwright",
-    "design-review"
+    "design-review",
+    "frontend-design",
+    "ui-creation",
+    "web-design"
   ],
   "skills": [
     "skills/*/SKILL.md"
