@@ -3,7 +3,7 @@
   "id": "ui-forge",
   "name": "UI-Forge",
   "version": "0.4.0",
-  "description": "A portable coding-agent plugin for evidence-based UI quality audits, axe-core accessibility scans, visual design review, and controlled frontend repair.",
+  "description": "A portable coding-agent plugin for frontend creation and redesign, evidence-based UI quality audits, axe-core accessibility scans, visual design review, and controlled frontend repair.",
   "license": "UNLICENSED",
   "capabilities": {
     "detection": "agent-skill-and-cli",
@@ -19,12 +19,15 @@
       "cursor"
     ],
     "visual_regression": "png-baseline-pixel-diff",
-    "functional_testing": "opt-in-safe-test-buttons"
+    "functional_testing": "opt-in-safe-test-buttons",
+    "frontend_creation": "agent-skill-with-host-preview-and-functional-verification"
   },
   "skills": [
+    "skills/ui-forge/SKILL.md",
+    "skills/ui-create/SKILL.md",
     "skills/ui-detect/SKILL.md",
-    "skills/ui-repair/SKILL.md",
-    "skills/ui-design-review/SKILL.md"
+    "skills/ui-design-review/SKILL.md",
+    "skills/ui-repair/SKILL.md"
   ],
   "schemas": {
     "config": "schemas/config.schema.json",
