@@ -52,7 +52,7 @@ test("counts changed source lines that themselves begin with plus or minus", () 
     "diff --git a/src/prefix.css b/src/prefix.css",
     "--- a/src/prefix.css", "+++ b/src/prefix.css",
     "@@ -1 +1 @@", "--- old source line", "+++ new source line"
-  ].join("\\n");
+  ].join("\n");
   const result = reviewRepairPatch(handoff, patch);
   assert.equal(result.accepted, true);
   assert.equal(result.changedLines, 2);
