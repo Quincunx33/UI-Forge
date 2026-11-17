@@ -19,7 +19,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .search-box svg{width:15px;height:15px;fill:none;stroke:#85877f;stroke-width:1.6}
 .search-box input{min-width:0;width:100%;border:0;outline:0;background:transparent;color:var(--ink);font-size:11px}
 .search-box kbd{font-size:10px;color:#a0a197;border:1px solid var(--line);border-radius:3px;padding:2px 5px}
-.avatar,.profile-avatar{width:31px;height:31px;border:0;border-radius:50%;background:#e7d5c3;color:#735a49;font-family:var(--serif);font-size:15px}
+.avatar,.profile-avatar{width:31px;height:31px;border:0;border-radius:50%;background:#e7d5c3;color:#735a49;font-family:var(--serif);font-size:15px}.avatar{display:grid;place-items:center}
 .workspace{display:grid;grid-template-columns:238px minmax(0,1fr);max-width:1600px;margin:0 auto}
 .sidebar{min-height:calc(100vh - 72px);padding:32px 20px 20px 28px;border-right:1px solid var(--line);display:flex;flex-direction:column}
 .sidebar-label,.eyebrow{font-size:9px;letter-spacing:1.65px;font-weight:700;color:#98998f}
