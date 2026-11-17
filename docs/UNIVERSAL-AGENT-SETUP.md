@@ -1,6 +1,6 @@
 # Universal AI agent setup
 
-UI-Forge uses one portable workflow with host-specific entry points. The workflow is shared; tool availability and invocation syntax depend on the AI environment.
+UI-Forge uses one portable workflow with host-specific entry points. It supports creating new frontends, substantial redesigns, read-only visual review, defect detection, narrow repair, and verification. Tool availability and invocation syntax depend on the AI environment.
 
 ## Supported entry points
 
@@ -34,7 +34,7 @@ Build Mode instructions guide the agent; they do not themselves run a UI audit. 
 
 ## Codex
 
-Keep the root `AGENTS.md` and `.agents/skills/ui-forge/SKILL.md` in the project. The existing installer also supports installing the focused `ui-detect`, `ui-design-review`, and `ui-repair` skills into Codex, Claude Code, and Cursor directories.
+Keep the root `AGENTS.md` and `.agents/skills/ui-forge/SKILL.md` in the project. The installer supports the focused `ui-create`, `ui-detect`, `ui-design-review`, and `ui-repair` skills alongside the universal orchestrator.
 
 ## Any other AI
 
@@ -45,6 +45,7 @@ Do not assume every AI has shell access, a browser, screenshot understanding, or
 ## Example requests
 
 - `Audit the UI at mobile and desktop sizes. Report evidence only; do not edit files.`
+- `Build a polished, responsive project dashboard from this brief. Use the ui-create workflow and make the controls functional.`
 - `Review the visual hierarchy and spacing. Keep the current design direction and do not modify source.`
 - `Fix the verified navigation overflow with the smallest change, then run regression checks.`
 - `Verify this UI change against the original issue and report any regressions. Do not make further edits.`
