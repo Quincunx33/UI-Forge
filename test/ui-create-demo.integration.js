@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
+import { chromium } from "playwright";
 import { readFile, mkdtemp, rm, readdir } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -82,6 +83,31 @@ test("UI creation demo renders responsively and its primary interactions work", 
     assert.ok(screenshots.some(name => name.endsWith("-desktop.png")));
     assert.ok(!report.coverage.checks.some(item => item.name.includes("console-errors:") && item.status === "failed"));
     assert.ok(!report.coverage.checks.some(item => item.name.includes("failed-requests:") && item.status === "failed"));
+
+    const browser = await chromium.launch({ headless: true });
+    try {
+      const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+      await page.goto(baseUrl);
+      await page.keyboard.press("/");
+      assert.equal(await page.locator("#project-search").evaluate(element => element === document.activeElement), true);
+      await page.locator("#project-search").fill("northstar");
+      assert.equal(await page.locator("#project-grid .project-card:visible").count(), 1);
+      await page.locator("#project-search").fill("");
+
+      await page.getByRole("button", { name: /New project/ }).click();
+      assert.equal(await page.locator("#project-dialog").evaluate(element => element.open), true);
+      await page.keyboard.press("Escape");
+      assert.equal(await page.locator("#project-dialog").evaluate(element => element.open), false);
+
+      await page.getByRole("button", { name: /New project/ }).click();
+      await page.locator("#project-name").fill("Tiny test garden");
+      await page.getByRole("button", { name: /Create project/ }).click();
+      await page.getByText("Tiny test garden", { exact: true }).waitFor({ state: "visible" });
+      assert.equal(await page.locator("#project-grid .project-card").count(), 4);
+      assert.equal((await page.locator("#toast").textContent()).trim(), "Your new project has a home.");
+    } finally {
+      await browser.close();
+    }
   } finally {
     await new Promise(resolve => server.close(resolve));
     await rm(outputDir, { recursive: true, force: true });
