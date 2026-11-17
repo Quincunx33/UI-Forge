@@ -15,6 +15,20 @@ A Create-mode implementation should report and verify these separately:
 
 A screenshot does not prove interactions work. A successful build does not prove visual quality. A static source review does not prove responsive rendering. The creation workflow is complete only when its implementation and available visual/functional evidence are reported separately.
 
+## Repository verification commands
+
+From the repository root, install dependencies and run the complete regression gate:
+
+```sh
+npm install
+npx playwright install chromium
+npm test
+npm run check
+npm run test:browser
+```
+
+`npm test` runs the unit, schema, installer, repair-handoff, patch-review, and patch-application tests. `npm run check` performs JavaScript syntax checks before rerunning the unit suite. `npm run test:browser` runs the Playwright audit and responsive UI-creation integration fixtures. Report the exact command and any unavailable or untested check rather than inferring success from a partial run.
+
 ## Detection gate
 
 A detection run should report:

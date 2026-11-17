@@ -47,7 +47,8 @@ export async function applyReviewedPatch({ handoff, patch, root, approved, apply
   const tempDir = await mkdtemp(path.join(os.tmpdir(), "ui-forge-patch-"));
   const patchPath = path.join(tempDir, "reviewed.patch");
   try {
-    await writeFile(patchPath, patch, { encoding: "utf8", flag: "wx" });
+    const patchText = patch.endsWith("\n") ? patch : `${patch}\n`;
+    await writeFile(patchPath, patchText, { encoding: "utf8", flag: "wx" });
     await execFileAsync("git", ["apply", "--check", "--whitespace=error", patchPath], { cwd: gitRoot, maxBuffer: 1024 * 1024 });
     await execFileAsync("git", ["apply", "--whitespace=error", patchPath], { cwd: gitRoot, maxBuffer: 1024 * 1024 });
     const { stdout: changed } = await execFileAsync("git", ["status", "--porcelain", "--untracked-files=all"], { cwd: gitRoot });

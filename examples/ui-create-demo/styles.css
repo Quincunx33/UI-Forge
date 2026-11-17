@@ -81,6 +81,7 @@ h2{margin:0;font-family:var(--serif);font-size:24px;font-weight:400;letter-spaci
 .project-count{color:#6d7067;font-size:9px}
 .project-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
 .project-card{min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:6px;background:var(--surface);transition:transform .2s,box-shadow .2s}
+.project-card[hidden]{display:none!important}
 .project-card:hover{transform:translateY(-2px);box-shadow:0 7px 20px #292d2410}
 .project-art{height:132px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
 .art-northstar{background:#e1e4d7}

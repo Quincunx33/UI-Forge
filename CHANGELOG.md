@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Fixed repeated AJV report-schema validation by caching compiled validators.
+- Fixed reviewed patch application for diffs without a trailing newline.
+- Fixed responsive project-card filtering so hidden cards remain hidden on mobile layouts.
+- Verified the full quality gate: 31 unit tests, syntax checks, and 2 browser integration tests pass.
+
 - Added the `ui-create` frontend design and implementation skill for new websites, dashboards, app interfaces, and explicitly requested redesigns.
 - Added a responsive Morrow workspace showcase with local project navigation, filtering, search, and project creation interactions.
 - Added Playwright browser coverage for the showcase at narrow-mobile, mobile, tablet, and desktop sizes, including safe interaction checks.

@@ -7,10 +7,14 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const ajv = new Ajv2020({ allErrors: true, strict: false });
 addFormats(ajv);
+const validatorCache = new Map();
 
 async function loadValidator(file) {
+  if (validatorCache.has(file)) return validatorCache.get(file);
   const schema = JSON.parse(await readFile(path.join(root, "schemas", file), "utf8"));
-  return ajv.compile(schema);
+  const validate = ajv.compile(schema);
+  validatorCache.set(file, validate);
+  return validate;
 }
 
 export async function validateConfigSchema(config) {
