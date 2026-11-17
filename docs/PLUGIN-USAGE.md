@@ -47,9 +47,22 @@ The canonical skill sources remain in skills/ in this repository. The installer 
 
 ## Skills
 
+- ui-forge: universal orchestrator for evidence-based inspection, design review, authorized repair, and regression verification across AI hosts.
 - ui-detect: read-only inspection and reporting.
 - ui-design-review: read-only product-aware visual critique.
 - ui-repair: explicitly authorized, scoped code repair and regression verification.
+
+The canonical universal skill is maintained in `skills/ui-forge/SKILL.md`. A lightweight entry point at `.agents/skills/ui-forge/SKILL.md` makes it discoverable by Google AI Studio Agent Playground and Codex. Root `AGENTS.md` and `.agents/AGENTS.md` provide shared project instructions.
+
+## Google AI Studio and universal AI support
+
+See [Universal AI agent setup](UNIVERSAL-AGENT-SETUP.md) for Google AI Studio Agent Playground, Google AI Studio Build Mode, Codex, Claude Code, Cursor, and other assistants.
+
+- Agent Playground: import or mount the repository with `.agents/AGENTS.md` and `.agents/skills/ui-forge/SKILL.md`.
+- Build Mode: paste `adapters/google-ai-studio/SYSTEM_INSTRUCTIONS.md` into System Instructions / Custom Instructions, import the project, then explicitly ask the agent to apply the instructions.
+- Other AI tools: provide root `AGENTS.md` and `skills/ui-forge/SKILL.md` as project context; adapt tool calls to actual host capabilities.
+
+The universal skill does not assume every host has a browser, terminal, screenshot understanding, or file-editing tools. Unavailable checks must be reported as untested.
 
 ## Run the browser detector
 
