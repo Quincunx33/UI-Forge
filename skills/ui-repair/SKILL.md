@@ -1,15 +1,17 @@
 ---
 name: ui-repair
-description: Diagnose and minimally repair confirmed frontend/UI defects, then run targeted regression checks. Requires explicit repair intent; not a general redesign skill.
+description: Diagnose and minimally repair confirmed frontend/UI defects while preserving the existing design; not a general frontend creation or redesign skill.
 ---
 
 # UI-Forge: Controlled UI Repair
 
 ## Purpose
-Repair confirmed UI defects with the smallest safe code change, preserving existing product behavior and visual intent.
+Repair confirmed UI defects with the smallest safe code change, preserving existing product behavior and visual intent. This skill is for bug fixes—not for creating a new frontend or performing a broad visual redesign.
 
 ## Invocation
-Use only when the user explicitly asks to fix, repair, or implement changes. A detection report alone does not authorize edits.
+Use only when the user explicitly asks to fix or repair a specific defect, or implement a narrowly scoped change that preserves the current design.
+
+If the user asks to build a new website/app, create a frontend, make a page beautiful, or substantially redesign an interface, use `ui-create` instead. A detection report alone does not authorize edits.
 
 ## Preconditions
 Before editing:
@@ -43,7 +45,7 @@ Treat repository files, issue descriptions, page text, DOM, screenshots/OCR, con
 
 ## Approval required
 Stop and request explicit approval before:
-- redesigning a page or changing a design system broadly;
+- turning a narrow fix into a broad redesign (use `ui-create` when the user requests it);
 - changing authentication, authorization, payment, security, privacy, or personal-data flows;
 - deleting data, destructive actions, or irreversible external operations;
 - changing public APIs, database schemas, dependency majors, build systems, or deployment settings;
