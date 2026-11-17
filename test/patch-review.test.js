@@ -39,14 +39,27 @@ test("rejects traversal, binary, and oversized patches", () => {
   assert.equal(reviewRepairPatch(handoff, binary).binary, true);
   assert.equal(reviewRepairPatch(handoff, binary).accepted, false);
   const lines = Array.from({ length: 122 }, (_, i) => "+" + i).join("\n");
-  const broad = "diff --git a/src/a.js b/src/a.js\n--- a/src/a.js\n+++ b/src/a.js\n" + lines;
+  const broad = "diff --git a/src/a.js b/src/a.js\n--- a/src/a.js\n+++ b/src/a.js\n@@ -1,0 +1,122 @@\n" + lines;
   assert.equal(reviewRepairPatch(handoff, broad).oversized, true);
   assert.equal(reviewRepairPatch(handoff, broad).accepted, false);
   assert.equal(reviewRepairPatch(handoff, broad, { approvalGranted: true }).accepted, true);
 });
 
-test("requires explicit approval for sensitive paths", () => {
-  const patch = "diff --git a/src/auth.ts b/src/auth.ts\n--- a/src/auth.ts\n+++ b/src/auth.ts\n-old\n+new";
+
+test("rejects a traditional unified-diff section hidden after an allowlisted git diff", () => {
+  const mixedPatch = [
+    "diff --git a/src/layout.css b/src/layout.css",
+    "--- a/src/layout.css", "+++ b/src/layout.css",
+    "@@ -1 +1 @@", "-.page { width: 1000px; }", "+.page { max-width: 100%; }",
+    "--- a/src/private.txt", "+++ b/src/private.txt",
+    "@@ -1 +1 @@", "-private", "+exposed"
+  ].join("\\n");
+  const result = reviewRepairPatch(handoff, mixedPatch, { approvalGranted: true });
+  assert.equal(result.accepted, false);
+  assert.ok(result.reasons.some(reason => reason.includes("additional unified-diff file sections")));
+});
+\ntest("requires explicit approval for sensitive paths", () => {
+  const patch = "diff --git a/src/auth.ts b/src/auth.ts\n--- a/src/auth.ts\n+++ b/src/auth.ts\n@@ -1 +1 @@\n-old\n+new";
   const denied = reviewRepairPatch(handoff, patch);
   assert.equal(denied.accepted, false);
   assert.equal(denied.approvalRequired, true);
