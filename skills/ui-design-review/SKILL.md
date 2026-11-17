@@ -6,10 +6,10 @@ description: Review frontend visual design quality and provide product-aware, ev
 # UI-Forge: UI Design Review
 
 ## Purpose
-Evaluate whether an interface is coherent, usable, readable, and appropriate for its product. This is a review skill, not an automatic redesign.
+Evaluate whether an interface is coherent, usable, readable, and appropriate for its product. This is a read-only review skill, not an automatic redesign.
 
 ## Invocation
-Use when the user asks for UI/UX critique, visual polish, design quality review, or feedback on an AI-generated interface.
+Use when the user asks for UI/UX critique, visual quality review, or feedback without asking for implementation.
 
 ## Review process
 1. Identify the product purpose, target users, primary tasks, brand constraints, and existing design language from project context.
@@ -36,6 +36,11 @@ Use when the user asks for UI/UX critique, visual polish, design quality review,
 - If images cannot be opened or visual evidence is missing, mark visual interpretation as untested rather than guessing.
 - Separate visual observations from accessibility claims; use axe results as automated evidence and require manual keyboard/assistive-technology checks for broader conclusions.
 
+## Handoff
+- If the user asks to implement a new visual direction, build a new frontend, or substantially redesign the interface, hand off to `ui-create`.
+- If the user asks to fix a specific defect while preserving the existing design, hand off to `ui-repair`.
+- If the user only asked for critique, do not edit files.
+
 ## Output
 Provide:
 - concise overall assessment;
@@ -45,4 +50,4 @@ Provide:
 - responsive and accessibility concerns;
 - optional design direction only when the current direction is demonstrably unsuitable.
 
-Do not edit files. If the user wants implementation, hand off to ui-repair after the user explicitly authorizes repair.
+Do not edit files. If the user wants implementation, use the appropriate creation or repair skill rather than silently editing from review mode.
