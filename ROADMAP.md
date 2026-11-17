@@ -18,7 +18,11 @@ This roadmap is the source of truth for project scope. A checked item means the 
 - [x] Document plugin usage and current limitations.
 - [x] Validate standard skill directory formats for Codex, Claude Code, and Cursor.
 - [x] Add project/user skill installer for Codex, Claude Code, and Cursor, including the `all` target.
-- [ ] Add other agent adapters when their skill formats are validated.
+- [x] Add a universal UI-Forge orchestrator skill shared across supported AI hosts.
+- [x] Add Google AI Studio Agent Playground entry point using `.agents/AGENTS.md` and `.agents/skills/`.
+- [x] Add Google AI Studio Build Mode System Instructions adapter.
+- [x] Add generic `AGENTS.md` entry point and setup documentation for other AI assistants.
+- [ ] Validate additional agent adapters when their skill formats and runtime behavior are available.
 
 ## Phase 2 — Detection runtime
 - [x] Add Node.js CLI entry point and config validation.
