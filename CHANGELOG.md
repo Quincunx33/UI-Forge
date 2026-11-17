@@ -9,7 +9,7 @@
 
 - Added a universal `ui-forge` orchestrator skill for evidence-based detect, design review, repair, and verification across AI hosts.
 - Added Google AI Studio Agent Playground discovery files and a Build Mode System Instructions adapter.
-- Added root `AGENTS.md`, generic AI setup documentation, and installer support for the fourth universal skill.
+- Added root `AGENTS.md`, generic AI setup documentation, and installer support for the universal orchestrator and four focused skills.
 
 - Blocked cross-origin top-level navigation and redirect requests during route discovery and audit runs.
 - Hardened screenshot artifact names against traversal and route-name collisions; viewport labels are validated.
@@ -18,6 +18,7 @@
 
 - Added explicit allowlisted Git patch application via `ui-forge apply`, requiring approval, confirmation, a clean worktree, symlink checks, and `git apply --check`.
 - Added tests for patch application success and refusal of implicit, out-of-scope, dirty-tree, and symlink-traversal operations.
+- Hardened patch review against mixed-format unified diffs that could bypass the exact file allowlist; added a regression test and rollback guard for unexpected post-apply paths.
 
 - Added opt-in same-origin anchor route discovery with a configurable cap of up to 50 additional routes; configured routes are always retained.
 - Excluded external, query-string, fragment, asset, and encoded-separator links from discovery.
