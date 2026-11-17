@@ -8,6 +8,7 @@ UI-Forge is a modular coding-agent plugin for evidence-based UI inspection, desi
 
 | Skill | Purpose | Source editing |
 |---|---|---|
+| ui-forge | Universal orchestrator for detect → review → repair → verify across AI hosts | Depends on the explicitly selected mode |
 | ui-detect | Find and document UI defects with evidence | Never |
 | ui-design-review | Review visual quality and recommend improvements | Never |
 | ui-repair | Fix confirmed defects and run regression checks | Only when explicitly invoked |
@@ -32,7 +33,7 @@ cp /path/to/UI-Forge/ui-forge.config.example.json ui-forge.config.json
 node /path/to/UI-Forge/bin/ui-forge.js detect --config ./ui-forge.config.json
 ```
 
-The root manifest follows the portable Agent Plugins 1.0.0 format. Cursor and Claude Code marketplace manifests are included. The installer can copy skills into Codex, Claude Code, and Cursor project/user skill directories. See [Plugin usage](docs/PLUGIN-USAGE.md). To try the detector, follow [the vanilla demo](examples/vanilla-demo/README.md).
+The root manifest follows the portable Agent Plugins 1.0.0 format. Cursor and Claude Code marketplace manifests are included. The installer can copy all four skills into Codex, Claude Code, and Cursor project/user skill directories. Google AI Studio Agent Playground support is provided through `.agents/AGENTS.md` and `.agents/skills/`; Build Mode has a dedicated System Instructions adapter. Other AI assistants can use the portable `AGENTS.md` and `skills/ui-forge/SKILL.md`. See [Universal AI setup](docs/UNIVERSAL-AGENT-SETUP.md) and [Plugin usage](docs/PLUGIN-USAGE.md). To try the detector, follow [the vanilla demo](examples/vanilla-demo/README.md).
 
 ## Browser detection runtime
 
@@ -75,6 +76,9 @@ Review is a preflight, not an approval to edit. Application requires both flags,
 ├── .claude-plugin/         # Claude Code plugin and marketplace manifests
 ├── bin/                    # CLI
 ├── src/                    # Runtime, installer, schema validation
+├── AGENTS.md              # Universal project instructions
+├── .agents/               # Google AI Studio / Codex agent instructions and skill entry point
+├── adapters/              # Host-specific instruction adapters
 ├── skills/                 # Canonical portable agent skills
 ├── schemas/                # Config, report, and plugin schemas
 ├── test/                   # Unit and browser integration tests
