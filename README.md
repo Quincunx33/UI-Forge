@@ -1,57 +1,102 @@
-# UI-Forge
+<!--
+  UI-Forge — Build better interfaces with AI, verify them with evidence.
+-->
 
-**Frontend creation, UI review, visual auditing, and controlled repair workflows for AI coding agents.**
+<div align="center">
 
-UI-Forge is not a separate AI model. It is a portable set of agent skills plus a small CLI runtime. Your AI coding agent reads the skills and performs the implementation or review; the CLI runs repeatable browser audits, creates evidence reports, reviews patches, and applies explicitly approved changes.
+# ⚒️ UI-Forge
 
-## What UI-Forge does
+### Forge interfaces. Inspect every detail. Ship with confidence.
 
-UI-Forge supports this workflow:
+**A portable UI engineering toolkit for AI coding agents — built for creating polished frontends, reviewing visual quality, detecting real defects, and applying carefully approved fixes.**
 
-```text
-Create → Review → Detect → Repair → Verify
+<br/>
+
+[![Version](https://img.shields.io/badge/version-0.4.0-8b5cf6?style=for-the-badge)](https://github.com/Quincunx33/UI-Forge)
+[![Node](https://img.shields.io/badge/Node.js-20%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Playwright](https://img.shields.io/badge/Browser-Playwright-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
+[![AI Agents](https://img.shields.io/badge/AI_Agents-Portable-6366f1?style=for-the-badge)](https://github.com/Quincunx33/UI-Forge)
+
+<br/>
+
+[Explore the Repository](https://github.com/Quincunx33/UI-Forge) · [Quick Start](#-quick-start) · [Documentation](#-documentation) · [Roadmap](ROADMAP.md)
+
+</div>
+
+---
+
+## ✨ What is UI-Forge?
+
+UI-Forge gives AI coding agents a structured workflow for frontend engineering. It combines **portable agent skills** with a lightweight **Node.js CLI** so an agent can create an interface while repeatable browser checks gather evidence about how that interface actually behaves.
+
+It is not another AI model, website builder, or automatic redesign button. Your connected coding agent does the reasoning and implementation; UI-Forge supplies the workflow, guardrails, browser audits, and repair handoff.
+
+> **The goal:** beautiful interfaces are important. Verified, usable, responsive interfaces are better.
+
+## 🔥 The workflow
+
+<div align="center">
+
+```mermaid
+flowchart LR
+    A["✦ Create"] --> B["◉ Review"]
+    B --> C["⌕ Detect"]
+    C --> D["⚙ Repair"]
+    D --> E["✓ Verify"]
+    E -. "Iterate when needed" .-> B
 ```
 
-| Workflow | Use it for | Source editing |
-|---|---|---|
-| `ui-create` | Build a new frontend or implement a substantial redesign | Yes, when requested |
-| `ui-design-review` | Review visual quality, UX, and responsive design | Never |
-| `ui-detect` | Find and document verified UI defects | Never |
+</div>
+
+| Skill | Purpose | Edits source files? |
+|:--|:--|:--:|
+| `ui-create` | Create a new frontend or deliver a substantial redesign | When requested |
+| `ui-design-review` | Evaluate visual hierarchy, UX, responsiveness, and accessibility | No |
+| `ui-detect` | Find and document reproducible UI defects | No |
 | `ui-repair` | Fix confirmed defects with the smallest safe change | Only when explicitly requested |
-| `ui-forge` | Orchestrate the complete workflow across AI hosts | Depends on the selected mode |
+| `ui-forge` | Coordinate the complete workflow across supported AI hosts | Depends on selected mode |
 
-## Requirements
+## 💎 What makes it useful?
 
-- Node.js 20 or newer
+- **Creation-first workflow** — build new interfaces and substantial redesigns, not just patch existing code.
+- **Agent-portable skills** — install project instructions for Codex, Claude Code, Cursor, and compatible agents.
+- **Real browser evidence** — inspect rendered pages at configured routes and viewport sizes.
+- **Responsive checks** — detect overflow, clipping, navigation failures, and other layout problems.
+- **Accessibility signals** — integrate axe-core checks and basic keyboard/focus smoke tests.
+- **Visual regression** — compare against manually approved screenshot baselines.
+- **Controlled repair** — review a patch and explicitly approve its exact file scope before applying it.
+- **Safety by default** — detection is read-only; optional interactions are opt-in and restricted to marked safe controls.
+
+## 🚀 Quick start
+
+### 1. Requirements
+
+- Node.js **20 or newer**
 - npm
-- An AI coding agent such as Codex, Claude Code, Cursor, or another agent that can read project instructions
+- An AI coding agent that can read project instructions
 - Chromium for browser-based audits
 
-## Quick start
+### 2. Install UI-Forge
 
-### 1. Clone and install UI-Forge
-
-```sh
+```bash
 git clone https://github.com/Quincunx33/UI-Forge.git
 cd UI-Forge
 npm install
 npx playwright install chromium
 ```
 
-### 2. Install the skills into your project
+### 3. Install the skills in your project
 
-Replace `/path/to/your-project` with the project where you want to use UI-Forge:
+Run this from the UI-Forge repository. Replace the target path with your own project directory.
 
-```sh
-node ./bin/ui-forge.js install \
-  --agent all \
-  --target /path/to/your-project
+```bash
+node ./bin/ui-forge.js install --agent all --target /path/to/your-project
 ```
 
-Install for one specific agent if needed:
+Or install for one agent:
 
-```sh
-# Codex
+```bash
+# OpenAI Codex
 node ./bin/ui-forge.js install --agent codex --target /path/to/your-project
 
 # Claude Code
@@ -61,91 +106,49 @@ node ./bin/ui-forge.js install --agent claude --target /path/to/your-project
 node ./bin/ui-forge.js install --agent cursor --target /path/to/your-project
 ```
 
-The installer places the skills in the project-level directories below:
+The installer adds project-level skill directories:
 
 ```text
-.agents/skills/       # Codex and compatible agents
-.claude/skills/       # Claude Code
-.cursor/skills/       # Cursor
+your-project/
+├── .agents/skills/       # Codex and compatible agents
+├── .claude/skills/       # Claude Code
+└── .cursor/skills/       # Cursor
 ```
 
-Project scope is the default. Use `--scope user` for a personal user-level installation. Existing skill folders are not overwritten unless you explicitly add `--force`.
+Project installation is the default. Use `--scope user` for a user-level installation. Existing skill folders are not overwritten unless you explicitly pass `--force`.
 
-### 3. Open your project in the AI agent
+### 4. Start building
 
-Start the agent from the target project directory and ask it to use the appropriate UI-Forge workflow. For example:
+Open the target project in your AI coding agent and try:
 
 ```text
 Use the UI-Forge ui-create workflow.
 
-Build a polished, responsive project dashboard with a sidebar,
-project cards, search, active/completed filters, and a create-project
-dialog. Preserve the existing stack, make all interactions functional,
-and verify the result at mobile and desktop sizes.
+Build a polished, responsive SaaS dashboard with a clean visual
+system, thoughtful spacing, accessible navigation, useful empty
+states, and fully working interactions.
+
+Preserve the project's existing stack and conventions.
+Inspect the rendered interface at mobile and desktop sizes,
+then run the available checks before finishing.
 ```
 
-There is no `ui-forge create` CLI command. Frontend creation is performed by the AI coding agent using the `ui-create` skill and the host's coding, preview, and browser capabilities.
+**Important:** frontend creation is performed by your AI coding agent using the `ui-create` skill. The CLI installs skills and runs audits; there is no `ui-forge create` command.
 
-## Common agent prompts
+## 🧪 Browser audit
 
-### Create a frontend
+UI-Forge's detector runs against an application that you start separately.
 
-```text
-Use UI-Forge ui-create.
-Build a responsive landing page for a design studio with an accessible
-navigation menu, hero section, services, case studies, pricing, FAQ,
-and a validated contact form. Inspect the rendered result before finishing
-and run the available tests.
-```
+### 1. Start your app
 
-### Review without editing
-
-```text
-Use UI-Forge ui-design-review.
-Review the current interface at mobile, tablet, and desktop sizes.
-Do not edit files. Report visual hierarchy, spacing, typography, contrast,
-responsive behavior, accessibility, and interaction issues with evidence.
-```
-
-### Detect defects without editing
-
-```text
-Use UI-Forge ui-detect.
-Audit this application on mobile and desktop. Do not modify source files.
-Report only verified issues with severity, reproduction steps, evidence,
-and a suggested repair.
-```
-
-### Repair a confirmed issue
-
-```text
-Use UI-Forge ui-repair.
-Fix only the verified mobile horizontal-overflow issue.
-Preserve the existing design and behavior, make the smallest safe change,
-and run the relevant regression and browser checks afterward.
-```
-
-## Run a browser audit
-
-The CLI detector is read-only: it does not start or stop your app, submit forms, or edit source files.
-
-### 1. Start your application separately
-
-```sh
+```bash
 cd /path/to/your-project
 npm run dev
 ```
 
-Assume the app is available at `http://127.0.0.1:3000`.
+### 2. Add a configuration file
 
-### 2. Create a configuration file
-
-```sh
-cp /path/to/UI-Forge/ui-forge.config.example.json \
-   /path/to/your-project/ui-forge.config.json
-```
-
-A minimal configuration looks like this:
+Copy `ui-forge.config.example.json` from this repository into your project and adjust it:
 
 ```json
 {
@@ -166,15 +169,14 @@ A minimal configuration looks like this:
 }
 ```
 
-### 3. Run the detector
+### 3. Run the audit
 
-```sh
-cd /path/to/your-project
+```bash
 node /path/to/UI-Forge/bin/ui-forge.js detect \
   --config ./ui-forge.config.json
 ```
 
-The run writes a timestamped report and screenshots under `outputDir`:
+Reports and screenshots are saved in a timestamped run directory:
 
 ```text
 .ui-forge/
@@ -183,13 +185,52 @@ The run writes a timestamped report and screenshots under `outputDir`:
     └── screenshots/
 ```
 
-The detector can check route responses, navigation failures, same-origin route discovery, console errors, uncaught exceptions, failed requests, responsive overflow, clipped content, axe-core accessibility rules, reduced-motion behavior, first-Tab focus, layout-shift smoke signals, and selected lab performance signals.
+### What can it inspect?
 
-Axe output and browser smoke checks are evidence for investigation, not a complete WCAG conformance claim. Unsupported or unavailable checks are reported as `untested`.
+| Area | Examples |
+|:--|:--|
+| Navigation | Route responses, failed navigation, same-origin route discovery |
+| Runtime | Console errors, uncaught exceptions, failed requests |
+| Layout | Responsive overflow and clipped content |
+| Accessibility | axe-core findings and basic keyboard/focus checks |
+| Motion | Reduced-motion behavior |
+| Visuals | Screenshot comparison against approved baselines |
+| Performance | Selected lab signals and layout-shift smoke checks |
 
-## Optional interaction checks
+These checks provide useful evidence, not a guarantee of complete WCAG conformance or production performance. Unsupported checks are reported as `untested`.
 
-Interaction checks are opt-in. Only project-owned, side-effect-safe buttons marked with `data-ui-forge-safe="true"` are eligible.
+## 🛡️ Controlled repair
+
+UI-Forge separates **finding a problem** from **changing project files**.
+
+```bash
+# 1. Create a handoff from a verified finding
+node /path/to/UI-Forge/bin/ui-forge.js handoff \
+  --report .ui-forge/<run-id>/report.json \
+  --finding UIF-0001 \
+  --out finding.handoff.json
+
+# 2. Review the proposed patch
+node /path/to/UI-Forge/bin/ui-forge.js review \
+  --handoff finding.handoff.json \
+  --patch proposed.patch
+
+# 3. Apply only after reviewing and approving the exact scope
+node /path/to/UI-Forge/bin/ui-forge.js apply \
+  --handoff finding.handoff.json \
+  --patch proposed.patch \
+  --root /path/to/your-project \
+  --approve \
+  --apply
+```
+
+Applying a patch requires a clean Git working tree, an exact allowed-file list, explicit approval, symlink checks, and a successful `git apply --check`.
+
+The patch adapter is a Git guard — **not an OS-level sandbox**. Always review proposed changes before applying them.
+
+## 🎛️ Optional interaction checks
+
+Interaction testing is opt-in. Only project-owned, side-effect-safe buttons explicitly marked with `data-ui-forge-safe="true"` are eligible.
 
 ```html
 <button
@@ -213,69 +254,9 @@ Interaction checks are opt-in. Only project-owned, side-effect-safe buttons mark
 }
 ```
 
-Forms are not submitted. Unmarked controls are not clicked.
+Forms are not submitted, and unmarked controls are not clicked.
 
-## Route discovery and visual regression
-
-Route discovery is disabled by default. Enable bounded same-origin discovery explicitly:
-
-```json
-{
-  "discovery": {
-    "enabled": true,
-    "maxRoutes": 20
-  }
-}
-```
-
-Visual regression is also opt-in and compares only against manually approved PNG baselines:
-
-```json
-{
-  "visualRegression": {
-    "enabled": true,
-    "baselineDir": ".ui-forge-baselines",
-    "threshold": 0.1,
-    "maxDiffPixels": 0
-  }
-}
-```
-
-Missing baselines are marked `untested`. UI-Forge never creates or overwrites a baseline automatically.
-
-## Controlled repair workflow
-
-Create a handoff from a verified report finding:
-
-```sh
-node /path/to/UI-Forge/bin/ui-forge.js handoff \
-  --report .ui-forge/<run-id>/report.json \
-  --finding UIF-0001 \
-  --out finding.handoff.json
-```
-
-Review a proposed unified diff before applying it:
-
-```sh
-node /path/to/UI-Forge/bin/ui-forge.js review \
-  --handoff finding.handoff.json \
-  --patch proposed.patch
-```
-
-After inspecting the result and filling the handoff's exact `scope.allowedFiles` list, apply it explicitly:
-
-```sh
-node /path/to/UI-Forge/bin/ui-forge.js apply \
-  --handoff finding.handoff.json \
-  --patch proposed.patch \
-  --root /path/to/your-project \
-  --approve \
-  --apply
-```
-
-Application requires a clean Git working tree, an exact file allowlist, explicit approval, symlink checks, and a successful `git apply --check`. The adapter is a Git guard, not an OS-level sandbox.
-
-## CLI reference
+## 🧰 CLI commands
 
 ```text
 ui-forge install --agent <codex|claude|cursor|all> [--scope project|user] [--target <dir>] [--force]
@@ -285,11 +266,11 @@ ui-forge review --handoff <file> --patch <diff.patch> [--approve]
 ui-forge apply --handoff <file> --patch <diff.patch> --root <repo> --approve --apply
 ```
 
-## Verify UI-Forge itself
+## ✅ Verify the toolkit
 
 From the repository root:
 
-```sh
+```bash
 npm install
 npx playwright install chromium
 npm test
@@ -297,22 +278,43 @@ npm run check
 npm run test:browser
 ```
 
-The repository's current quality gate includes 31 unit/schema/installer/repair/patch tests and 2 browser integration tests.
+The current quality gate includes unit, schema, installer, repair, patch-review, patch-apply, and browser integration tests.
 
-## Safety and limitations
+## 📚 Documentation
 
-- Run audits only against systems you own or are authorized to test.
-- Loopback targets are the default. Remote targets require explicit `allowRemote: true`.
+| Guide | What you'll find |
+|:--|:--|
+| [Plugin usage](docs/PLUGIN-USAGE.md) | Using UI-Forge skills and workflows |
+| [Universal AI agent setup](docs/UNIVERSAL-AGENT-SETUP.md) | Agent installation and setup |
+| [Quality gates](docs/QUALITY-GATES.md) | Validation and testing strategy |
+| [Architecture](docs/ARCHITECTURE.md) | How the toolkit is structured |
+| [Threat model](docs/THREAT-MODEL.md) | Security boundaries and safeguards |
+| [Roadmap](ROADMAP.md) | Planned work and project direction |
+
+## ⚠️ Safety & limitations
+
+- Use browser audits only on systems you own or are authorized to test.
+- Loopback targets are the default; remote targets require explicit `allowRemote: true`.
 - Known cloud metadata hosts, embedded URL credentials, and cross-origin route escapes are blocked.
-- Detection is read-only and does not modify project source.
-- Browser checks are not a complete accessibility, security, performance, or visual-quality assessment.
-- Manual review, assistive-technology testing, field performance profiling, exhaustive keyboard coverage, and full Core Web Vitals validation remain necessary where applicable.
+- Detection does not modify project source files.
+- Browser automation and automated accessibility checks are not substitutes for manual review, assistive-technology testing, exhaustive keyboard testing, or real-world performance profiling.
 
-See the detailed documentation:
+## 🤝 Contributing
 
-- [Plugin usage](docs/PLUGIN-USAGE.md)
-- [Universal AI agent setup](docs/UNIVERSAL-AGENT-SETUP.md)
-- [Quality gates](docs/QUALITY-GATES.md)
-- [Architecture](docs/ARCHITECTURE.md)
-- [Threat model](docs/THREAT-MODEL.md)
-- [Roadmap](ROADMAP.md)
+Ideas, bug reports, and improvements are welcome. Please open an issue with clear reproduction steps or submit a focused pull request.
+
+## 📄 License
+
+This repository currently declares **UNLICENSED** in `package.json`. No open-source reuse permissions are implied.
+
+---
+
+<div align="center">
+
+### Built to help AI agents craft better interfaces.
+
+**UI-Forge** · Create thoughtfully. Review carefully. Repair responsibly.
+
+[⬆ Back to top](#️-ui-forge)
+
+</div>
