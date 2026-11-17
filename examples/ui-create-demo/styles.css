@@ -19,7 +19,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .search-box svg{width:15px;height:15px;fill:none;stroke:#85877f;stroke-width:1.6}
 .search-box input{min-width:0;width:100%;border:0;outline:0;background:transparent;color:var(--ink);font-size:11px}
 .search-box kbd{font-size:10px;color:#6d7067;border:1px solid var(--line);border-radius:3px;padding:2px 5px}
-.avatar,.profile-avatar{width:31px;height:31px;border:0;border-radius:50%;background:#e7d5c3;color:#735a49;font-family:var(--serif);font-size:15px}.avatar{display:grid;place-items:center}
+.avatar,.profile-avatar{width:31px;height:31px;border:0;border-radius:50%;background:#e7d5c3;color:#6d5140;font-family:var(--serif);font-size:15px}.avatar{display:grid;place-items:center}
 .workspace{display:grid;grid-template-columns:238px minmax(0,1fr);max-width:1600px;margin:0 auto}
 .sidebar{min-height:calc(100vh - 72px);padding:32px 20px 20px 28px;border-right:1px solid var(--line);display:flex;flex-direction:column}
 .sidebar-label,.eyebrow{font-size:9px;letter-spacing:1.65px;font-weight:700;color:#6d7067}
@@ -31,7 +31,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .nav-count{margin-left:auto;font-size:10px;color:#6d7067}
 .sidebar-divider{height:1px;background:var(--line);margin:25px 0 22px}
 .space-card{display:flex;align-items:center;gap:10px;margin-top:14px;padding:9px 8px;border:1px solid var(--line);border-radius:6px;background:#faf9f4}
-.space-icon{width:27px;height:27px;display:grid;place-items:center;border-radius:5px;background:#e8e9dc;color:#747d56;font-size:15px}
+.space-icon{width:27px;height:27px;display:grid;place-items:center;border-radius:5px;background:#e8e9dc;color:#5d6845;font-size:15px}
 .space-card strong,.profile-row strong{display:block;font-size:11px;font-weight:600}
 .space-card small,.profile-row small{display:block;margin-top:3px;color:var(--muted);font-size:9px}
 .space-more{margin-left:auto;color:#6d7067;letter-spacing:2px}
@@ -115,7 +115,7 @@ h2{margin:0;font-family:var(--serif);font-size:24px;font-weight:400;letter-spaci
 .compact h2{font-size:20px}
 .focus-date{color:#6d7067;font-size:8px;letter-spacing:1px}
 .focus-task{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #efeee8}
-.task-check{width:16px;height:16px;display:grid;place-items:center;border:1px solid #b4c8b5;border-radius:50%;color:#679275;font-size:10px}
+.task-check{width:16px;height:16px;display:grid;place-items:center;border:1px solid #b4c8b5;border-radius:50%;color:#4f7d62;font-size:10px}
 .task-check.pending{border-color:#d4d4ca}
 .focus-task strong{display:block;font-size:10px;font-weight:600}
 .focus-task small{display:block;margin-top:3px;color:#6d7067;font-size:9px}
