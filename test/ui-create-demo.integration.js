@@ -20,6 +20,7 @@ const assets = new Map([
 test("UI creation demo renders responsively and its primary interactions work", async () => {
   const server = createServer(async (request, response) => {
     const pathname = new URL(request.url, "http://127.0.0.1").pathname;
+    if (pathname === "/favicon.ico") { response.writeHead(204); response.end(); return; }
     const asset = assets.get(pathname);
     if (!asset) {
       response.writeHead(404);
@@ -105,6 +106,9 @@ test("UI creation demo renders responsively and its primary interactions work", 
       await page.getByText("Tiny test garden", { exact: true }).waitFor({ state: "visible" });
       assert.equal(await page.locator("#project-grid .project-card").count(), 4);
       assert.equal((await page.locator("#toast").textContent()).trim(), "Your new project has a home.");
+      await page.getByRole("button", { name: /In progress/ }).click();
+      assert.equal((await page.locator("#project-count").textContent()).trim(), "3 active projects");
+      assert.equal((await page.locator(".nav-count").textContent()).trim(), "4");
     } finally {
       await browser.close();
     }
