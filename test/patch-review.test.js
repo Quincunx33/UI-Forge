@@ -16,7 +16,7 @@ test("accepts a small, scoped text patch for review", () => {
   const patch = [
     "diff --git a/src/layout.css b/src/layout.css",
     "--- a/src/layout.css", "+++ b/src/layout.css",
-    "@@ -1,2 +1,2 @@", "-.page { width: 1000px; }", "+.page { max-width: 100%; }"
+    "@@ -1 +1 @@", "-.page { width: 1000px; }", "+.page { max-width: 100%; }"
   ].join("\n");
   const result = reviewRepairPatch(handoff, patch);
   assert.equal(result.accepted, true);
